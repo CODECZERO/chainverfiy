@@ -1,0 +1,61 @@
+# -----------------------------
+# Logs and Debug Files
+# -----------------------------
+**/logs
+*.log
+**/*.log
+**/*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -----------------------------
+# Core Build + Dependencies
+# -----------------------------
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+.next/
+**/.next/
+out/
+**/out/
+coverage/
+*.tsbuildinfo
+
+# -----------------------------
+# Environment & Config
+# -----------------------------
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
+
+# -----------------------------
+# Prisma Generated Client
+# -----------------------------
+**/src/generated/prisma/
+
+# -----------------------------
+# IDE / Editor
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# -----------------------------
+# Stellar / Soroban Specific
+# -----------------------------
+stellar-keys.json
+.stellar/
+.soroban/
+.soroban-data/
+.stellar-wallets/
+.stellar-cache/
