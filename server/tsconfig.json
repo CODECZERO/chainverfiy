@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "ES2022",
 
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
