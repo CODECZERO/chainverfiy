@@ -1010,7 +1010,7 @@ export default function SellerDashboard() {
                     <div className="flex-1 min-w-0">
                       <div className="text-[10px] font-black text-[#25D366] uppercase tracking-[0.3em] mb-3">Merchant Communication Gateway</div>
                       <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-4">WhatsApp Integration Hub</h3>
-                      <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">Connect your existing communication endpoint to Pramanik API. List new inventory and broadcast stage updates directly through encrypted chat.</p>
+                      <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">Connect your existing communication endpoint to ChainVerify API. List new inventory and broadcast stage updates directly through encrypted chat.</p>
                       <div className="flex flex-wrap gap-4 mt-10">
                         <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=NEW`} target="_blank" rel="noopener noreferrer">
                           <Button className="bg-[#25D366] hover:bg-[#1db954] text-black h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-[0_15px_40px_rgba(37,211,102,0.2)] transform active:scale-95 transition-all">Connect Global Endpoint</Button>
@@ -1036,7 +1036,7 @@ export default function SellerDashboard() {
                                <h4 className="text-xl font-black tracking-tight mb-4 flex items-center gap-3"><span className="text-emerald-500">01</span> Configuration Steps</h4>
                                <div className="space-y-4">
                                   {[
-                                     "Save +1 415 523 8886 as Pramanik Network",
+                                     "Save +1 415 523 8886 as ChainVerify Network",
                                      "Broadcast 'join [sandbox-keyword]' from your endpoint",
                                      "Authenticate with your Merchant ID: NEW",
                                      "Submit optical proof directly via chat"
@@ -1189,7 +1189,7 @@ export default function SellerDashboard() {
                </div>
 
                <div className="flex gap-4">
-                  <a href={selectedQrProduct?.qrCodeUrl} download={`pramanik-qr-${selectedQrProduct?.id}.png`} className="flex-2">
+                  <a href={selectedQrProduct?.qrCodeUrl} download={`chainverify-qr-${selectedQrProduct?.id}.png`} className="flex-2">
                      <Button className="w-full bg-white text-black h-16 px-10 rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-slate-200 transition-all flex items-center gap-3 active:scale-95">
                         <Download className="w-5 h-5" /> Download Key
                      </Button>

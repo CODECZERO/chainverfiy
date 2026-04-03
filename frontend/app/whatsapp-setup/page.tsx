@@ -16,7 +16,7 @@ export default function WhatsAppSetupPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 mb-4">
             <MessageCircle className="w-8 h-8 text-green-400" />
           </div>
-          <h1 className="text-3xl font-bold mb-3">Connect Pramanik WhatsApp Bot</h1>
+          <h1 className="text-3xl font-bold mb-3">Connect ChainVerify WhatsApp Bot</h1>
           <p className="text-slate-400">Follow these 3 simple steps to start listing products directly from your phone.</p>
         </div>
 
@@ -26,7 +26,7 @@ export default function WhatsAppSetupPage() {
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold shrink-0">1</div>
               <div>
                 <h3 className="text-lg font-semibold mb-1">Save the Number</h3>
-                <p className="text-slate-400 text-sm mb-3">Save our official Twilio Sandbox number to your contacts as "Pramanik".</p>
+                <p className="text-slate-400 text-sm mb-3">Save our official Twilio Sandbox number to your contacts as "ChainVerify".</p>
                 <div className="font-mono text-xl text-blue-400 bg-slate-900 px-4 py-2 rounded-lg inline-block">
                   {formattedNumber}
                 </div>

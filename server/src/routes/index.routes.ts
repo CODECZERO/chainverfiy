@@ -13,7 +13,7 @@ import postRoutes from './post.routes.js';
 import escrowRoutes from './contracts/escrow.routes.js';
 import treasuryRoutes from './contracts/treasury.routes.js';
 
-// ─── NEW Pramanik routes (PostgreSQL via Prisma) ───
+// ─── NEW ChainVerify routes (PostgreSQL via Prisma) ───
 import productsRoutes from './v2/products.routes.js';
 import ordersRoutes from './v2/orders.routes.js';
 import suppliersRoutes from './v2/suppliers.routes.js';
@@ -45,7 +45,7 @@ router.use('/posts', postRoutes);
 router.use('/contracts/escrow', escrowRoutes);
 router.use('/contracts/treasury', treasuryRoutes);
 
-// ─── Pramanik marketplace routes ───
+// ─── ChainVerify marketplace routes ───
 router.use('/products', productsRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/suppliers', suppliersRoutes);
@@ -68,7 +68,7 @@ router.use('/donations', legacyOrderRoutes);
 router.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Pramanik API is running',
+    message: 'ChainVerify API is running',
     timestamp: new Date().toISOString(),
   });
 });

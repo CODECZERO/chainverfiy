@@ -1,4 +1,4 @@
-console.log('--- STARTING PRAMANIK SERVER ---');
+console.log('--- STARTING CHAINVERIFY SERVER ---');
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first'); // CRITICAL: Fixes Supabase 20-second IPv6 hangs in Node >17
 
@@ -18,7 +18,7 @@ const start = async () => {
     await connectRedis();
 
     app.listen(PORT, () => {
-      logger.info(`Pramanik server running on port ${PORT}`);
+      logger.info(`ChainVerify server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
       logger.info(`WhatsApp webhook: POST /api/whatsapp/webhook`);
 

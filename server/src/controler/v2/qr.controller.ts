@@ -79,7 +79,7 @@ async function reverseGeocode(lat: number | null, lng: number | null, fallback: 
     const resp = await fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`,
       { 
-        headers: { 'User-Agent': 'Pramanik-Real-Time-Sourcing/2.0' }, 
+        headers: { 'User-Agent': 'ChainVerify-Real-Time-Sourcing/2.0' }, 
         signal: AbortSignal.timeout(3000) 
       }
     );
@@ -142,7 +142,7 @@ export const generateQR = async (req: Request, res: Response) => {
   );
 
   // 4. Build GS1 Digital Link URI
-  const appUrl = process.env.APP_URL || 'https://pramanik.app';
+  const appUrl = process.env.APP_URL || 'https://chainverify.app';
   const gtin = productGTIN || '09506000000000';
   const serial = orderId ? orderId.replace(/-/g, '').slice(0, 20) : qrCodeId.replace(/-/g, '').slice(0, 20);
   const gs1DigitalLink = `${appUrl}/01/${gtin}/21/${serial}?qr=${shortCode}${orderId ? `&order=${orderId}` : ''}`;
@@ -770,7 +770,7 @@ export const registerMachine = async (req: Request, res: Response) => {
         method: 'POST',
         contentType: 'application/json',
         exampleBody: {
-          rawScanData: `https://pramanik.app/proof/ORDER_ID?qr=PRM-4X9K`,
+          rawScanData: `https://chainverify.app/proof/ORDER_ID?qr=PRM-4X9K`,
           clientTimestamp: new Date().toISOString(),
           eventType: 'scan',
         }
@@ -785,7 +785,7 @@ export const registerMachine = async (req: Request, res: Response) => {
 
 export const resolveQR = async (req: Request, res: Response) => {
   const { shortCode } = req.params;
-  const appUrl = process.env.APP_URL || 'https://pramanik.app';
+  const appUrl = process.env.APP_URL || 'https://chainverify.app';
 
   // Cache QR record for 60s to keep resolution <100ms
   const cacheKey = `qr:resolve:${shortCode}`;

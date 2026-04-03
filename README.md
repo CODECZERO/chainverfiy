@@ -1,4 +1,4 @@
-# Pramanik — प्रमाणिक
+# ChainVerify — प्रमाणिक
 Verified open marketplace. Community trust. No middlemen.
 
 ![Stellar](https://img.shields.io/badge/Stellar-Lurquoise?style=for-the-badge&logo=stellar&logoColor=white)
@@ -8,11 +8,11 @@ Verified open marketplace. Community trust. No middlemen.
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Pramanik is an open, verified marketplace designed for global suppliers to list products and build trust through community verification. It removes the need for expensive middlemen by using blockchain-enforced escrow and decentralized governance.
+ChainVerify is an open, verified marketplace designed for global suppliers to list products and build trust through community verification. It removes the need for expensive middlemen by using blockchain-enforced escrow and decentralized governance.
 
 ## Where This Started — Soul-Society
 
-Before Pramanik, I built **Soul-Society**, a blockchain-based charity donation platform on Stellar. The goal was to solve the massive problem of charity fraud, where donors often have no way to verify if their money actually reached the intended cause.
+Before ChainVerify, I built **Soul-Society**, a blockchain-based charity donation platform on Stellar. The goal was to solve the massive problem of charity fraud, where donors often have no way to verify if their money actually reached the intended cause.
 
 In Soul-Society, NGOs would upload proof-of-work (photos/videos) to IPFS, and the community would vote on its authenticity. If verified, 50% of the donation locked in a Soroban escrow would be released; otherwise, it was refunded after 30 days. I built 7 Soroban smart contracts (escrow, token, badge, registry, vault, treasury, notifications), a full Next.js frontend with Redux, and an Express backend. It passed 38 Jest tests and 54 Cargo tests, reaching Level 4 of the Stellar Journey to Mastery hackathon.
 
@@ -39,13 +39,13 @@ Consider a spice farmer. He's been growing organic turmeric for 30 years, but wh
 
 This is the same trust problem. But it is bigger, more frequent, and the proof is something a buyer can actually check—the product either arrives as described, or it doesn't. In commerce, both sides have financial skin in the game, and the scale makes decentralized verification actually worth building.
 
-## What Pramanik Does Differently
+## What ChainVerify Does Differently
 
-Pramanik removes the middlemen and returns the power to the community and the code.
+ChainVerify removes the middlemen and returns the power to the community and the code.
 
 **No central gatekeeper:** Unlike Soul-Society, no admin decides who gets in. Any supplier can list, and the 60% community threshold is enforced strictly by code. No human can override the verification.
 
-**WhatsApp-native:** Suppliers and small exporters already use messaging apps for business. Pramanik meets them there. An NVIDIA NIM-powered bot (Llama 3.1) handles listings and updates in any language, so there’s no new app to learn.
+**WhatsApp-native:** Suppliers and small exporters already use messaging apps for business. ChainVerify meets them there. An NVIDIA NIM-powered bot (Llama 3.1) handles listings and updates in any language, so there’s no new app to learn.
 
 **USDC escrow:** Payments are handled via Stellar. Whether you pay in XLM, BTC, or local currency via UPI, the Stellar DEX converts it to USDC, which is locked in a Soroban escrow until delivery is confirmed.
 
@@ -62,7 +62,7 @@ No broker. No middleman. No override.
 
 ## What Soul-Society Got Wrong (and What Changed)
 
-In Soul-Society, I tried to use Stellar as a database—storing every post and vote on-chain. It was slow and didn't scale. Pramanik fixes the architecture by separating concerns: data belongs in a fast, queryable database; payments and immutable receipts belong on the blockchain.
+In Soul-Society, I tried to use Stellar as a database—storing every post and vote on-chain. It was slow and didn't scale. ChainVerify fixes the architecture by separating concerns: data belongs in a fast, queryable database; payments and immutable receipts belong on the blockchain.
 
 ```
 PostgreSQL (Prisma)  ←  all data: users, products, votes, orders

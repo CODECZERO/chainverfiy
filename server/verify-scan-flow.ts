@@ -23,7 +23,7 @@ async function verifyScanFlow() {
       qrCodeId: qr.id,
       scanSource: 'BROWSER',
       scanNumber: scanCountBefore + 1,
-      userAgent: 'Mozilla/5.0 (Pramanik-Verification-Robot)',
+      userAgent: 'Mozilla/5.0 (ChainVerify-Verification-Robot)',
       deviceType: 'desktop',
       os: 'linux',
       browser: 'chrome',

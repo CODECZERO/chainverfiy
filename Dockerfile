@@ -7,6 +7,7 @@ WORKDIR /app/server
 COPY server/package*.json ./
 # Copy prisma directory before install to support postinstall
 COPY server/prisma ./prisma/
+COPY server/prisma.config.ts server/tsconfig.json ./
 
 # Install dependencies (include devDependencies for tsc)
 RUN npm install --include=dev --legacy-peer-deps --ignore-scripts

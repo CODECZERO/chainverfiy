@@ -1,4 +1,4 @@
-// Expenses not used in Pramanik — stub to prevent import errors
+// Expenses not used in ChainVerify — stub to prevent import errors
 export const getExpenses = async () => [];
 export const createExpense = async (data: any) => data;
 export const createTransaction = async (data: any, postId?: string, amount?: number) => data;

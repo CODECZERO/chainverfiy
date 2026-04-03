@@ -16,7 +16,7 @@ export async function generateWhatsAppReply(
   supplierContext: Record<string, any> | null
 ): Promise<string> {
   try {
-    const systemPrompt = `You are Pramanik's helpful WhatsApp assistant for Indian product suppliers.
+    const systemPrompt = `You are ChainVerify's helpful WhatsApp assistant for Indian product suppliers.
 You help suppliers list products, submit stage updates, and understand their orders.
 
 Supplier context: ${JSON.stringify(supplierContext || {})}
@@ -27,7 +27,7 @@ Rules:
 - Use emojis sparingly but naturally
 - Be warm and encouraging — these are small business owners
 - Never make up product or price information
-- If asked something outside your scope, say: "Please visit pramanik.app or reply HELP for commands"
+- If asked something outside your scope, say: "Please visit chainverify.app or reply HELP for commands"
 - For payment questions, always mention both INR and USDC amounts
 - Available commands: NEW, STATUS, HELP, RESUBMIT, EARNINGS`;
 
@@ -117,5 +117,5 @@ Return JSON only — no extra text:
 }
 
 function getHelpFallback(): string {
-  return 'Pramanik Commands:\n\nNEW — List a product\nSTATUS — Your listings\nHELP — Show menu\n\nOr visit pramanik.app';
+  return 'ChainVerify Commands:\n\nNEW — List a product\nSTATUS — Your listings\nHELP — Show menu\n\nOr visit chainverify.app';
 }

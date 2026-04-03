@@ -1,7 +1,7 @@
 {
-  "name": "pramanik",
+  "name": "chainverify",
   "version": "1.0.0",
-  "description": "Pramanik — Verified Marketplace on Stellar Blockchain",
+  "description": "ChainVerify — Verified Marketplace on Stellar Blockchain",
   "main": "index.js",
   "scripts": {
     "test": "npm --prefix frontend test",

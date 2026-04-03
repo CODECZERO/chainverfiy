@@ -59,8 +59,8 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Pramanik API is active',
-    project: 'Pramanik — Verified Marketplace on Stellar',
+    message: 'ChainVerify API is active',
+    project: 'ChainVerify — Verified Marketplace on Stellar',
     version: '2.0.0'
   });
 });

@@ -59,7 +59,7 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
   const checkVerification = async () => {
     // Verification check disabled for bounty creation as per user request: anyone can create bounties.
     setIsVerified(true);
-    setVerifReason("Anyone can issue bounties on Pramanik");
+    setVerifReason("Anyone can issue bounties on ChainVerify");
   }
 
   const handleCreateAndPay = async () => {

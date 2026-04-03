@@ -107,7 +107,7 @@ export default function MarketplacePage() {
                     Market <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Terminal</span>
                   </h1>
                   <p className="text-lg text-slate-500 max-w-2xl mt-8 font-black uppercase tracking-[0.1em] italic opacity-70 leading-relaxed">
-                    Access high-fidelity assets verified by the Pramanik Decentralized Oracle Network. Peer-to-peer settlement via Soroban.
+                    Access high-fidelity assets verified by the ChainVerify Decentralized Oracle Network. Peer-to-peer settlement via Soroban.
                   </p>
                 </div>
 

@@ -23,12 +23,13 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: "Pramanik — Verified Marketplace on Stellar",
-  description: "Every product verified by the community. Pay with any currency, settled in USDC. Suppliers list via WhatsApp.",
-  generator: "pramanik.app",
+  title: "ChainVerify — Verified Marketplace on Stellar",
+  description: "Secure, trustless marketplace for verified physical assets anchored to the Stellar blockchain.",
+  generator: "chainverify.app",
+  keywords: ["stellar", "blockchain", "verified marketplace", "ecommerce", "chainverify", "supply chain"],
   openGraph: {
-    title: "Pramanik — Verified Marketplace on Stellar",
-    description: "Community-verified products. Blockchain-backed proof. Pay with XLM, USDC, or UPI.",
+    title: "ChainVerify — Verified Marketplace on Stellar",
+    description: "Secure, trustless marketplace for verified physical assets. Blockchain-backed proof. Pay with XLM, USDC, or UPI.",
     type: "website",
   },
 }

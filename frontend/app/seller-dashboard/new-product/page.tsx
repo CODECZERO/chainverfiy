@@ -319,12 +319,12 @@ export default function NewProductWizard() {
               </div>
               
               <div className="flex flex-col gap-3">
-                <a href={product.qrCodeUrl} download={`pramanik-${product.id}.png`}>
+                <a href={product.qrCodeUrl} download={`chainverify-${product.id}.png`}>
                   <Button className="w-full bg-[#1C2333] border border-[#1F2D40] hover:bg-[#263449] h-11 rounded-xl">
                     Download QR Image
                   </Button>
                 </a>
-                <a href={`https://wa.me/?text=Check out my verified product on Pramanik! https://pramanik.com/product/${product.id}`} target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/?text=Check out my verified product on ChainVerify! https://chainverify.com/product/${product.id}`} target="_blank" rel="noopener noreferrer">
                   <Button className="w-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 hover:bg-[#25D366]/20 h-11 rounded-xl font-semibold">
                     <Share2 className="w-4 h-4 mr-2" /> Share on WhatsApp
                   </Button>

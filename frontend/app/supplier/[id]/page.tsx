@@ -144,7 +144,7 @@ export default function SupplierProfilePage({ params }: { params: Promise<{ id: 
               </h1>
               <div className="bg-white/[0.02] border-l-4 border-indigo-500/30 rounded-r-3xl p-8 backdrop-blur-3xl mb-10 max-w-3xl">
                  <p className="text-xl text-slate-400 leading-relaxed italic font-medium">
-                   {profile.description || "Authorized production node integrated with the Pramanik Oracle Protocol. All listed units have undergone multi-sig verification and cryptographic audit."}
+                   {profile.description || "Authorized production node integrated with the ChainVerify Oracle Protocol. All listed units have undergone multi-sig verification and cryptographic audit."}
                  </p>
               </div>
               

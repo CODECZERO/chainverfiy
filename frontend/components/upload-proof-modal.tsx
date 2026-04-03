@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { CheckCircle2, Loader2, Upload } from "lucide-react"
 import { useWallet } from "@/lib/wallet-context"
-// Legacy Mongo/IPFS proof flow removed in Pramanik (verified marketplace).
+// Legacy Mongo/IPFS proof flow removed in ChainVerify (verified marketplace).
 import { submitProofTransaction } from "@/lib/stellar-utils"
 
 interface UploadProofModalProps {

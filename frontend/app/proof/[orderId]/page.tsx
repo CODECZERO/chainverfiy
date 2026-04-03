@@ -198,7 +198,7 @@ export default function ProofPage() {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-6 h-6 text-emerald-400 print:text-emerald-600" />
-            <h1 className="text-lg font-bold print:text-black">Pramanik — Living QR Journey</h1>
+            <h1 className="text-lg font-bold print:text-black">ChainVerify — Living QR Journey</h1>
           </div>
           {product && (
             <div className="flex items-center gap-2 text-sm text-[#6B7280]">
@@ -483,7 +483,7 @@ export default function ProofPage() {
         {/* Footer */}
         <div className="text-center py-6 border-t border-[#1F2D40] print:border-gray-300">
           <p className="text-xs text-[#6B7280] print:text-gray-500">
-            Verified by <span className="text-white print:text-black font-semibold">Pramanik</span> on Stellar Blockchain
+            Verified by <span className="text-white print:text-black font-semibold">ChainVerify</span> on Stellar Blockchain
           </p>
         </div>
       </div>

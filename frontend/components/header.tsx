@@ -84,7 +84,7 @@ export function Header() {
             <div className="relative w-7 h-7 md:w-8 md:h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.4)] group-hover:scale-110 transition-all">
                <ShieldCheck className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm md:text-base font-display font-black text-white tracking-[0.15em] uppercase italic group-hover:text-indigo-400 transition-colors">PRAMANIK</span>
+            <span className="text-sm md:text-base font-display font-black text-white tracking-[0.15em] uppercase italic group-hover:text-indigo-400 transition-colors">CHAINVERIFY</span>
           </Link>
 
           {/* ── Navigation ── */}

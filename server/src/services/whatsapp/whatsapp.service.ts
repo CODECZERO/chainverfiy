@@ -18,7 +18,7 @@ async function reverseGeocode(latNum: number, lngNum: number): Promise<string | 
       {
         headers: {
           // Nominatim requests a UA; keep it simple.
-          'User-Agent': 'pramanik-whatsapp-bot/1.0',
+          'User-Agent': 'chainverify-whatsapp-bot/1.0',
         },
       },
     );
@@ -72,11 +72,11 @@ export async function handleIncoming(req: any, res: any) {
           where: { phoneNumber: phone },
           data: { supplierId: existingSupplier.id }
         });
-        reply = `Welcome back, ${existingSupplier.name}! You are now connected to Pramanik. Type HELP for commands.`;
+        reply = `Welcome back, ${existingSupplier.name}! You are now connected to ChainVerify. Type HELP for commands.`;
       } else if (existingUser) {
-        reply = `Welcome back! You are now connected to Pramanik as a ${existingUser.role.toLowerCase()}. We'll notify you about your orders here.`;
+        reply = `Welcome back! You are now connected to ChainVerify as a ${existingUser.role.toLowerCase()}. We'll notify you about your orders here.`;
       } else {
-        reply = `Welcome to Pramanik! Your WhatsApp is now connected. Please register at pramanik.app to link your account.`;
+        reply = `Welcome to ChainVerify! Your WhatsApp is now connected. Please register at chainverify.app to link your account.`;
       }
     } else if (upper === 'HELP') {
       reply = getHelpMenu();
@@ -218,7 +218,7 @@ async function handleFlow(session: any, message: string, mediaUrls?: string[], l
 async function finalizeProduct(phone: string, data: any): Promise<string> {
   const supplier = await getSupplierByPhone(phone);
   if (!supplier) {
-    return 'Please register at pramanik.app first to list products.';
+    return 'Please register at chainverify.app first to list products.';
   }
 
   const usdcInr = await getUSDCtoINRRate();
@@ -260,7 +260,7 @@ async function finalizeProduct(phone: string, data: any): Promise<string> {
 // ─────────────────────────────────────────────
 async function handleStageUpdate(phone: string, mediaUrl: string, caption: string): Promise<string> {
   const supplier = await getSupplierByPhone(phone);
-  if (!supplier) return 'Please register at pramanik.app first.';
+  if (!supplier) return 'Please register at chainverify.app first.';
 
   // Prefer the last product the supplier listed (more reliable than "latest").
   const session = await prisma.whatsAppSession.findUnique({ where: { phoneNumber: phone } });
@@ -308,7 +308,7 @@ async function handleStageUpdate(phone: string, mediaUrl: string, caption: strin
 // ─────────────────────────────────────────────
 async function getStatus(phone: string): Promise<string> {
   const supplier = await getSupplierByPhone(phone);
-  if (!supplier) return 'No supplier account found. Register at pramanik.app';
+  if (!supplier) return 'No supplier account found. Register at chainverify.app';
 
   const products = await prisma.product.findMany({
     where: { supplierId: supplier.id },
@@ -403,7 +403,7 @@ export async function notifyUser(
   const messages: Record<string, string> = {
     ORDER_PLACED: `Order placed successfully!\nProduct: ${data.title}\nAmount: ${data.amountInr} INR\nTrack at: ${data.url}`,
     ORDER_SHIPPED: `Your order for "${data.title}" has been shipped!`,
-    DELIVERY_CONFIRMED: `Delivery confirmed for "${data.title}". Thank you for shopping with Pramanik!`,
+    DELIVERY_CONFIRMED: `Delivery confirmed for "${data.title}". Thank you for shopping with ChainVerify!`,
   };
 
   const msg = messages[type];
@@ -433,7 +433,7 @@ async function getSupplierByPhone(phone: string) {
 }
 
 function getHelpMenu(): string {
-  return 'Pramanik Commands:\n\nNEW — List a product\nSTATUS — Your listings & orders\nHELP — Show this menu\n\nOr visit pramanik.app';
+  return 'ChainVerify Commands:\n\nNEW — List a product\nSTATUS — Your listings & orders\nHELP — Show this menu\n\nOr visit chainverify.app';
 }
 
 function buildHistory(sessionData: any): Array<{ role: 'user' | 'assistant'; content: string }> {

@@ -94,11 +94,11 @@ beforeAll(async () => {
 });
 
 describe('App routes (no DB)', () => {
-  it('GET / → returns Pramanik API info', async () => {
+  it('GET / → returns ChainVerify API info', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.message).toMatch(/Pramanik API is active/i);
+    expect(res.body.message).toMatch(/ChainVerify API is active/i);
   });
 
   it('GET /health → returns success', async () => {

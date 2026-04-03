@@ -585,7 +585,7 @@ export default function BuyerDashboard() {
                    </div>
                 </div>
 
-                <a href={selectedQr} download="pramanik-settlement-key.png" className="block w-full">
+                <a href={selectedQr} download="chainverify-settlement-key.png" className="block w-full">
                    <Button className="w-full bg-white text-black h-24 rounded-[3rem] font-black uppercase tracking-[0.5em] text-sm hover:bg-slate-200 shadow-3xl transition-all active:scale-95 italic border-4 border-black/5">
                       <Download className="w-7 h-7 mr-5" /> Export Encrypted Hash
                    </Button>

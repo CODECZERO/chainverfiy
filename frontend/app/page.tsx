@@ -143,7 +143,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             className="text-xl md:text-2xl text-slate-500 max-w-3xl mx-auto mb-16 font-black uppercase tracking-[0.1em] italic opacity-70 leading-relaxed"
           >
-            Pramanik anchors physical commerce to the Stellar blockchain. Decentralized verification meets atomic settlement for a trustless economy.
+            ChainVerify anchors physical commerce to the Stellar blockchain. Decentralized verification meets atomic settlement for a trustless economy.
           </motion.p>
 
           <motion.div 
@@ -279,7 +279,7 @@ export default function Home() {
             <div className="w-14 h-14 rounded-[1.25rem] bg-gradient-to-br from-blue-600 to-emerald-600 flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.3)] border border-white/20">
               <ShieldCheck className="w-8 h-8 text-white" />
             </div>
-            <span className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter uppercase`}>Pramanik</span>
+            <span className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter uppercase`}>ChainVerify</span>
           </div>
           <div className="flex flex-wrap justify-center gap-12 text-[10px] font-black uppercase tracking-[0.4em] text-slate-700 italic">
             <Link href="/marketplace" className="hover:text-blue-500 transition-colors">Market Terminal</Link>

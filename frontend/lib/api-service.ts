@@ -1,4 +1,4 @@
-// Pramanik API service — all calls go to Express backend via Prisma/PostgreSQL
+// ChainVerify API service — all calls go to Express backend via Prisma/PostgreSQL
 // Zero blockchain reads — Stellar is only used for payments
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';

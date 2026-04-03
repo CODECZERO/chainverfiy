@@ -4,16 +4,16 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: pramanik
-      POSTGRES_USER: pramanik
-      POSTGRES_PASSWORD: pramanik_secret
+      POSTGRES_DB: chainverify
+      POSTGRES_USER: chainverify
+      POSTGRES_PASSWORD: chainverify_secret
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pramanik"]
+      test: ["CMD-SHELL", "pg_isready -U chainverify"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,7 +45,7 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://pramanik:pramanik_secret@postgres:5432/pramanik
+      - DATABASE_URL=postgresql://chainverify:chainverify_secret@postgres:5432/chainverify
       - REDIS_URL=redis://redis:6379
       - SOROBAN_RPC_URL=${SOROBAN_RPC_URL:-https://soroban-testnet.stellar.org}
       - BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-https://horizon-testnet.stellar.org}
@@ -79,7 +79,7 @@ services:
       target: frontend
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000/api
-        - NEXT_PUBLIC_APP_NAME=Pramanik
+        - NEXT_PUBLIC_APP_NAME=ChainVerify
         - NEXT_PUBLIC_WHATSAPP_NUMBER=${TWILIO_WHATSAPP_NUMBER:-14155238886}
         - NEXT_PUBLIC_APP_URL=${APP_URL:-http://localhost:3000}
     ports:
