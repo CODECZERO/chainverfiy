@@ -19,6 +19,7 @@ export const getProducts = (params?: Record<string, string>) => {
 };
 
 export const getProduct = (id: string) => apiFetch(`/products/${id}`);
+export const getTasks = getProducts;
 
 export const createProduct = (data: any) =>
   apiFetch('/products', { method: 'POST', body: JSON.stringify(data) });

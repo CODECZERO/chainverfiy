@@ -77,6 +77,8 @@ export async function getUSDCInrRate(): Promise<number> {
   return typeof inr === "number" && Number.isFinite(inr) && inr > 0 ? inr : FALLBACK_USDC_INR
 }
 
+export const getUsdcInrRate = getUSDCInrRate;
+
 export function convertInrToUsdc(inrAmount: number, usdcInrRate: number): number {
   if (!usdcInrRate || !Number.isFinite(usdcInrRate) || usdcInrRate <= 0) return 0
   return inrAmount / usdcInrRate

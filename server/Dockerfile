@@ -6,25 +6,23 @@ RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files (including lock file)
 COPY package*.json ./
 
 # Copy prisma schema
 COPY prisma ./prisma/
 
-# Install dependencies (including devDependencies for build)
-# We use --foreground-scripts=false to prevent postinstall from running 
-# before we are ready or if it fails due to missing source files.
+# Install dependencies - skipping scripts to avoid "tsc not found" errors during install
 RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy source code and config
+# Copy the rest of the server source (respecting .dockerignore)
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application (explicitly use npx for safety)
+RUN npx tsc
 
 # Production Stage
 FROM node:20-slim
@@ -37,14 +35,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Copy prisma schema for production client generation if needed (though already generated in builder)
+# Copy prisma schema
 COPY prisma ./prisma/
 
-# Install only production dependencies
-# Skip scripts to avoid postinstall issues
+# Install only production dependencies (skip scripts)
 RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
 
-# Copy built assets from builder stage
+# Copy built assets and generated client from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
@@ -52,10 +49,10 @@ COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/clie
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=8080
+ENV PORT=8000
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 8000
 
 # Start the application - running compiled code explicitly
 CMD ["node", "dist/index.js"]
