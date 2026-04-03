@@ -577,296 +577,334 @@ export default function SellerDashboard() {
 
               {/* ── LISTINGS TAB ── */}
               {active === "listings" && (
-                <div className="space-y-8">
-                   <div className="flex items-center justify-between">
-                     <div>
-                       <h2 className="text-3xl font-black text-white tracking-tighter uppercase tracking-[-0.05em]">Inventory Control</h2>
-                       <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Manage global product listings</p>
-                     </div>
-                     <Link href="/seller-dashboard/new-product">
-                        <Button className="bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest uppercase text-[10px] rounded-2xl h-12 px-8 shadow-[0_10px_30px_rgba(37,99,235,0.3)] transform active:scale-95 transition-all">
-                          Add New Asset <Plus className="w-4 h-4 ml-2" />
-                        </Button>
-                     </Link>
-                   </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-10"
+                >
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div>
+                      <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]">Inventory <span className="text-blue-500">Ledger</span></h2>
+                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+                         <Package className="w-3 h-3 text-blue-500" /> Protocol Asset Registry
+                      </p>
+                    </div>
+                    <Link href="/seller-dashboard/new-product">
+                      <Button className="bg-white text-black hover:bg-slate-200 font-black tracking-[0.2em] uppercase text-[10px] rounded-2xl h-14 px-10 shadow-2xl transition-all active:scale-95 border border-white/10">
+                        <Plus className="w-4 h-4 mr-2" /> Register Asset
+                      </Button>
+                    </Link>
+                  </div>
 
-                   {products.length === 0 ? (
-                      <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border-2 border-dashed border-white/[0.1] rounded-[2.5rem] p-20 text-center">
-                         <div className="w-20 h-20 bg-white/[0.03] rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-white/[0.06]">
-                            <Package className="w-10 h-10 text-slate-600" />
-                         </div>
-                         <h3 className="text-2xl font-black text-white tracking-tight">Initialize Your Catalog</h3>
-                         <p className="text-slate-500 text-sm max-w-sm mx-auto mt-2 leading-relaxed">You haven't listed any products on the Pramanik network yet. Start by creating a digital twin of your physical goods.</p>
-                         <div className="flex gap-4 justify-center mt-10">
-                            <Link href="/seller-dashboard/new-product">
-                               <Button className="bg-white text-black h-12 px-8 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-slate-200 transition-all">List on Web</Button>
-                            </Link>
-                            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=NEW`} target="_blank" rel="noopener noreferrer">
-                               <Button variant="outline" className="h-12 px-8 rounded-2xl font-black uppercase tracking-widest text-[10px] border-white/[0.1] text-slate-300 hover:bg-white/[0.05] transition-all">List via WhatsApp</Button>
-                            </a>
-                         </div>
-                      </div>
-                   ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                         {products.map((p: any) => {
-                            const s = STATUS[p.status] || STATUS.PENDING_VERIFICATION;
-                            return (
-                               <motion.div 
-                                 key={p.id}
-                                 layout
-                                 className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] overflow-hidden group hover:border-blue-500/30 transition-all duration-500 flex flex-col h-full shadow-xl"
-                               >
-                                  <div className="relative h-48 w-full group-hover:scale-105 transition-transform duration-700 overflow-hidden">
-                                     <Image 
-                                        src={getIPFSUrl(p.proofMediaUrls?.[0] || 'ipfs://placeholder')} 
-                                        alt={p.title} 
-                                        fill 
-                                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700" 
-                                        unoptimized
-                                     />
-                                     <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0A0D14] to-transparent" />
-                                     <div className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest backdrop-blur-md ${s.cls}`}>
-                                        <div className={`w-1.5 h-1.5 rounded-full ${s.dot}`} /> {s.label}
+                  {products.length === 0 ? (
+                    <div className="py-32 text-center border-2 border-dashed border-white/[0.04] rounded-[4rem] bg-white/[0.01] relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-blue-500/[0.01] group-hover:bg-blue-500/[0.02] transition-colors" />
+                      <Package className="w-20 h-20 text-slate-800 mx-auto mb-8 opacity-20 group-hover:scale-110 transition-transform duration-700" />
+                      <h3 className="text-3xl font-black text-white uppercase italic tracking-widest">Inventory Void</h3>
+                      <p className="text-slate-600 text-xs font-black uppercase tracking-[0.4em] mt-3 leading-relaxed max-w-sm mx-auto opacity-60">No active protocol signals detected within your secure node cluster.</p>
+                      <Link href="/seller-dashboard/new-product" className="inline-block mt-12 relative z-10">
+                        <Button className="bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.3em] uppercase text-[11px] rounded-2xl h-16 px-14 shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all transform active:scale-95 border border-white/10">
+                          Deploy First Asset
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                      <AnimatePresence mode="popLayout">
+                        {products.map((p: any, i: number) => {
+                          const s = STATUS[p.status] || STATUS.PENDING_VERIFICATION;
+                          return (
+                            <motion.div 
+                              key={p.id}
+                              layout
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.9 }}
+                              transition={{ delay: i * 0.05 }}
+                              className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[2.5rem] overflow-hidden group hover:border-blue-500/30 transition-all duration-500 flex flex-col h-full shadow-3xl hover:shadow-blue-500/10"
+                            >
+                               <div className="relative h-64 w-full group-hover:scale-105 transition-transform duration-700 overflow-hidden">
+                                  {p.proofMediaUrls?.[0] ? (
+                                    <Image 
+                                       src={getIPFSUrl(p.proofMediaUrls[0])} 
+                                       alt={p.title} 
+                                       fill 
+                                       className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700" 
+                                       unoptimized
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-white/[0.02] flex items-center justify-center">
+                                       <Package className="w-16 h-16 text-slate-800" />
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0D14] via-[#0A0D14]/60 to-transparent" />
+                                  <div className={`absolute top-6 right-6 flex items-center gap-2 px-4 py-2 rounded-xl border text-[9px] font-black uppercase tracking-widest backdrop-blur-xl ${s.cls} shadow-2xl`}>
+                                     <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse shadow-[0_0_8px_currentColor]`} /> {s.label}
+                                  </div>
+                               </div>
+                               <div className="p-8 flex-1 flex flex-col relative z-10 -mt-10">
+                                  <div className="flex-1">
+                                     <h4 className="text-2xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.02em]">{p.title}</h4>
+                                     <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-3 flex items-center gap-2 italic">
+                                        <Radio className="w-3 h-3 text-blue-500" /> {p.condition} Protocol
+                                     </p>
+                                  </div>
+                                  <div className="mt-8 pt-8 border-t border-white/[0.04] flex items-center justify-between">
+                                     <div>
+                                        <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Ask Yield</div>
+                                        <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">₹{Number(p.priceInr).toLocaleString()}</div>
+                                     </div>
+                                     <div className="flex gap-3">
+                                        <button onClick={() => setSelectedQrProduct(p)} className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 hover:text-white hover:bg-blue-600/20 transition-all active:scale-90 shadow-xl"><QrCode className="w-5 h-5" /></button>
+                                        <Link href={`/product/${p.id}`} className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 hover:text-white hover:bg-emerald-600/20 transition-all active:scale-90 shadow-xl"><Eye className="w-5 h-5" /></Link>
                                      </div>
                                   </div>
-                                  <div className="p-6 flex-1 flex flex-col">
-                                     <div className="flex-1">
-                                        <h4 className="text-xl font-black text-white tracking-tight group-hover:text-blue-400 transition-colors">{p.title}</h4>
-                                        <p className="text-slate-500 text-xs mt-2 line-clamp-2 leading-relaxed h-8">{p.description}</p>
-                                     </div>
-                                     <div className="mt-6 pt-6 border-t border-white/[0.06] flex items-center justify-between">
-                                        <div>
-                                           <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Oracle Price</div>
-                                           <div className="text-xl font-black text-white tracking-tighter">₹{Number(p.priceInr).toLocaleString()}</div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                           <button onClick={() => setSelectedQrProduct(p)} className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 hover:text-white hover:bg-blue-600/20 transition-all active:scale-95"><QrCode className="w-4 h-4" /></button>
-                                           <Link href={`/product/${p.id}`} className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 hover:text-white hover:bg-emerald-600/20 transition-all active:scale-95"><Eye className="w-4 h-4" /></Link>
-                                        </div>
-                                     </div>
-                                  </div>
-                               </motion.div>
-                            );
-                         })}
-                      </div>
-                   )}
-                </div>
+                               </div>
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </motion.div>
               )}
 
               {active === "orders" && (
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <h2 className="text-3xl font-black text-white tracking-tighter uppercase tracking-[-0.05em]">Transaction Ledger</h2>
-                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Stellar Escrow Management</p>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-10"
+                >
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div>
+                      <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]">Transaction <span className="text-blue-500">Ledger</span></h2>
+                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+                         <Activity className="w-3 h-3 text-blue-500" /> Stellar Escrow Infrastructure
+                      </p>
                     </div>
                   </div>
 
                   {/* Order Volume Chart */}
-                  <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden group">
-                     <div className="flex items-center justify-between mb-8">
+                  <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/[0.02] rounded-full blur-[100px] pointer-events-none" />
+                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
                         <div>
-                           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Order Volume Velocity</h3>
-                           <div className="text-2xl font-black text-white tracking-tighter mt-1">Global Fulfillment Traffic</div>
+                           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Order Velocity Velocity</h3>
+                           <div className="text-3xl font-black text-white tracking-tighter mt-1 italic uppercase tracking-[-0.02em]">Global Fulfillment Traffic</div>
                         </div>
-                        <div className="flex items-center gap-4">
-                           <div className="flex items-center gap-2">
-                              <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Orders</span>
+                        <div className="flex items-center gap-6">
+                           <div className="flex items-center gap-2.5">
+                              <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)] animate-pulse" />
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Live Settlement Data</span>
                            </div>
                         </div>
                      </div>
-                     <div className="h-[200px] w-full">
+                     <div className="h-[240px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                            <BarChart data={stats.analytics?.revenueByMonth || []}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                              <XAxis dataKey="name" stroke="#475569" fontSize={10} fontWeight="900" tickLine={false} axisLine={false} dy={10} />
-                              <YAxis stroke="#475569" fontSize={10} fontWeight="900" tickLine={false} axisLine={false} dx={-10} />
+                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.01)" vertical={false} />
+                              <XAxis dataKey="name" stroke="#334155" fontSize={9} fontWeight="900" tickLine={false} axisLine={false} dy={15} className="uppercase tracking-widest font-mono" />
+                              <YAxis stroke="#334155" fontSize={9} fontWeight="900" tickLine={false} axisLine={false} dx={-15} className="font-mono" />
                               <RechartsTooltip 
-                                 contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px'}}
+                                 contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)'}}
                                  cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                               />
-                              <Bar dataKey="uv" fill="#2775CA" radius={[6, 6, 0, 0]} />
+                              <Bar dataKey="uv" fill="#2775CA" radius={[8, 8, 0, 0]} className="drop-shadow-[0_0_15px_rgba(39,117,202,0.4)]" />
                            </BarChart>
                         </ResponsiveContainer>
                      </div>
                   </div>
 
                   {orders.length === 0 ? (
-                    <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-20 text-center text-white">
-                      <div className="w-20 h-20 bg-white/[0.03] rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-white/[0.06]">
-                        <ShoppingCart className="w-10 h-10 text-slate-700" />
-                      </div>
-                      <h3 className="text-xl font-black tracking-tight">No Active Transactions</h3>
-                      <p className="text-slate-500 text-sm mt-2">Active orders will appear here once buyers initiate Stellar escrow.</p>
+                    <div className="py-32 text-center border-2 border-dashed border-white/[0.04] rounded-[4rem] bg-white/[0.01] relative overflow-hidden group">
+                      <ShoppingCart className="w-20 h-20 text-slate-800 mx-auto mb-8 opacity-20 group-hover:scale-110 transition-transform duration-700" />
+                      <h3 className="text-3xl font-black text-white uppercase italic tracking-widest">Transaction Void</h3>
+                      <p className="text-slate-600 text-xs font-black uppercase tracking-[0.4em] mt-3 leading-relaxed max-w-sm mx-auto opacity-60">Escrow channels are currently idle. No buyer signals detected.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 gap-6">
-                      {orders.map((o: any) => {
-                        const s = STATUS[o.status] || STATUS.PAID;
-                        return (
-                          <div key={o.id} className="premium-card bg-[#0A0D14]/60 backdrop-blur-xl border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] p-8 transition-all group relative overflow-hidden text-white">
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                            <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-                              {/* Product Info */}
-                              <div className="flex items-center gap-6 flex-1 min-w-0">
-                                <div className="w-20 h-20 bg-white/[0.03] rounded-[2rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
+                    <div className="grid grid-cols-1 gap-8">
+                      <AnimatePresence mode="popLayout">
+                        {orders.map((o, i) => {
+                          const s = STATUS[o.status] || STATUS.PAID;
+                          return (
+                            <motion.div 
+                              key={o.id}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.05 }}
+                              className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-8 shadow-3xl flex flex-col xl:flex-row items-center gap-10 group hover:border-blue-500/30 transition-all duration-500 relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                              
+                              <div className="flex items-center gap-8 flex-1 min-w-0">
+                                <div className="w-24 h-24 bg-white/[0.02] rounded-[2rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 transition-transform duration-700 overflow-hidden relative shadow-inner">
                                    {o.product?.proofMediaUrls?.[0] ? (
                                       <Image src={getIPFSUrl(o.product.proofMediaUrls[0])} alt="" fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
-                                   ) : (
-                                      <Package className="w-8 h-8 text-slate-500" />
-                                   )}
+                                   ) : <Package className="w-10 h-10 text-slate-600" />}
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="flex flex-wrap items-center gap-3">
-                                    <span className="text-2xl font-black text-white truncate tracking-tighter uppercase">{o.product?.title || "Contract Asset"}</span>
-                                    <span className={`px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest shadow-lg ${s.cls}`}>
-                                       <div className={`w-1.5 h-1.5 rounded-full ${s.dot} inline-block mr-2 shadow-[0_0_8px_currentColor]`} />
+                                <div className="min-w-0 space-y-3">
+                                  <div className="flex flex-wrap items-center gap-4">
+                                    <span className={`px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-[0.2em] shadow-lg ${s.cls}`}>
+                                       <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse shadow-[0_0_8px_currentColor] inline-block mr-2`} />
                                        {s.label}
                                     </span>
+                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest font-mono bg-white/[0.02] px-3 py-1.5 rounded-lg border border-white/[0.04]">TX_ID: {o.id.slice(0, 16)}</span>
                                   </div>
-                                  <div className="flex items-center gap-4 mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-slate-500">
-                                    <span className="bg-white/5 px-2 py-1 rounded-lg">ID: {o.id.slice(0, 12)}</span>
-                                    <span className="text-slate-800">•</span>
-                                    <span className="text-slate-400 flex items-center gap-2"><Users className="w-3 h-3" /> {o.buyer?.email}</span>
+                                  <h3 className="text-3xl font-black text-white truncate tracking-tighter uppercase italic group-hover:text-blue-400 transition-colors">{o.product?.title || "Protocol Asset"}</h3>
+                                  <div className="flex flex-wrap items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                    <span className="flex items-center gap-2.5 bg-white/[0.02] px-3 py-2 rounded-xl border border-white/[0.04] italic"><Users className="w-4 h-4 text-blue-500" /> {o.buyer?.email}</span>
+                                    <span className="flex items-center gap-2.5 bg-white/[0.02] px-3 py-2 rounded-xl border border-white/[0.04] italic"><Clock className="w-4 h-4 text-slate-500" /> {new Date(o.createdAt).toLocaleDateString()}</span>
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Price Stats */}
-                              <div className="flex flex-col items-center md:items-end shrink-0 border-x border-white/[0.04] px-10">
-                                <div className="text-3xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(39,117,202,0.3)]">{o.priceUsdc} <span className="text-sm text-blue-500">USDC</span></div>
-                                <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Settlement Yield</div>
+                              <div className="flex flex-col items-center xl:items-end shrink-0 border-x border-white/[0.04] px-12 min-w-[240px]">
+                                <div className="text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(39,117,202,0.3)]">{o.priceUsdc} <span className="text-sm text-blue-500 uppercase tracking-widest ml-1">USDC</span></div>
+                                <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mt-2 italic">Settlement Liquidity</div>
                               </div>
 
-                              {/* Actions */}
-                              <div className="flex gap-3 shrink-0">
+                              <div className="flex flex-col gap-3 min-w-[200px]">
                                 {o.status === "PAID" && (
-                                  <Button onClick={() => handleDispatch(o.id)} className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl h-14 px-8 shadow-[0_10px_30px_rgba(37,99,235,0.3)] transform active:scale-95 transition-all">
-                                    Confirm Shipment
+                                  <Button onClick={() => handleDispatch(o.id)} className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl h-14 w-full shadow-[0_15px_40px_rgba(37,99,235,0.25)] transition-all transform active:scale-95 border border-white/10">
+                                    Confirm Dispatch
                                   </Button>
                                 )}
                                 {(o.status === "SHIPPED" || o.status === "DELIVERED" || o.status === "COMPLETED") && (
-                                  <>
-                                    <div className="flex flex-col gap-2">
-                                       <Button disabled className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black tracking-widest uppercase text-[10px] rounded-2xl h-14 px-8 opacity-100">
-                                          Dispatched <CheckCircle2 className="w-4 h-4 ml-2" />
-                                       </Button>
-                                       <div className="flex gap-2">
-                                          <Button onClick={() => window.open(`/order/${o.id}/journey`, "_blank")} className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/[0.08] font-black tracking-widest uppercase text-[9px] rounded-xl h-10 px-4 transition-all">
-                                             Node Map
-                                          </Button>
-                                          <Button onClick={() => window.open(`/proof/${o.id}?viewType=origin`, "_blank")} className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/[0.08] font-black tracking-widest uppercase text-[9px] rounded-xl h-10 px-4 transition-all">
-                                             Event Log
-                                          </Button>
-                                       </div>
-                                    </div>
-                                  </>
+                                  <div className="space-y-3">
+                                     <Button disabled className="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black tracking-widest uppercase text-[10px] rounded-2xl h-14 opacity-100 shadow-lg">
+                                        Fulfillment Active <CheckCircle2 className="w-4 h-4 ml-3" />
+                                     </Button>
+                                     <div className="grid grid-cols-2 gap-3">
+                                        <Button onClick={() => window.open(`/order/${o.id}/journey`, "_blank")} className="bg-white/5 hover:bg-white/10 text-white border border-white/[0.06] font-black tracking-widest uppercase text-[9px] rounded-xl h-11 transition-all active:scale-95">
+                                           Node Map
+                                        </Button>
+                                        <Button onClick={() => window.open(`/proof/${o.id}?viewType=origin`, "_blank")} className="bg-white/5 hover:bg-white/10 text-white border border-white/[0.06] font-black tracking-widest uppercase text-[9px] rounded-xl h-11 transition-all active:scale-95">
+                                           Event Log
+                                        </Button>
+                                     </div>
+                                  </div>
                                 )}
                               </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
                     </div>
                   )}
-                </div>
+                </motion.div>
               )}
 
-              {/* ── EARNINGS TAB ── */}
               {active === "earnings" && (
-                <div className="space-y-8 text-white">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-10"
+                >
                   <div className="flex flex-col">
-                    <h2 className="text-3xl font-black text-white tracking-tighter uppercase tracking-[-0.05em]">Settlement Vault</h2>
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-1">On-chain Financial Infrastructure</p>
+                    <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]">Settlement <span className="text-blue-500">Vault</span></h2>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+                       <Wallet className="w-3 h-3 text-blue-500" /> On-chain Liquidity Settlement Hub
+                    </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-8">
+                  <div className="grid lg:grid-cols-2 gap-10">
                     {/* Main Balance Display */}
-                    <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-10 relative overflow-hidden group shadow-2xl">
-                       <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
+                    <motion.div 
+                      whileHover={{ scale: 1.01 }}
+                      className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-12 relative overflow-hidden group shadow-3xl"
+                    >
+                       <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none group-hover:bg-blue-600/20 transition-colors duration-700" />
                        <div className="relative z-10">
-                          <div className="flex items-center gap-3 mb-6">
-                             <div className="w-10 h-10 rounded-2xl bg-blue-600/20 flex items-center justify-center border border-blue-500/20 text-blue-400">
-                                <Wallet className="w-5 h-5" />
+                          <div className="flex items-center gap-4 mb-10">
+                             <div className="w-14 h-14 rounded-2xl bg-blue-600/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shadow-inner">
+                                <Wallet className="w-7 h-7 drop-shadow-[0_0_10px_rgba(37,99,235,0.4)]" />
                              </div>
-                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Global Settlement Balance</span>
+                             <div>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Global Liquidity Pool</h3>
+                                <div className="text-white text-[9px] font-black uppercase tracking-widest mt-1 opacity-40">Stellar Testnet Node</div>
+                             </div>
                           </div>
                           
-                          <div className="space-y-6">
+                          <div className="space-y-8">
                               <div className="flex items-center justify-between group/row">
-                                 <div className="space-y-1">
-                                    <div className="text-4xl font-black tracking-tighter tabular-nums text-white flex items-center gap-3">
-                                       {stats.usdcBalance} <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-lg">USDC</span>
+                                 <div className="space-y-1.5">
+                                    <div className="text-5xl font-black tracking-tighter tabular-nums text-white flex items-end gap-4 tracking-[-0.03em]">
+                                       {stats.usdcBalance} <span className="text-[11px] font-black bg-blue-600 text-white px-3 py-1 rounded-xl mb-2 shadow-lg tracking-widest uppercase">USDC</span>
                                     </div>
-                                    <div className="text-sm font-black text-slate-500 tracking-tight">≈ ₹{stats.usdcInr}</div>
+                                    <div className="text-lg font-black text-slate-500 tracking-tight italic opacity-60">≈ ₹{Number(stats.usdcInr).toLocaleString()} INR</div>
                                  </div>
-                                 <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest bg-white/[0.03] px-3 py-1 rounded-full border border-white/5 opacity-0 group-hover/row:opacity-100 transition-opacity">Settled</div>
+                                 <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-400/5 px-4 py-2 rounded-xl border border-blue-400/10 opacity-0 group-hover/row:opacity-100 transition-all">Verified Funds</div>
                               </div>
 
-                              <div className="h-px bg-white/[0.04]" />
+                              <div className="h-px bg-white/[0.04] shadow-inner" />
 
-                              <div className="grid grid-cols-2 gap-8">
-                                 <div className="space-y-1">
-                                    <div className="text-2xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-2">
-                                       {stats.usdtBalance} <span className="text-[9px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-lg">USDT</span>
+                              <div className="grid grid-cols-2 gap-10">
+                                 <div className="space-y-2">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">DeFi Reserve (USDT)</div>
+                                    <div className="text-3xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-3">
+                                       {stats.usdtBalance} <span className="text-[9px] font-black text-emerald-500/50">STABLE</span>
                                     </div>
-                                    <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Tether Balance</div>
                                  </div>
-                                 <div className="space-y-1">
-                                    <div className="text-2xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-2">
-                                       {stats.xlmBalance} <span className="text-[9px] font-black bg-slate-700 text-white px-2 py-0.5 rounded-lg">XLM</span>
+                                 <div className="space-y-2">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Protocol Gas (XLM)</div>
+                                    <div className="text-3xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-3">
+                                       {stats.xlmBalance} <span className="text-[9px] font-black text-slate-500/50">LUMENS</span>
                                     </div>
-                                    <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Stellar Lumens</div>
                                  </div>
                               </div>
                            </div>
 
-                          <div className="grid grid-cols-2 gap-4 mt-12">
-                             <Button className="bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-[0_10px_30px_rgba(255,255,255,0.1)] transition-all active:scale-95">Withdraw to UPI</Button>
-                             <Button variant="outline" className="h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] border-white/[0.1] hover:bg-white/[0.05] transition-all">To Stellar DEX</Button>
+                          <div className="grid grid-cols-2 gap-6 mt-16">
+                             <Button className="bg-white text-black hover:bg-slate-200 h-16 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all active:scale-95">Liquidate to Fiat</Button>
+                             <Button variant="outline" className="h-16 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs border-white/[0.08] hover:bg-white/5 transition-all text-slate-400 hover:text-white">Bridge Assets</Button>
                           </div>
                        </div>
-                    </div>
+                    </motion.div>
 
                     {/* Network Configuration */}
-                    <div className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-10 shadow-2xl flex flex-col justify-between">
-                       <div>
-                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-500" /> Secure Receiving Protocol</div>
+                    <motion.div 
+                      whileHover={{ scale: 1.01 }}
+                      className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-12 shadow-3xl flex flex-col justify-between group"
+                    >
+                       <div className="relative z-10 h-full flex flex-col">
+                          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-10 flex items-center gap-3 italic">
+                             <Lock className="w-4 h-4 text-emerald-500 drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]" /> Receiving Endpoint Status: <span className="text-emerald-500">Active</span>
+                          </div>
                           {user?.stellarWallet ? (
-                             <div className="space-y-6">
-                                <div className="bg-[#0C0F17] border border-white/[0.04] rounded-[2rem] p-6 shadow-inner relative group">
-                                   <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-3">Public Receiving Key</div>
-                                   <div className="font-mono text-sm text-blue-300 break-all leading-relaxed">{user.stellarWallet}</div>
+                             <div className="space-y-10 flex-1 flex flex-col">
+                                <div className="bg-[#080B12] border border-white/[0.04] rounded-[2.5rem] p-8 shadow-inner relative group/wallet overflow-hidden flex-1">
+                                   <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover/wallet:opacity-100 transition-opacity" />
+                                   <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] mb-4 italic">Encrypted Secure Public Hash</div>
+                                   <div className="font-mono text-base text-blue-300 break-all leading-relaxed tracking-wider">{user.stellarWallet}</div>
                                    <button 
                                       onClick={copyWallet}
-                                      className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10"
+                                      className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/10 group-active:scale-90"
                                    >
-                                      {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-slate-500" />}
+                                      {copied ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Copy className="w-5 h-5 text-slate-500" />}
                                    </button>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex gap-4">
                                    <a href={`https://stellar.expert/explorer/testnet/account/${user.stellarWallet}`} target="_blank" rel="noopener noreferrer" className="flex-1">
-                                      <Button variant="outline" className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] border-white/[0.1] hover:bg-white/[0.05]">
-                                         <ExternalLink className="w-4 h-4 mr-2" /> Block Explorer
+                                      <Button variant="outline" className="w-full h-14 rounded-2xl font-black uppercase tracking-[0.15em] text-[10px] border-white/[0.08] hover:bg-blue-600/10 hover:border-blue-500/30 hover:text-blue-400 transition-all">
+                                         <ExternalLink className="w-4 h-4 mr-2" /> Protocol Explorer
                                       </Button>
                                    </a>
-                                   <Button variant="outline" className="flex-1 h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] border-white/[0.1] hover:bg-white/[0.05]">
-                                      <Settings className="w-4 h-4 mr-2" /> Key Manager
+                                   <Button variant="outline" className="flex-1 h-14 rounded-2xl font-black uppercase tracking-[0.15em] text-[10px] border-white/[0.08] hover:bg-white/5">
+                                      <Settings className="w-4 h-4 mr-2" /> Node Config
                                    </Button>
                                 </div>
                              </div>
                           ) : (
-                             <div className="text-center py-10 bg-amber-500/5 rounded-[2rem] border border-amber-500/20">
-                                <AlertTriangle className="w-10 h-10 text-amber-500/50 mx-auto mb-4" />
-                                <p className="text-slate-400 text-sm font-medium px-10">Stellar Receiving Address not detected. Enable wallet to receive global payments.</p>
-                                <Button className="mt-6 bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6">Initialize Protocol</Button>
+                             <div className="text-center py-20 bg-amber-500/[0.02] rounded-[3rem] border-2 border-dashed border-amber-500/20 flex-1 flex flex-col items-center justify-center">
+                                <AlertTriangle className="w-16 h-16 text-amber-500/30 mb-8" />
+                                <p className="text-slate-500 text-sm font-black uppercase tracking-[0.2em] px-12 leading-relaxed">Network Receiving endpoint not resolved.</p>
+                                <Button className="mt-10 bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-[0.25em] text-[10px] rounded-2xl h-14 px-12 shadow-2xl">Initialize Relay</Button>
                              </div>
                           )}
                        </div>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* ── VERIFICATION & WHATSAPP TAB ── */}
