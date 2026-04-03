@@ -8,7 +8,7 @@ const router = Router();
 router.get('/', asyncHandler(getProducts));
 router.get('/:id', asyncHandler(getProduct));
 router.post('/', verifyJWT, asyncHandler(createProduct));
-router.get('/tokens/:userId', verifyJWT, asyncHandler(getUserTrustTokens));
+router.get('/tokens/:userId', optionalJWT, asyncHandler(getUserTrustTokens));
 router.post('/:id/stage', verifyJWT, asyncHandler(addStageUpdate));
 router.post('/:id/vote', optionalJWT, asyncHandler(voteOnProduct));
 router.post('/:productId/slash', verifyJWT, asyncHandler(slashEscrowVotes));

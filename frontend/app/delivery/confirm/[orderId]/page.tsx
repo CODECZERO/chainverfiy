@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/lib/redux/store'
@@ -107,39 +107,42 @@ export default function DeliveryConfirmationPage() {
     }).catch(() => {})
   }, [params.orderId])
 
-  const effectiveWallet = user?.stellarWallet || wallet.publicKey
+  const effectiveWallet = useMemo(() => user?.stellarWallet || wallet.publicKey, [user?.stellarWallet, wallet.publicKey])
   const isAuthenticated = !!(user?.id || wallet.isConnected)
 
   // Transform stage updates (factory origin) into visual scan nodes
-  const stageScans = (order?.product?.stageUpdates || []).map((s: any, idx: number) => ({
-    scanNumber: idx,
-    serverTimestamp: s.createdAt,
-    scanSource: 'SYSTEM',
-    resolvedLat: s.gpsLat,
-    resolvedLng: s.gpsLng,
-    resolvedLocation: s.gpsAddress || s.stageName,
-    scannerRole: 'supplier',
-    machineEventType: s.stageName,
-    ipCountryName: 'Origin'
-  }))
-
-  const realScans = order?.qrCode?.scans || []
-  let displayScans = [...stageScans, ...realScans]
-
-  // If no scans exist at all, fall back to a dummy node for timeline UX
-  if (displayScans.length === 0 && order) {
-    displayScans = [{
-      scanNumber: 0,
-      serverTimestamp: order.createdAt,
+  const displayScans = useMemo(() => {
+    const stageScans = (order?.product?.stageUpdates || []).map((s: any, idx: number) => ({
+      scanNumber: idx,
+      serverTimestamp: s.createdAt,
       scanSource: 'SYSTEM',
-      resolvedLocation: order.product?.supplier?.location || 'Supplier Facility',
-      resolvedLat: order?.product?.stageUpdates?.[0]?.gpsLat || null,
-      resolvedLng: order?.product?.stageUpdates?.[0]?.gpsLng || null,
+      resolvedLat: s.gpsLat,
+      resolvedLng: s.gpsLng,
+      resolvedLocation: s.gpsAddress || s.stageName,
       scannerRole: 'supplier',
-      machineEventType: 'Package Prepared',
+      machineEventType: s.stageName,
       ipCountryName: 'Origin'
-    }]
-  }
+    }))
+
+    const realScans = order?.qrCode?.scans || []
+    let scans = [...stageScans, ...realScans]
+
+    // If no scans exist at all, fall back to a dummy node for timeline UX
+    if (scans.length === 0 && order) {
+      scans = [{
+        scanNumber: 0,
+        serverTimestamp: order.createdAt,
+        scanSource: 'SYSTEM',
+        resolvedLocation: order.product?.supplier?.location || 'Supplier Facility',
+        resolvedLat: order?.product?.stageUpdates?.[0]?.gpsLat || null,
+        resolvedLng: order?.product?.stageUpdates?.[0]?.gpsLng || null,
+        scannerRole: 'supplier',
+        machineEventType: 'Package Prepared',
+        ipCountryName: 'Origin'
+      }]
+    }
+    return scans
+  }, [order])
 
   const fetchOrderData = async () => {
     if (!effectiveWallet) return

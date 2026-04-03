@@ -227,8 +227,8 @@ export const voteOnProduct = async (req: any, res: Response) => {
   // Waive stake for verified buyers of this specific product
   if (!isVerifiedBuyer) {
     const priceInr = Number(productCheck.priceInr);
-    if (priceInr >= 20000) requiredStake = 50;
-    else if (priceInr >= 5000) requiredStake = 10;
+    if (priceInr >= 20000) requiredStake = 10;
+    else if (priceInr >= 5000) requiredStake = 2;
   }
 
   if (requiredStake > 0) {
@@ -338,8 +338,19 @@ export const slashEscrowVotes = async (req: Request, res: Response) => {
 
 export const getUserTrustTokens = async (req: Request, res: Response) => {
   const userId = String((req as any).params?.userId ?? req.params.userId);
+  
+  // Support both UUID (internal) and Public Key (Stellar) strings
+  const where: any = {};
+  if (userId.length > 40) { // Likely a Stellar Public Key
+    const user = await prisma.user.findUnique({ where: { stellarWallet: userId } });
+    if (!user) return res.json(new ApiResponse(200, { balance: 0 }, 'User not found.'));
+    where.userId = user.id;
+  } else {
+    where.userId = userId;
+  }
+
   const userLedger = await prisma.trustTokenLedger.aggregate({
-    where: { userId },
+    where: where,
     _sum: { amount: true }
   });
   return res.json(new ApiResponse(200, { balance: userLedger._sum.amount || 0 }, 'Balance fetched.'));

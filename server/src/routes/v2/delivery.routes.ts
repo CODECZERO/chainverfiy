@@ -19,7 +19,7 @@ router.get('/:orderId/delivery-view', asyncHandler(getOrderForDelivery));
 // Buyer confirms receipt — supports both JWT and wallet-only users
 router.post('/:orderId/confirm', optionalJWT, asyncHandler(confirmDelivery));
 
-// Buyer uploads dispute proof within 3-day window — requires JWT
-router.post('/:orderId/dispute-proof', verifyJWT, asyncHandler(uploadDisputeProof));
+// Buyer uploads dispute proof within 3-day window — supports both JWT and wallet-only users
+router.post('/:orderId/dispute-proof', optionalJWT, asyncHandler(uploadDisputeProof));
 
 export default router;

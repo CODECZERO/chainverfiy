@@ -256,9 +256,13 @@ export const uploadDisputeProof = async (req: any, res: Response) => {
   });
 
   if (!order) throw new ApiError(404, 'Order not found');
-  if (order.buyerId !== req.user.id) throw new ApiError(403, 'Unauthorized');
-  if (order.buyer.stellarWallet !== walletPublicKey) {
-    throw new ApiError(403, 'Wallet does not match buyer');
+
+  // Authorization check: match by either internal userId (JWT) OR provided walletPublicKey
+  const isMatchByJWT = req.user?.id && order.buyerId === req.user.id;
+  const isMatchByWallet = walletPublicKey && order.buyer.stellarWallet === walletPublicKey;
+
+  if (!isMatchByJWT && !isMatchByWallet) {
+    throw new ApiError(403, 'Unauthorized — you must be the buyer of this order');
   }
 
   if (order.status !== 'DELIVERED') {

@@ -37,22 +37,24 @@ export default function VerifyPage() {
   const [historyLoading, setHistoryLoading] = useState(false)
   const { user } = useSelector((s: RootState) => s.userAuth)
 
+  const wallet = useSelector((s: RootState) => s.wallet)
+  
   useEffect(() => {
     const init = async () => {
       await loadQueue();
-      if (user?.id) {
-        await Promise.all([loadTokens(), loadHistory()]);
+      const identifier = user?.id || wallet.publicKey;
+      if (identifier) {
+        await Promise.all([loadTokens(identifier), loadHistory(identifier)]);
       }
     };
     init();
-  }, [user?.id])
+  }, [user?.id, wallet.publicKey])
 
-  const loadTokens = async () => {
-    if (!user?.id) return;
+  const loadTokens = async (identifier: string) => {
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/products/tokens/" + user.id, {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/products/tokens/" + identifier, {
         headers: {
-          "Authorization": "Bearer " + (localStorage.getItem("token") || "")
+          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
         },
         credentials: "include"
       });
@@ -61,13 +63,12 @@ export default function VerifyPage() {
     } catch { }
   }
 
-  const loadHistory = async () => {
-    if (!user?.id) return;
+  const loadHistory = async (identifier: string) => {
     setHistoryLoading(true);
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/community/history/" + user.id, {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/community/history/" + identifier, {
         headers: {
-          "Authorization": "Bearer " + (localStorage.getItem("token") || "")
+          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
         },
         credentials: "include"
       });
@@ -114,7 +115,10 @@ export default function VerifyPage() {
         return;
       }
 
-      await loadTokens();
+      const identifier = user?.id || wallet.publicKey;
+      if (!identifier) return;
+
+      await loadTokens(identifier);
     } catch { }
     setVotes(prev => ({ ...prev, [productId]: voteType }))
     setTokensEarned(t => t + 1)

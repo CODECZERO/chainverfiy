@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { prisma } from '../lib/prisma.js';
 import { asyncHandler } from '../util/asyncHandler.util.js';
 import { ApiResponse } from '../util/apiResponse.util.js';
 import { submitVote, getPendingVerificationQueue, getLeaderboard } from '../dbQueries/community.Queries.js';
@@ -45,7 +46,16 @@ export const getTopVerifiers = asyncHandler(async (req: Request, res: Response) 
 
 export const getUserHistory = asyncHandler(async (req: Request, res: Response) => {
   const { userId } = req.params;
+  if (!userId) return res.status(400).json(new ApiResponse(400, null, 'User ID or Wallet required.'));
   const { getVotesForUser } = await import('../dbQueries/community.Queries.js');
-  const history = await getVotesForUser(userId as string);
+  
+  let targetId = userId;
+  if (userId.length > 40) {
+    const user = await prisma.user.findUnique({ where: { stellarWallet: userId } });
+    if (!user) return res.json(new ApiResponse(200, [], 'User not found.'));
+    targetId = user.id;
+  }
+
+  const history = await getVotesForUser(targetId as string);
   return res.json(new ApiResponse(200, history, 'User voting history fetched'));
 });

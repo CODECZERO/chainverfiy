@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { CheckCircle2, Package, MapPin, ExternalLink, ShieldCheck, Clock, ArrowLeft, Loader2 } from "lucide-react"
@@ -190,34 +190,37 @@ export default function OrderJourneyPage() {
   }
 
   const product = order.product
-  const stageScans = (product?.stageUpdates || []).map((s: any, idx: number) => ({
-    scanNumber: idx,
-    serverTimestamp: s.createdAt,
-    scanSource: 'SYSTEM',
-    resolvedLat: s.gpsLat,
-    resolvedLng: s.gpsLng,
-    resolvedLocation: s.gpsAddress || s.stageName,
-    scannerRole: 'supplier',
-    machineEventType: s.stageName,
-    ipCountryName: 'Origin'
-  }))
-
-  const realScans = order?.qrCode?.scans || []
-  let displayScans = [...stageScans, ...realScans]
-
-  if (displayScans.length === 0 && order) {
-    displayScans = [{
-      scanNumber: 0,
-      serverTimestamp: order.createdAt,
+  const displayScans = useMemo(() => {
+    const stageScans = (product?.stageUpdates || []).map((s: any, idx: number) => ({
+      scanNumber: idx,
+      serverTimestamp: s.createdAt,
       scanSource: 'SYSTEM',
-      resolvedLocation: product?.supplier?.location || 'Supplier Facility',
-      resolvedLat: product?.stageUpdates?.[0]?.gpsLat || null,
-      resolvedLng: product?.stageUpdates?.[0]?.gpsLng || null,
+      resolvedLat: s.gpsLat,
+      resolvedLng: s.gpsLng,
+      resolvedLocation: s.gpsAddress || s.stageName,
       scannerRole: 'supplier',
-      machineEventType: 'Package Prepared',
+      machineEventType: s.stageName,
       ipCountryName: 'Origin'
-    }]
-  }
+    }))
+
+    const realScans = order?.qrCode?.scans || []
+    let scans = [...stageScans, ...realScans]
+
+    if (scans.length === 0 && order) {
+      scans = [{
+        scanNumber: 0,
+        serverTimestamp: order.createdAt,
+        scanSource: 'SYSTEM',
+        resolvedLocation: product?.supplier?.location || 'Supplier Facility',
+        resolvedLat: product?.stageUpdates?.[0]?.gpsLat || null,
+        resolvedLng: product?.stageUpdates?.[0]?.gpsLng || null,
+        scannerRole: 'supplier',
+        machineEventType: 'Package Prepared',
+        ipCountryName: 'Origin'
+      }]
+    }
+    return scans
+  }, [order, product])
 
   return (
     <div className="min-h-screen bg-slate-950 text-white selection:bg-primary/30">
