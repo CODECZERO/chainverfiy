@@ -8,6 +8,7 @@ WORKDIR /app
 
 # Copy package files for better layer caching
 COPY package*.json ./
+COPY prisma.config.ts ./
 
 # Copy prisma schema early to allow prisma generate to be cached
 COPY prisma ./prisma/
