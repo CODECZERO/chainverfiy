@@ -62,9 +62,9 @@ export default function VerifyPage() {
   const loadTokens = async () => {
     if (!user?.id) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/tokens/${user.id}`, {
+      const res = await fetch(\`${process.env.NEXT_PUBLIC_API_URL}/products/tokens/\${user.id}\`, {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          "Authorization": \`Bearer \${localStorage.getItem("token")}\`
         },
         credentials: "include"
       });
@@ -77,9 +77,9 @@ export default function VerifyPage() {
     if (!user?.id) return;
     setHistoryLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/community/history/${user.id}`, {
+      const res = await fetch(\`${process.env.NEXT_PUBLIC_API_URL}/community/history/\${user.id}\`, {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          "Authorization": \`Bearer \${localStorage.getItem("token")}\`
         },
         credentials: "include"
       });
@@ -94,7 +94,7 @@ export default function VerifyPage() {
 
   const loadQueue = async () => {
     try {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/community/queue`);
+      const url = new URL(\`${process.env.NEXT_PUBLIC_API_URL}/community/queue\`);
       if (user?.id) url.searchParams.append("userId", user.id);
       
       const res = await fetch(url.toString())
@@ -110,7 +110,7 @@ export default function VerifyPage() {
   const castVote = async (productId: string, voteType: "REAL" | "FAKE" | "NEEDS_MORE_PROOF") => {
     try {
       if (!user?.id) return
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/vote`, {
+      const res = await fetch(\`${process.env.NEXT_PUBLIC_API_URL}/products/\${productId}/vote\`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, voteType, reason: "" }),
@@ -220,9 +220,9 @@ export default function VerifyPage() {
             <button 
               key={t} 
               onClick={() => setTab(t)}
-              className={`px-10 py-4 rounded-[1.25rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all relative overflow-hidden ${
+              className={\`px-10 py-4 rounded-[1.25rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all relative overflow-hidden \${
                 tab === t ? "text-white" : "text-slate-500 hover:text-slate-200"
-              }`}
+              }\`}
             >
               {tab === t && (
                 <motion.div 
@@ -232,11 +232,13 @@ export default function VerifyPage() {
                 />
               )}
               <span className="relative z-10">
-                {t === "queue" ? `Live Queue (${remaining.length})` : "Event Ledger"}
+                {t === "queue" ? \`Live Queue (\${remaining.length})\` : "Event Ledger"}
               </span>
             </button>
           ))}
-                <AnimatePresence mode="wait">
+        </div>
+
+        <AnimatePresence mode="wait">
           {tab === "queue" ? (
             <motion.div 
               key="queue"
@@ -321,7 +323,7 @@ export default function VerifyPage() {
                             <div className="flex-1 h-3 bg-[#1A2235] rounded-full overflow-hidden relative border border-white/5 shadow-inner">
                               <motion.div 
                                  initial={{ width: 0 }}
-                                 animate={{ width: `${realPct}%` }}
+                                 animate={{ width: \`\${realPct}%\` }}
                                  className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                               />
                             </div>
@@ -362,11 +364,11 @@ export default function VerifyPage() {
                               whileHover={!disabled ? { scale: 1.05, y: -2 } : {}}
                               whileTap={!disabled ? { scale: 0.95 } : {}}
                               onClick={() => castVote(p.id, vote.id as any)}
-                              className={`flex items-center justify-center gap-3 border-2 rounded-[1.5rem] px-8 py-5 text-[11px] font-black uppercase tracking-[0.1em] transition-all h-20 min-w-[180px] shadow-2xl relative overflow-hidden group/btn ${
+                              className={\`flex items-center justify-center gap-3 border-2 rounded-[1.5rem] px-8 py-5 text-[11px] font-black uppercase tracking-[0.1em] transition-all h-20 min-w-[180px] shadow-2xl relative overflow-hidden group/btn \${
                                 disabled 
                                   ? 'opacity-30 cursor-not-allowed bg-[#0C0F17] border-white/5 text-slate-500' 
-                                  : `bg-white/[0.02] hover:text-white border-white/[0.08] ${vote.cls}`
-                              }`}
+                                  : \`bg-white/[0.02] hover:text-white border-white/[0.08] \${vote.cls}\`
+                              }\`}
                             >
                                {tab === "queue" && (
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
@@ -435,70 +437,92 @@ export default function VerifyPage() {
               exit={{ opacity: 0, y: 10 }}
               className="space-y-8"
             >
-          <div className="space-y-6">
-            {!user?.id ? (
-              <div className="text-center py-32 premium-card rounded-[3rem]">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#0C0F17] flex items-center justify-center border border-white/[0.06] shadow-inner">
-                  <Trophy className="w-10 h-10 text-slate-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Connect your wallet</h3>
-                <p className="text-slate-400 mb-8 max-w-sm mx-auto">Please securely connect your Stellar wallet to view your historical voting records and earned tokens.</p>
-                <Button className="h-14 px-8 rounded-2xl text-lg font-bold bg-white text-black hover:bg-slate-200 transition-all shadow-lg hover:shadow-white/20">
-                  Connect Stellar Wallet
-                </Button>
-              </div>
-            ) : historyLoading ? (
-              [...Array(3)].map((_, i) => (
-                <div key={i} className="premium-card rounded-3xl p-6 animate-pulse h-24" />
-              ))
-            ) : history.length === 0 ? (
-              <div className="text-center py-32 premium-card rounded-[3rem]">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#0C0F17] flex items-center justify-center border border-white/[0.06] shadow-inner">
-                  <Clock className="w-10 h-10 text-slate-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-3">No voting history</h3>
-                <p className="text-slate-400 mb-8 max-w-sm mx-auto">You haven't participated in any consensus votes or product verifications yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {history.map((item: any) => (
-                  <div key={item.id} className="premium-card rounded-3xl p-6 flex items-center justify-between group hover:border-white/10 transition-all">
-                    <div>
-                      <h4 className="text-lg font-bold text-white mb-1">{item.product?.title || "Unknown Product"}</h4>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-slate-500 font-mono">{new Date(item.createdAt).toLocaleDateString()}</span>
-                        <span className="text-slate-700">•</span>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.product?.supplier?.name || "Global Store"}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6 text-right">
-                      <div className="hidden sm:block">
-                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Staked Amount</div>
-                        <div className="text-sm font-bold text-white font-mono">1 Token</div>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mb-2 ${
-                          item.voteType === 'REAL' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                          item.voteType === 'FAKE' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                          'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                        }`}>
-                          {item.voteType.replace(/_/g, ' ')}
-                        </span>
-                        <span className={`text-[9px] font-bold uppercase tracking-[0.1em] ${
-                          item.product?.status === 'VERIFIED' ? 'text-emerald-500' :
-                          item.product?.status === 'FLAGGED' ? 'text-red-500' :
-                          'text-slate-500'
-                        }`}>
-                          Consensus: {item.product?.status || 'PENDING'}
-                        </span>
-                      </div>
-                    </div>
+              {!user?.id ? (
+                <div className="text-center py-40 premium-card bg-gradient-to-br from-[#0A141A] to-[#020408] rounded-[4rem] border border-white/[0.06] shadow-3xl">
+                  <div className="w-32 h-32 mx-auto mb-10 rounded-[3rem] bg-[#0C0F17] flex items-center justify-center border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-700">
+                    <TrendingUp className="w-14 h-14 text-slate-700" />
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                  <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-6">Ledger Initialization Required</h3>
+                  <p className="text-xl text-slate-500 mb-12 max-w-sm mx-auto font-medium leading-relaxed">Connect your Stellar Auditor key to retrieve decentralized voting records and claim token rewards.</p>
+                  <Button 
+                     onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal'))}
+                     className="h-20 px-14 rounded-[2rem] text-xs font-black uppercase tracking-[0.3em] bg-white text-black hover:bg-slate-200 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
+                  >
+                    Connect Auditor Key
+                  </Button>
+                </div>
+              ) : historyLoading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="premium-card bg-[#0A0D14]/40 border border-white/[0.04] rounded-[2.5rem] p-10 h-32 animate-pulse" />
+                ))
+              ) : history.length === 0 ? (
+                <div className="text-center py-40 premium-card bg-gradient-to-br from-[#0A141A] to-[#020408] rounded-[4rem] border border-white/[0.06] shadow-3xl">
+                  <div className="w-28 h-28 mx-auto mb-8 rounded-[2.5rem] bg-[#0C0F17] flex items-center justify-center border border-white/[0.06] shadow-inner">
+                    <Clock className="w-12 h-12 text-slate-700" />
+                  </div>
+                  <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-4">Historical Void</h3>
+                  <p className="text-xl text-slate-500 mb-8 max-w-sm mx-auto font-medium">Your node has zero historical consensus interactions. Participation yields reputation tokens.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-6">
+                  {history.map((item: any) => (
+                    <motion.div 
+                      key={item.id} 
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.01, x: 5 }}
+                      className="premium-card bg-[#0A0D14]/60 backdrop-blur-3xl rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between group hover:border-emerald-500/20 transition-all border border-white/[0.08] shadow-2xl"
+                    >
+                      <div className="flex items-center gap-10">
+                        <div className="w-20 h-20 bg-white/[0.03] rounded-[1.75rem] flex items-center justify-center border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-500 relative">
+                          {item.product?.proofMediaUrls?.[0] ? (
+                            <Image src={getIPFSUrl(item.product.proofMediaUrls[0])} alt="" fill className="object-cover rounded-[1.75rem] p-2 opacity-60 group-hover:opacity-100" />
+                          ) : <Package className="w-10 h-10 text-slate-700" />}
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-black text-white tracking-tight mb-2 group-hover:text-blue-400 transition-colors">{item.product?.title || "Unknown Product"}</h4>
+                          <div className="flex items-center gap-6">
+                            <span className="text-[10px] font-black text-slate-600 font-mono uppercase tracking-widest">{new Date(item.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            <span className="text-slate-800 text-xs font-black">•</span>
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 italic">
+                              <Sparkles className="w-3.5 h-3.5 text-blue-500" /> {item.product?.supplier?.name || "Global Store"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-12 text-right mt-8 md:mt-0 pt-8 md:pt-0 border-t md:border-0 border-white/[0.04] w-full md:w-auto">
+                        <div className="hidden lg:block">
+                          <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1.5">Node Reputation Data</div>
+                          <div className="text-sm font-black text-white font-mono flex items-center justify-end gap-2 text-emerald-500">
+                             +1 AUDITOR TOKEN <Zap className="w-4 h-4" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end shrink-0">
+                          <span className={\`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-flex items-center gap-2 border \${
+                            item.voteType === 'REAL' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-emerald-500/10' :
+                            item.voteType === 'FAKE' ? 'bg-red-500/10 text-red-400 border-red-500/20 shadow-red-500/10' :
+                            'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-amber-500/10'
+                          }\`}>
+                            {item.voteType === 'REAL' && <CheckCircle2 className="w-3.5 h-3.5" />}
+                            {item.voteType === 'FAKE' && <XCircle className="w-3.5 h-3.5" />}
+                            {item.voteType === 'NEEDS_MORE_PROOF' && <HelpCircle className="w-3.5 h-3.5" />}
+                            {item.voteType.replace(/_/g, ' ')}
+                          </span>
+                          <div className={\`text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-lg border-white/[0.06] border flex items-center gap-2 \${
+                            item.product?.status === 'VERIFIED' ? 'text-emerald-500' :
+                            item.product?.status === 'FLAGGED' ? 'text-red-500' :
+                            'text-slate-600 bg-white/[0.01]'
+                          }\`}>
+                            Consensus State: {item.product?.status || 'DECIDING'}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
