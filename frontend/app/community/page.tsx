@@ -144,19 +144,19 @@ export default function CommunityPage() {
                   </div>
                 ) : isConnected ? (
                   <div className="w-full text-center">
-                    <h3 className="font-mono text-xl font-black text-white mb-2 tracking-tighter">
+                    <h3 className="font-semibold text-white text-lg mb-1">
                       {publicKey?.slice(0, 8)}...{publicKey?.slice(-8)}
                     </h3>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-8 italic">Stellar Asset Holder</p>
-                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-16 rounded-2xl bg-white text-black hover:bg-slate-200 font-black tracking-[0.2em] uppercase text-[11px] shadow-2xl transition-all active:scale-95 italic mb-4`}>
-                      <Plus className="w-5 h-5 mr-3" /> Anchor Discussion
+                    <p className="text-xs text-slate-500 mb-6">Stellar Wallet Connected</p>
+                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-14 rounded-xl bg-white text-black hover:bg-slate-200 font-bold transition-all active:scale-95 mb-4`}>
+                      <Plus className="w-5 h-5 mr-3" /> New Discussion
                     </Button>
-                    <div className="text-[9px] font-black text-blue-500 uppercase tracking-[0.4em] italic opacity-60">Verified via Distributed Ledger</div>
+                    <div className="text-xs text-blue-500 font-medium italic opacity-80">Verified Community Member</div>
                   </div>
                 ) : (
                   <div className="w-full">
-                    <h3 className={`${outfit.className} text-2xl font-black text-white mb-4 uppercase italic tracking-tight`}>Initialize Identity</h3>
-                    <p className="text-slate-500 text-xs font-black uppercase tracking-[0.2em] mb-8 leading-relaxed italic">Connect your Stellar vault to participate in the Truth Layer.</p>
+                    <h3 className={`${outfit.className} text-2xl text-white mb-4 tracking-tight`}>Initialize Identity</h3>
+                    <p className="text-slate-500 text-xs mb-8 leading-relaxed">Connect your Stellar vault to participate in the Truth Layer.</p>
                     <Button className={`${outfit.className} w-full h-16 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.2em] uppercase text-[11px] shadow-2xl transition-all active:scale-95 italic border border-white/10`}>
                       Connect Global Vault
                     </Button>
@@ -189,7 +189,7 @@ export default function CommunityPage() {
           {joinedNodes.length > 0 && (
             <div className="mb-20">
                <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 flex items-center gap-4 italic mb-8">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500 animate-pulse" /> Enrolled Node Hubs
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 animate-pulse" /> Joined Communities
                </h3>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {joinedNodes.map((node: any) => (
@@ -199,24 +199,26 @@ export default function CommunityPage() {
                              <Package className="w-6 h-6 text-emerald-500" />
                           </div>
                           <div>
-                             <div className="text-xs font-black text-white uppercase italic tracking-tight">{node.supplier?.name}</div>
-                             <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">{node.supplier?.category} Node</div>
+                             <div className="text-xs text-white tracking-tight">{node.supplier?.name}</div>
+                             <div className="text-[9px] text-slate-600 tracking-widest">{node.supplier?.category} Node</div>
                           </div>
                        </div>
-                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[8px] uppercase font-black italic tracking-widest">Protocol Member</Badge>
+                        <Badge variant="outline" className="border-indigo-500/20 text-indigo-400 text-[10px] font-semibold px-3 py-1">
+                          Community Topic
+                        </Badge>
                     </div>
                   ))}
                </div>
             </div>
           )}
 
-          <div className="flex items-center justify-between mb-12">
-             <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 flex items-center gap-4 italic">
-                <Activity className="w-4 h-4 text-blue-500 animate-pulse" /> Live Truth Ledger
+          <div className="flex items-center justify-between mb-10">
+             <h3 className="text-xs font-bold text-slate-500 flex items-center gap-3">
+                <Activity className="w-4 h-4 text-blue-500" /> Recent Activity
              </h3>
-             <div className="flex gap-4">
-                <Button variant="ghost" className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-500 italic px-6 hover:bg-blue-600/10">Latest Data</Button>
-                <Button variant="ghost" className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-700 italic px-6">Trending Signals</Button>
+             <div className="flex gap-2">
+                <Button variant="ghost" className="text-xs font-semibold text-blue-500 px-4 hover:bg-blue-600/10">Latest</Button>
+                <Button variant="ghost" className="text-xs font-semibold text-slate-500 px-4">Trending</Button>
              </div>
           </div>
 
@@ -248,19 +250,19 @@ export default function CommunityPage() {
                         </div>
                         <div className="flex-1 min-w-0 text-center sm:text-left w-full">
                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 md:gap-5 mb-3 md:mb-4">
-                             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
-                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Auth_Node"}
+                             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-medium text-slate-400">
+                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Community Member"}
                             </div>
                             {joinedNodes.some(n => n.supplierId === p.author?.supplierProfile?.id) && (
-                               <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[8px] uppercase font-black italic tracking-widest">Network Member</Badge>
+                               <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[10px] font-semibold">Verified Member</Badge>
                             )}
                             <span className="text-slate-800 font-black text-xs opacity-50 hidden sm:inline">/</span>
                             <span className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>
                           </div>
-                          <h3 className={`${outfit.className} text-2xl md:text-4xl font-black text-white mb-4 group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em] leading-tight md:leading-none`}>{p.title}</h3>
+                          <h3 className={`${outfit.className} text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors tracking-tight leading-snug`}>{p.title}</h3>
                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 md:gap-3">
                             {p.tags?.map((tag: string) => (
-                              <span key={tag} className="px-2 md:px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-widest italic group-hover:text-slate-400 transition-colors">
+                              <span key={tag} className="px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-xs font-semibold text-slate-500 group-hover:text-slate-400 transition-colors">
                                 #{tag}
                               </span>
                             ))}
@@ -284,10 +286,10 @@ export default function CommunityPage() {
             ) : (
               <div className="text-center py-40 rounded-[4rem] border-2 border-dashed border-white/[0.08] bg-white/[0.01] shadow-inner relative overflow-hidden group">
                  <div className="absolute inset-0 bg-blue-600/[0.01] animate-pulse" />
-                 <MessageSquare className="w-24 h-24 text-slate-800 mx-auto mb-10 opacity-20 group-hover:scale-110 transition-transform duration-1000" />
-                 <h3 className={`${outfit.className} text-4xl font-black text-white uppercase italic tracking-widest opacity-80`}>Discourse Void</h3>
-                 <p className="text-slate-600 text-[13px] font-black uppercase tracking-[0.4em] mt-5 italic opacity-60">The network is silent. Be the first to anchor a topic to the truth layer.</p>
-                 <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} mt-16 bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.3em] uppercase text-[12px] h-18 px-16 rounded-[2rem] shadow-3xl italic border border-white/10 active:scale-95 transition-all`}>Broadcast Signal</Button>
+                 <MessageSquare className="w-20 h-20 text-slate-800 mx-auto mb-8 opacity-20" />
+                 <h3 className={`${outfit.className} text-3xl font-bold text-white opacity-80`}>Empty Community</h3>
+                 <p className="text-slate-500 text-sm mt-4 opacity-80 max-w-sm mx-auto">No discussions found. Start a new topic to share updates with the community.</p>
+                 <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} mt-12 bg-blue-600 hover:bg-blue-500 text-white font-bold h-14 px-12 rounded-xl shadow-xl transition-all active:scale-95`}>Start Discussion</Button>
               </div>
             )}
           </AnimatePresence>
@@ -314,19 +316,19 @@ export default function CommunityPage() {
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none" />
               
               <div className="relative z-10 w-full">
-                <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 md:mb-12">
-                   <div className="w-16 h-16 md:w-20 md:h-20 bg-blue-600/10 rounded-[1.2rem] md:rounded-[2rem] flex items-center justify-center border border-blue-500/20 shadow-2xl">
-                      <Zap className="w-8 h-8 md:w-10 md:h-10 text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]" />
-                   </div>
-                   <div className="text-center sm:text-left">
-                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-black text-white leading-tight md:leading-[0.95] uppercase italic tracking-tighter`}>Anchor Signal</h2>
-                      <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] text-slate-600 mt-2 italic">Synchronizing discourse with the truth layer</p>
-                   </div>
-                </div>
+                 <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
+                    <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20">
+                       <Zap className="w-8 h-8 text-blue-500" />
+                    </div>
+                    <div className="text-center sm:text-left">
+                       <h2 className={`${outfit.className} text-3xl font-bold text-white`}>New Discussion</h2>
+                       <p className="text-sm text-slate-500 mt-1">Share your thoughts or request verification from the community.</p>
+                    </div>
+                 </div>
                 
                 <form onSubmit={handleCreate} className="space-y-10">
                   <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600 ml-2 italic">Discussion Target / Title</label>
+                    <label className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-600 ml-2">Discussion Target / Title</label>
                     <Input 
                       required
                       value={newTopic.title}

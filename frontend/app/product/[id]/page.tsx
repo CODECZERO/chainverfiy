@@ -156,7 +156,7 @@ export default function ProductPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#030408] text-foreground">
+    <div className="min-h-screen bg-[#030408] text-slate-200">
       <Header />
       <div className="max-w-7xl mx-auto px-6 py-24 animate-pulse space-y-12">
         <div className="h-4 bg-white/5 rounded-full w-48" />
@@ -194,19 +194,19 @@ export default function ProductPage() {
       {/* ── Breadcrumb & Global ID ── */}
       <div className="glass-premium border-y border-white/[0.04] sticky top-14 md:top-16 z-50">
         <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-4 md:py-8 relative z-10 flex items-center justify-between">
-          <Link href="/marketplace" className="inline-flex items-center text-[10px] font-display font-black uppercase tracking-[0.4em] text-slate-500 hover:text-indigo-400 transition-all italic">
-            <ArrowLeft className="w-4 h-4 mr-3" /> Market Exit
+          <Link href="/marketplace" className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-indigo-400 transition-all">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
           </Link>
           <div className="flex items-center gap-4">
-             <div className="px-5 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-[10px] font-display font-black text-slate-400 uppercase tracking-widest italic hidden sm:block">
-                NODE_REF / {id?.slice(0, 8)}
+             <div className="px-5 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-[10px] font-bold text-slate-400">
+                PRODUCT ID / {id?.slice(0, 8)}
              </div>
              <span className={cn(
-               "inline-flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-display font-black uppercase tracking-[0.2em] italic",
+               "inline-flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-bold",
                isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]" : "bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]"
              )}>
                {isVerified ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-               {isVerified ? "Protocol Verified" : "Verification Pending"}
+               {isVerified ? "Verified" : "Verification Pending"}
              </span>
           </div>
         </div>
@@ -220,11 +220,10 @@ export default function ProductPage() {
             
             {/* 1. Brand & Title */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px w-10 bg-indigo-500/40" />
-                <span className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] italic">Cryptographic Asset</span>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-semibold text-indigo-400">Verified Product</span>
               </div>
-              <h1 className="text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-tighter leading-[0.9] mb-8 text-white uppercase italic">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
                 {String(product.title || "")}
               </h1>
               <div className="bg-white/[0.02] border-l-4 border-indigo-500/30 rounded-r-3xl p-8 backdrop-blur-xl">
@@ -279,16 +278,16 @@ export default function ProductPage() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-16">
                 <div>
-                  <div className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] mb-3 italic">Consensus Protocol v2.5</div>
-                  <h3 className="text-3xl md:text-4xl font-display font-black flex items-center gap-4 text-white uppercase italic">
-                    <ShieldCheck className="w-10 h-10 text-indigo-400" /> Decentralized Audit
+                  <div className="text-xs font-semibold text-indigo-400 mb-2">Community Verification</div>
+                  <h3 className="text-2xl md:text-3xl font-bold flex items-center gap-3 text-white">
+                    <ShieldCheck className="w-8 h-8 text-indigo-400" /> Community Audit
                   </h3>
                 </div>
                 <Button 
                   onClick={() => setShowBountyModal(true)}
-                  className="rounded-2xl h-14 px-10 bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_20px_40px_rgba(79,70,229,0.3)] border-none text-[10px] font-display font-black uppercase tracking-[0.3em] italic transition-all active:scale-95"
+                  className="rounded-xl h-12 px-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all active:scale-95"
                 >
-                  <Coins className="w-5 h-5 mr-3" /> Initiate Audit Bounty
+                  <Coins className="w-4 h-4 mr-2" /> Request Verification
                 </Button>
               </div>
 
@@ -328,35 +327,35 @@ export default function ProductPage() {
                 <div className="mt-12 pt-12 border-t border-white/[0.06]">
                   <div className="flex items-center justify-between gap-4 mb-8">
                     <div>
-                      <h4 className="text-xl font-display font-black text-white uppercase italic flex items-center gap-3">
-                        <Activity className="w-6 h-6 text-indigo-400" /> Buyer Governance
+                      <h4 className="text-xl font-bold text-white flex items-center gap-3">
+                        <Activity className="w-6 h-6 text-indigo-400" /> Buyer Feedback
                       </h4>
-                      <p className="text-sm text-slate-500 mt-1">As a confirmed buyer, your assessment is critical to the trust economy.</p>
+                      <p className="text-sm text-slate-500 mt-1 font-medium">As a confirmed buyer, your feedback helps the community verify this product.</p>
                     </div>
                   </div>
 
                   {!hasVoted && (
                     <div className="bg-indigo-600/[0.03] border border-indigo-500/10 rounded-3xl p-8">
                       <div className="space-y-4 mb-8">
-                        <p className="text-lg font-display font-bold text-slate-300 uppercase tracking-widest italic">Did you receive the product as described? Cast your verdict:</p>
-                        <p className="text-xs text-slate-500 italic">Note: Voting rewards you with 1 Trust Token and contributes to the product's final verification status. Each user can only vote once per product entry.</p>
+                        <p className="text-lg font-bold text-slate-300">Did you receive the product as described?</p>
+                        <p className="text-xs text-slate-500 font-medium opacity-80">Your vote helps verify this product on the blockchain and earns you community points.</p>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <Button 
                           onClick={() => handleVote('REAL')}
                           disabled={isVoting}
-                          className="h-16 rounded-2xl bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 font-display font-black uppercase tracking-widest italic transition-all"
+                          className="h-16 rounded-2xl bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 font-bold transition-all"
                         >
                           {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-3" />}
-                          Validate Unit
+                          Confirm Authentic
                         </Button>
                         <Button 
                           onClick={() => handleVote('FAKE')}
                           disabled={isVoting}
-                          className="h-16 rounded-2xl bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/20 font-display font-black uppercase tracking-widest italic transition-all"
+                          className="h-16 rounded-2xl bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/20 font-bold transition-all"
                         >
                           {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <XCircle className="w-5 h-5 mr-3" />}
-                          Void Identity
+                          Flag as Fake
                         </Button>
                       </div>
                     </div>
@@ -364,7 +363,7 @@ export default function ProductPage() {
                   {hasVoted && (
                     <div className="bg-emerald-500/5 border border-emerald-500/20 p-8 rounded-3xl flex items-center justify-center gap-3">
                        <Sparkles className="w-6 h-6 text-emerald-400" />
-                       <span className="text-sm font-display font-black text-emerald-400 uppercase tracking-widest italic">Governance Contribution Synchronized</span>
+                       <span className="text-sm font-bold text-emerald-400">Feedback Recorded on Blockchain</span>
                     </div>
                   )}
                 </div>
@@ -374,11 +373,10 @@ export default function ProductPage() {
             {/* 4. Traceability Ledger */}
             {product.stageUpdates?.length > 0 && (
               <div className="pt-8">
-                 <div className="flex items-center gap-3 mb-8">
-                    <div className="h-px w-10 bg-indigo-500/40" />
-                    <span className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] italic">Origin Timeline</span>
+                 <div className="flex items-center gap-2 mb-6">
+                    <span className="text-xs font-semibold text-indigo-400">Product History</span>
                  </div>
-                <h3 className="text-3xl font-display font-black mb-12 text-white uppercase italic flex items-center gap-4">
+                <h3 className="text-2xl md:text-3xl font-bold mb-10 text-white flex items-center gap-3">
                   <Globe className="w-8 h-8 text-indigo-400" /> Traceability Ledger
                 </h3>
                 
@@ -396,9 +394,9 @@ export default function ProductPage() {
                         viewport={{ once: true }}
                         className="glass-premium rounded-[2.5rem] p-10 hover:border-indigo-500/30 transition-all group/trail"
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
-                          <h4 className="text-2xl font-display font-black text-white uppercase italic tracking-tight">{String(s.stageName || "LOG_ENTRY")}</h4>
-                          <span className="text-[10px] text-slate-500 font-display font-black uppercase tracking-[0.3em] bg-white/[0.03] px-5 py-2.5 rounded-xl border border-white/[0.06] italic">
+                        <div className="flex flex-wrap items-center justify-between gap-6 mb-6">
+                          <h4 className="text-xl font-bold text-white tracking-tight">{String(s.stageName || "LOG_ENTRY")}</h4>
+                          <span className="text-xs text-slate-500 font-semibold bg-white/[0.03] px-4 py-2 rounded-xl border border-white/[0.06]">
                             {s.createdAt ? new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'TIMESTAMP_MISSING'}
                           </span>
                         </div>
@@ -417,8 +415,8 @@ export default function ProductPage() {
                           {s.stellarTxId && (
                             <a href={`https://stellar.expert/explorer/testnet/tx/${s.stellarTxId}`} 
                                target="_blank" rel="noopener noreferrer" 
-                               className="inline-flex items-center gap-3 text-[10px] font-display font-black uppercase tracking-[0.2em] text-blue-400 bg-blue-500/10 border border-blue-500/20 px-6 py-4 rounded-2xl hover:bg-blue-500/20 transition-all italic">
-                              <ExternalLink className="w-4 h-4" /> Ledger Verified
+                               className="inline-flex items-center gap-3 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-5 py-3 rounded-xl hover:bg-blue-500/20 transition-all">
+                              <ExternalLink className="w-4 h-4" /> Blockchain Verified
                             </a>
                           )}
                         </div>
@@ -438,11 +436,10 @@ export default function ProductPage() {
               <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-600/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
               
               <div className="mb-12">
-                <div className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] mb-8 italic">Strategic Acquisition</div>
-                <div className="flex flex-col gap-10">
-                  <div className="flex flex-col bg-[#030408]/60 border border-white/[0.06] p-10 rounded-[3rem] shadow-inner relative group/price">
-                    <div className="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover/price:opacity-100 transition-opacity pointer-events-none" />
-                    <div className="text-[10px] font-display font-black text-slate-600 uppercase tracking-[0.3em] mb-4 italic">Settlement Evaluation</div>
+                <div className="text-sm font-semibold text-indigo-400 mb-6">Purchase</div>
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col bg-[#030408]/60 border border-white/[0.06] p-8 rounded-3xl relative">
+                    <div className="text-xs font-semibold text-slate-500 mb-3">Price</div>
                     <div className="flex flex-col">
                       <div className="flex items-baseline gap-2 mb-2">
                         <span className="text-5xl font-display font-black text-white tracking-tighter italic">₹{Number(product.priceInr || 0).toLocaleString()}</span>
@@ -497,8 +494,8 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <Button onClick={checkProfileAndBuy} className="w-full rounded-[2rem] h-20 text-[11px] font-display font-black uppercase tracking-[0.4em] bg-white text-black hover:bg-slate-200 shadow-[0_25px_70px_rgba(255,255,255,0.08)] transition-all transform active:scale-[0.98] italic">
-                Initiate Acquisition <ArrowRight className="w-5 h-5 ml-4" />
+               <Button onClick={checkProfileAndBuy} className="w-full rounded-2xl h-16 text-sm font-bold bg-white text-black hover:bg-slate-200 transition-all active:scale-95">
+                Buy with Crypto <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
 
@@ -511,17 +508,17 @@ export default function ProductPage() {
                     {String(product.supplier?.name?.[0] || "S")}
                   </div>
                   <div>
-                    <div className="text-[9px] font-display font-black text-slate-600 uppercase tracking-widest mb-1 italic">Identity Provider</div>
-                    <h4 className="font-display font-black text-xl text-white group-hover:text-indigo-400 transition-colors uppercase italic tracking-tight">
-                      {String(product.supplier?.name || "Protocol Supplier")}
+                    <div className="text-xs font-semibold text-slate-500 mb-1">Seller</div>
+                    <h4 className="font-bold text-xl text-white group-hover:text-indigo-400 transition-colors tracking-tight">
+                      {String(product.supplier?.name || "Verified Supplier")}
                     </h4>
                     <div className="flex items-center gap-4 mt-2">
                        <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
                           <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
-                          <span className="text-[10px] font-display font-black text-emerald-400 italic">{String(product.supplier?.trustScore || 85)}%</span>
+                          <span className="text-[10px] font-bold text-emerald-400">{String(product.supplier?.trustScore || 85)}% Trust</span>
                        </div>
-                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">
-                          <MapPin className="w-3.5 h-3.5" /> {String(product.supplier?.location || "GLOBAL_NODE")}
+                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold tracking-widest">
+                          <MapPin className="w-3.5 h-3.5" /> {String(product.supplier?.location || "Global")}
                        </div>
                     </div>
                   </div>

@@ -77,21 +77,21 @@ export default function BountyBoardPage() {
       <div className="max-w-5xl mx-auto px-6 md:px-8 py-8 md:py-12">
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 md:gap-4">
           <div>
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-slate-500 mb-2">
               <Briefcase className="w-4 h-4" />
-              <span className="text-[10px] font-black uppercase tracking-widest italic">Community marketplace</span>
+              <span className="text-sm font-semibold">Opportunities</span>
             </div>
-            <h1 className={`${outfit.className} text-3xl md:text-5xl font-black tracking-tighter mt-4 uppercase italic`}>Bounty Board</h1>
-            <p className="text-muted-foreground mt-4 text-sm md:text-base leading-relaxed max-w-xl italic">Earn rewards by verifying product origins and providing proof.</p>
+            <h1 className={`${outfit.className} text-3xl md:text-5xl font-bold tracking-tight mt-4`}>Bounty Board</h1>
+            <p className="text-slate-500 mt-4 text-base leading-relaxed max-w-xl">Earn rewards by verifying product origins and providing proof.</p>
           </div>
           <div className="flex w-full md:w-auto gap-3">
-            <Button asChild variant="outline" className="flex-1 md:flex-none h-12 md:h-14 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 uppercase text-[10px] font-black italic tracking-widest transition-all active:scale-95">
+            <Button asChild variant="outline" className="flex-1 md:flex-none h-12 md:h-14 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold transition-all active:scale-95">
               <Link href="/marketplace">
                 <Package className="w-4 h-4 mr-2" />
-                Browse
+                Shop
               </Link>
             </Button>
-            <Button asChild className="flex-1 md:flex-none h-12 md:h-14 rounded-xl bg-amber-500 hover:bg-amber-600 text-black uppercase text-[10px] font-black italic tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
+            <Button asChild className="flex-1 md:flex-none h-12 md:h-14 rounded-xl bg-amber-500 hover:bg-amber-600 text-black text-xs font-bold shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
               <Link href="/verify">
                 <ShieldCheck className="w-4 h-4 mr-2" />
                 Verify
@@ -101,12 +101,12 @@ export default function BountyBoardPage() {
         </div>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4">
-          <div className="relative flex-1 w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="SEARCH BOUNTIES BY PRODUCT OR SIGNAL..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-xs font-black uppercase tracking-widest italic`} />
+          <div className="relative flex-1 w-full text-xs font-semibold">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search bounties..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-sm italic`} />
           </div>
-          <Badge variant="secondary" className="whitespace-nowrap px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest italic animate-pulse">
-            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} open nodes
+          <Badge variant="secondary" className="whitespace-nowrap px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-lg text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} active bounties
           </Badge>
         </div>
 
@@ -129,16 +129,16 @@ export default function BountyBoardPage() {
                       <div className="flex items-center gap-3 flex-wrap mb-3">
                         <span className="font-bold text-xl group-hover:text-amber-500 transition-colors">{String(b.product?.title || "Product Proof")}</span>
                         <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 font-bold text-[10px] uppercase tracking-wider px-2 py-0.5">Verification</Badge>
-                        <Badge variant="outline" className={`text-[8px] font-black uppercase tracking-widest italic ${
+                        <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${
                           b.status === 'ACTIVE' ? 'border-emerald-500/20 text-emerald-400' : 
                           b.status === 'COMPLETED' ? 'border-blue-500/20 text-blue-400' : 
                           'border-white/10 text-slate-500'
                         }`}>
-                          {b.status || 'ACTIVE'}
+                          {b.status || 'Active'}
                         </Badge>
                         {b.expiresAt && new Date(b.expiresAt).getTime() - Date.now() < 86400000 * 2 && (
-                          <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[8px] font-black uppercase tracking-widest italic animate-pulse">
-                            Priority: <Clock className="w-3 h-3 ml-1" /> {Math.max(0, Math.floor((new Date(b.expiresAt).getTime() - Date.now()) / 3600000))}h left
+                          <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] font-semibold flex items-center">
+                            Closing soon: <Clock className="w-3 h-3 ml-1.5" /> {Math.max(0, Math.floor((new Date(b.expiresAt).getTime() - Date.now()) / 3600000))}h left
                           </Badge>
                         )}
                       </div>
@@ -170,8 +170,8 @@ export default function BountyBoardPage() {
                         <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward Pool</div>
                       </div>
                       <Link href={`/product/${b.productId}`}>
-                        <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-transform">
-                          Fulfill <ArrowRight className="w-4 h-4 ml-2" />
+                        <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
+                          Details <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </Link>
                     </div>

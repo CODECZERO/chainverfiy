@@ -123,7 +123,7 @@ export default function Home() {
             className="flex justify-center gap-4 mb-12"
           >
             {TRUST_SIGNALS.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-5 py-2.5 bg-[#0A0D14]/60 border border-white/5 rounded-2xl text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic backdrop-blur-3xl shadow-2xl">
+              <div key={i} className="flex items-center gap-3 px-5 py-2.5 bg-[#0A0D14]/60 border border-white/5 rounded-2xl text-[10px] font-bold text-slate-500 backdrop-blur-3xl shadow-2xl">
                 {s.icon} {s.text}
               </div>
             ))}
@@ -132,18 +132,18 @@ export default function Home() {
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${outfit.className} text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white mb-10 leading-[0.85] uppercase italic tracking-[-0.05em]`}
+            className={`${outfit.className} text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-8 leading-tight`}
           >
-            THE PROTOCOL OF <br/>
-            <span className="text-blue-500 drop-shadow-[0_0_40px_rgba(37,99,235,0.4)]">ABSOLUTE TRUTH.</span>
+            The Standard for <br/>
+            <span className="text-blue-500">Verified Commerce.</span>
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xl md:text-2xl text-slate-500 max-w-3xl mx-auto mb-16 font-black uppercase tracking-[0.1em] italic opacity-70 leading-relaxed"
+            className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
           >
-            ChainVerify anchors physical commerce to the Stellar blockchain. Decentralized verification meets atomic settlement for a trustless economy.
+            ChainVerify brings transparency to global trade using the Stellar blockchain. Secure verification and instant settlement for a modern economy.
           </motion.p>
 
           <motion.div 
@@ -152,13 +152,13 @@ export default function Home() {
             className="flex flex-col sm:flex-row items-center justify-center gap-6"
           >
             <Link href="/marketplace" className="w-full sm:w-auto">
-              <Button className={`${outfit.className} w-full px-12 h-20 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] bg-white text-black hover:bg-slate-200 transition-all shadow-[0_20px_60px_rgba(255,255,255,0.15)] italic border-2 border-transparent active:scale-95`}>
-                Access Terminal <ArrowRight className="w-5 h-5 ml-4" />
+              <Button className={`${outfit.className} w-full px-10 h-16 rounded-2xl text-[13px] font-semibold bg-white text-black hover:bg-slate-200 transition-all shadow-xl active:scale-95`}>
+                Browse Marketplace <ArrowRight className="w-4 h-4 ml-3" />
               </Button>
             </Link>
             <Link href="/seller-dashboard" className="w-full sm:w-auto">
-              <Button variant="outline" className={`${outfit.className} w-full px-12 h-20 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:text-white transition-all italic active:scale-95`}>
-                Supplier Portal
+              <Button variant="outline" className={`${outfit.className} w-full px-10 h-16 rounded-2xl text-[13px] font-semibold border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:text-white transition-all active:scale-95`}>
+                Supplier Dashboard
               </Button>
             </Link>
           </motion.div>
@@ -171,10 +171,10 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-20">
             {STATS_CONFIG.map((s, i) => (
               <div key={i} className="text-center group">
-                <div className="flex items-center justify-center gap-3 text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mb-4 italic group-hover:text-blue-400 transition-colors">
+                <div className="flex items-center justify-center gap-3 text-slate-500 text-xs font-semibold mb-3 group-hover:text-blue-400 transition-colors">
                   {s.icon} {s.label}
                 </div>
-                <div className={`${outfit.className} text-4xl md:text-5xl font-black text-white tabular-nums italic tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]`}>
+                <div className={`${outfit.className} text-3xl md:text-4xl font-bold text-white tabular-nums tracking-tight`}>
                   <AnimatedCounter end={stats[s.key] || s.defaultValue} prefix={s.prefix} suffix={s.suffix} />
                 </div>
               </div>
@@ -187,16 +187,12 @@ export default function Home() {
       <section className="py-40 px-8 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-32">
-            <motion.div
-               initial={{ opacity: 0 }}
-               whileInView={{ opacity: 1 }}
-               className="inline-block px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-[0.4em] rounded-lg italic mb-6 shadow-2xl"
-            >
-               System Architecture
-            </motion.div>
-            <h2 className={`${outfit.className} text-5xl md:text-7xl font-black text-white mb-8 italic uppercase tracking-tighter`}>Built for <span className="text-blue-500">Absolute</span> Certainty.</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto font-black uppercase tracking-[0.1em] italic opacity-60">
-              We replace inefficient middlemen with mathematical proof and community consensus protocols.
+             <div className="inline-block px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold rounded-lg mb-6 shadow-2xl">
+                System Architecture
+             </div>
+            <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight`}>Built for <span className="text-blue-500">Certainty.</span></h2>
+            <p className="text-lg text-slate-500 max-w-xl mx-auto font-medium opacity-80">
+              We empower trade with digital proof and community verification.
             </p>
           </div>
 
@@ -214,8 +210,8 @@ export default function Home() {
                 <div className="mb-10 p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] w-fit group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-2xl">
                   {f.icon}
                 </div>
-                <h3 className={`${outfit.className} text-3xl font-black text-white mb-6 uppercase italic tracking-tight`}>{f.title}</h3>
-                <p className="text-slate-500 leading-relaxed font-medium text-sm italic opacity-80">{f.desc}</p>
+                <h3 className={`${outfit.className} text-2xl font-bold text-white mb-4 tracking-tight`}>{f.title}</h3>
+                <p className="text-slate-500 leading-relaxed font-medium text-sm opacity-80">{f.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -232,16 +228,16 @@ export default function Home() {
                  <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
                     <Globe className="w-6 h-6 text-blue-500" />
                  </div>
-                 <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] italic">Truth Protocol</span>
+                 <span className="text-[10px] font-bold text-blue-500">Truth Protocol</span>
               </div>
-              <h2 className={`${outfit.className} text-5xl md:text-7xl font-black text-white mb-8 italic tracking-tighter uppercase leading-[0.9]`}>Where Truth is <br/> <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Audited.</span></h2>
-              <p className="text-xl text-slate-500 font-black uppercase tracking-[0.1em] italic opacity-60 leading-relaxed">
-                Join the decentralized network of verifiers. Audit proof of origin, track physical chain-of-custody, and earn consensus rewards.
+              <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight leading-tight`}>Where Trust is <br/> <span className="text-blue-500">Verified.</span></h2>
+              <p className="text-xl text-slate-500 font-bold opacity-60 leading-relaxed">
+                Join the community of verifiers. Help audit products, track origins, and earn rewards for your contributions.
               </p>
             </div>
             <Link href="/community">
-              <Button className={`${outfit.className} h-20 px-12 rounded-[2rem] bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.3em] text-[11px] shadow-[0_20px_50px_rgba(37,99,235,0.3)] italic border border-white/10 transition-all active:scale-95`}>
-                Hub Terminal <MessageSquare className="ml-4 w-5 h-5" />
+              <Button className={`${outfit.className} h-16 px-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[13px] shadow-xl transition-all active:scale-95`}>
+                Join Community <MessageSquare className="ml-3 w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -249,21 +245,21 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-10">
             {[
               { author: "Protocol_Verifier", trust: "9.8 Trust", msg: "Analyzing geospatial drift on organic matcha batch #402. Origin verified.", icon: <ShieldCheck className="w-5 h-5 text-emerald-400" /> },
-              { author: "Supply_Node", trust: "8.2 Trust", msg: "Supplying real-time telemetry logs for cold-chain dairy transit.", icon: <Activity className="w-5 h-5 text-blue-400" /> }
+              { author: "Verified_Supplier", trust: "8.2 Trust", msg: "Updating status for cold-chain transit of organic dairy batch.", icon: <Activity className="w-5 h-5 text-blue-400" /> }
             ].map((d, i) => (
               <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-10 flex gap-10 items-start group hover:border-blue-500/30 transition-all duration-700 shadow-3xl cursor-default">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex-shrink-0 shadow-lg border border-white/20 group-hover:rotate-6 transition-transform" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-4 mb-3">
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest italic">{d.author}</span>
-                    <span className="text-[9px] uppercase font-black text-slate-700 px-3 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg italic">{d.trust}</span>
+                    <span className="text-[10px] font-bold text-white tracking-widest">{d.author}</span>
+                    <span className="text-[9px] font-bold text-slate-400 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2 py-1">{d.trust}</span>
                   </div>
-                  <h4 className={`${outfit.className} text-2xl font-black text-slate-200 mb-6 group-hover:text-blue-400 transition-colors italic tracking-tight leading-snug`}>
+                  <h4 className={`${outfit.className} text-2xl font-bold text-slate-200 mb-6 group-hover:text-blue-400 transition-colors tracking-tight leading-snug`}>
                     {d.msg}
                   </h4>
-                  <div className="flex items-center gap-6 text-[9px] font-black text-slate-700 uppercase tracking-widest italic">
-                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><MessageCircle className="w-3 h-3" /> Trace Feed</span>
-                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><Clock className="w-3 h-3" /> Real-time Node</span>
+                  <div className="flex items-center gap-6 text-[10px] font-semibold text-slate-500 tracking-wide">
+                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><MessageCircle className="w-3.5 h-3.5" /> Community Discussions</span>
+                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><Clock className="w-3.5 h-3.5" /> Active now</span>
                   </div>
                 </div>
               </div>
@@ -279,13 +275,13 @@ export default function Home() {
             <div className="w-14 h-14 rounded-[1.25rem] bg-gradient-to-br from-blue-600 to-emerald-600 flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.3)] border border-white/20">
               <ShieldCheck className="w-8 h-8 text-white" />
             </div>
-            <span className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter uppercase`}>ChainVerify</span>
+            <span className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>ChainVerify</span>
           </div>
-          <div className="flex flex-wrap justify-center gap-12 text-[10px] font-black uppercase tracking-[0.4em] text-slate-700 italic">
-            <Link href="/marketplace" className="hover:text-blue-500 transition-colors">Market Terminal</Link>
-            <Link href="/verify" className="hover:text-blue-500 transition-colors">Audit Node</Link>
-            <Link href="/transparency" className="hover:text-blue-500 transition-colors">Transparency Hub</Link>
-            <Link href="/community" className="hover:text-blue-500 transition-colors">Discourse Ledger</Link>
+          <div className="flex flex-wrap justify-center gap-10 text-xs font-semibold text-slate-600">
+            <Link href="/marketplace" className="hover:text-blue-500 transition-colors">Marketplace</Link>
+            <Link href="/verify" className="hover:text-blue-500 transition-colors">Verification</Link>
+            <Link href="/transparency" className="hover:text-blue-500 transition-colors">Transparency</Link>
+            <Link href="/community" className="hover:text-blue-500 transition-colors">Community</Link>
           </div>
           <div className="flex flex-col items-center md:items-end gap-2">
              <div className="text-[10px] font-black text-slate-800 uppercase tracking-[0.3em] font-mono italic">Protocol Latency: 1.2ms</div>
