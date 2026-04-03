@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { WalletProvider } from "@/lib/wallet-context"
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryProvider } from "@/components/providers/query-provider"
+import { ErrorBoundary } from "@/components/error-boundary"
 import "./globals.css"
 
 const inter = Inter({ 
@@ -48,10 +49,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ReduxProvider>
             <QueryProvider>
               <WalletProvider>
-                <WalletStateManager />
-                {children}
-                <Toaster />
-                <Analytics />
+                <ErrorBoundary>
+                  <WalletStateManager />
+                  {children}
+                  <Toaster />
+                  <Analytics />
+                </ErrorBoundary>
               </WalletProvider>
             </QueryProvider>
           </ReduxProvider>

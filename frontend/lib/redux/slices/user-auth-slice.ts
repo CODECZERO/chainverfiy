@@ -28,12 +28,22 @@ const initialState: UserAuthState = {
 }
 
 export const fetchCurrentUser = createAsyncThunk('userAuth/fetchMe', async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
-    credentials: 'include',
-  })
-  if (!res.ok) throw new Error('Not authenticated')
-  const data = await res.json()
-  return data.data as UserProfile
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
+      credentials: 'include',
+    })
+    
+    if (!res.ok) throw new Error('Not authenticated')
+    
+    const data = await res.json()
+    if (!data || !data.data) {
+      throw new Error('Invalid user data received')
+    }
+    
+    return data.data as UserProfile
+  } catch (error) {
+    throw error
+  }
 })
 
 export const loginUser = createAsyncThunk(

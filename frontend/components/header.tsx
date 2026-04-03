@@ -257,9 +257,9 @@ export function Header() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="relative h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] p-0 overflow-hidden hover:bg-white/[0.06] transition-all group active:scale-95">
                         <div className="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10" />
-                        {isAuthenticated ? (
+                        {isAuthenticated && user ? (
                           <div className="w-full h-full flex items-center justify-center text-blue-400 font-bold text-sm">
-                            {user.email?.[0].toUpperCase()}
+                            {(user.email || 'U')[0].toUpperCase()}
                           </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-500">
@@ -282,7 +282,7 @@ export function Header() {
                         <>
                           <div className="px-4 py-4 border-b border-white/[0.05]">
                             <div className="text-xs font-semibold text-slate-500 mb-1">Signed in as</div>
-                            <div className="text-sm font-bold text-white truncate">{user.email}</div>
+                            <div className="text-sm font-bold text-white truncate">{user?.email || 'Authenticated User'}</div>
                           </div>
                           <DropdownMenuItem asChild className="px-4 py-3 mt-2 text-sm font-semibold hover:bg-white/[0.05] rounded-xl cursor-pointer flex items-center gap-3">
                             <Link href={isSupplier ? "/seller-dashboard" : "/buyer-dashboard"}>
@@ -448,11 +448,11 @@ export function Header() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
                       <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white">
-                        {user.email?.[0].toUpperCase()}
+                        {(user?.email || 'U')[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Signed in as</div>
-                        <div className="text-sm font-bold text-white truncate">{user.email}</div>
+                        <div className="text-sm font-bold text-white truncate">{user?.email || 'Authenticated User'}</div>
                       </div>
                     </div>
                     <Button asChild variant="outline" className="w-full h-14 rounded-xl border-white/10 text-white font-bold justify-start px-6" onClick={() => setMobileMenuOpen(false)}>
