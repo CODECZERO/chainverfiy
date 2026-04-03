@@ -19,7 +19,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://freighter.app https://albedo.link https://va.vercel-scripts.com; connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://va.vercel-scripts.com *.stellar.org *.soroban.org https://*.onrender.com https://api.coingecko.com https://api.qrserver.com *.pinata.cloud *.mypinata.cloud; img-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://api.qrserver.com *.pinata.cloud *.mypinata.cloud https://*.tile.openstreetmap.org https://unpkg.com https://*.basemaps.cartocdn.com blob: data:; object-src 'none';",
+            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://freighter.app https://albedo.link https://va.vercel-scripts.com https://vercel.live; connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://va.vercel-scripts.com *.stellar.org *.soroban.org https://*.onrender.com https://api.coingecko.com https://api.qrserver.com *.pinata.cloud *.mypinata.cloud https://vercel.live https://*.pusher.com; img-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://api.qrserver.com *.pinata.cloud *.mypinata.cloud https://*.tile.openstreetmap.org https://unpkg.com https://*.basemaps.cartocdn.com blob: data: https://vercel.live https://*.vercel.com; frame-src https://vercel.live; object-src 'none';",
           },
         ],
       },
