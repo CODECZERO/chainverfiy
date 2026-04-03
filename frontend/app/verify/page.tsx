@@ -311,7 +311,7 @@ export default function VerifyPage() {
                             <span className="block text-[10px] font-display font-black text-slate-600 uppercase tracking-[0.4em] mb-1 italic">Protocol Stake Threshold</span>
                             {required > 0 ? (
                               <span className="text-lg font-display font-black text-indigo-400 flex items-center gap-2 italic tracking-tight">
-                                <Zap className="w-4 h-4 animate-pulse" /> {required} PRM_STAKE_ACTIVE
+                                <Zap className="w-4 h-4 animate-pulse" /> {required} CHV_STAKE_ACTIVE
                               </span>
                             ) : (
                               <span className="text-lg font-display font-black text-emerald-400 tracking-widest uppercase italic">Node Authorized / Global Tier</span>

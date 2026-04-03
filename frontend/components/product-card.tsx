@@ -207,7 +207,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
                  if (qrCodeUrl) {
                    const link = document.createElement('a');
                    link.href = qrCodeUrl;
-                   link.download = `prm-node-${id}.png`;
+                   link.download = `chv-node-${id}.png`;
                    link.click();
                  }
                }}

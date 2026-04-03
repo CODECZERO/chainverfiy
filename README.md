@@ -1,4 +1,4 @@
-# ChainVerify — प्रमाणिक
+# ChainVerify
 Verified open marketplace. Community trust. No middlemen.
 
 ![Stellar](https://img.shields.io/badge/Stellar-Lurquoise?style=for-the-badge&logo=stellar&logoColor=white)

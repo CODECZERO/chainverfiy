@@ -127,8 +127,8 @@ export const generateQR = async (req: Request, res: Response) => {
 
   if (!purpose) throw new ApiError(400, 'purpose is required');
 
-  // 1. Generate shortCode: PRM-XXXX
-  const shortCode = 'PRM-' + randomBytes(3).toString('hex').toUpperCase().slice(0, 4);
+  // 1. Generate shortCode: CHV-XXXX
+  const shortCode = 'CHV-' + randomBytes(3).toString('hex').toUpperCase().slice(0, 4);
 
   // 2. Generate QR ID
   const qrCodeId = uuidv4();
@@ -468,7 +468,7 @@ export const machineScan = async (req: MachineRequest, res: Response) => {
     const url = new URL(body.rawScanData);
     shortCode = url.searchParams.get('qr');
   } catch {
-    const match = (body.rawScanData || '').match(/PRM-[A-Z0-9]{4}/);
+    const match = (body.rawScanData || '').match(/CHV-[A-Z0-9]{4}/);
     shortCode = match ? match[0] : null;
   }
   if (!shortCode) throw new ApiError(400, 'Could not extract shortCode from scan data');
@@ -770,7 +770,7 @@ export const registerMachine = async (req: Request, res: Response) => {
         method: 'POST',
         contentType: 'application/json',
         exampleBody: {
-          rawScanData: `https://chainverify.app/proof/ORDER_ID?qr=PRM-4X9K`,
+          rawScanData: `https://chainverify.app/proof/ORDER_ID?qr=CHV-4X9K`,
           clientTimestamp: new Date().toISOString(),
           eventType: 'scan',
         }
