@@ -12,9 +12,10 @@ COPY prisma.config.ts ./
 
 # Copy prisma schema early to allow prisma generate to be cached
 COPY prisma ./prisma/
+# Also copy prisma config and tsconfig (needed for prisma to read .ts config)
+COPY prisma.config.ts tsconfig.json ./
 
-# Install dependencies (include devDependencies for tsc)
-# --ignore-scripts prevents prisma post-install from running (we run it explicitly)
+# Install dependencies (include devDependencies for tsc and prisma)
 RUN npm install --include=dev --legacy-peer-deps --ignore-scripts
 
 # Generate Prisma client
