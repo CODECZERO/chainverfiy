@@ -90,11 +90,21 @@ export const getProduct = async (req: Request, res: Response) => {
   // Check if current user has voted
   let userHasVoted = false;
   const authUser = (req as any).user;
+  const walletFromQuery = req.query.wallet as string;
+
   if (authUser) {
     const v = await prisma.vote.findUnique({
       where: { productId_userId: { productId: id, userId: authUser.id } }
     });
     userHasVoted = !!v;
+  } else if (walletFromQuery) {
+    const userWithWallet = await prisma.user.findUnique({ where: { stellarWallet: walletFromQuery } });
+    if (userWithWallet) {
+      const v = await prisma.vote.findUnique({
+        where: { productId_userId: { productId: id, userId: userWithWallet.id } }
+      });
+      userHasVoted = !!v;
+    }
   }
 
   const formattedProduct = {

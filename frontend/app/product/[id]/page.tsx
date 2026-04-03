@@ -56,7 +56,8 @@ export default function ProductPage() {
 
   const loadProduct = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
+      const productWalletQuery = publicKey ? `?wallet=${publicKey}` : ''
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}${productWalletQuery}`)
       const data = await res.json()
       setProduct(data.data)
 
@@ -65,9 +66,9 @@ export default function ProductPage() {
 
       const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
       const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {}
-      const walletQuery = publicKey ? `&wallet=${publicKey}` : ''
+      const statusWalletQuery = publicKey ? `&wallet=${publicKey}` : ''
 
-      const vRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/verification/status?productId=${id}${walletQuery}`, {
+      const vRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/verification/status?productId=${id}${statusWalletQuery}`, {
         headers: authHeader
       })
       const vData = await vRes.json()
@@ -328,15 +329,18 @@ export default function ProductPage() {
                   <div className="flex items-center justify-between gap-4 mb-8">
                     <div>
                       <h4 className="text-xl font-display font-black text-white uppercase italic flex items-center gap-3">
-                        <Activity className="w-6 h-6 text-indigo-400" /> Auditor Governance
+                        <Activity className="w-6 h-6 text-indigo-400" /> Buyer Governance
                       </h4>
-                      <p className="text-sm text-slate-500 mt-1">Confirmed acquisition status enables protocol governance rights.</p>
+                      <p className="text-sm text-slate-500 mt-1">As a confirmed buyer, your assessment is critical to the trust economy.</p>
                     </div>
                   </div>
 
                   {!hasVoted && (
                     <div className="bg-indigo-600/[0.03] border border-indigo-500/10 rounded-3xl p-8">
-                      <p className="text-sm font-display font-bold text-slate-300 mb-6 uppercase tracking-widest italic">Assess unit authenticity for community consensus:</p>
+                      <div className="space-y-4 mb-8">
+                        <p className="text-lg font-display font-bold text-slate-300 uppercase tracking-widest italic">Did you receive the product as described? Cast your verdict:</p>
+                        <p className="text-xs text-slate-500 italic">Note: Voting rewards you with 1 Trust Token and contributes to the product's final verification status. Each user can only vote once per product entry.</p>
+                      </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <Button 
                           onClick={() => handleVote('REAL')}
