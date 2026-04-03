@@ -411,31 +411,35 @@ model Bounty {
 }
 
 model Discussion {
-  id        String    @id @default(uuid())
-  title     String
-  content   String
-  authorId  String
-  tags      String[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  comments  Comment[]
-  author    User      @relation(fields: [authorId], references: [id])
+  id           String    @id @default(uuid())
+  title        String
+  content      String
+  authorId     String?
+  authorWallet String?
+  tags         String[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  comments     Comment[]
+  author       User?     @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
+  @@index([authorWallet])
   @@map("discussions")
 }
 
 model Comment {
   id           String     @id @default(uuid())
   content      String
-  authorId     String
+  authorId     String?
+  authorWallet String?
   discussionId String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  author       User       @relation(fields: [authorId], references: [id])
+  author       User?      @relation(fields: [authorId], references: [id])
   discussion   Discussion @relation(fields: [discussionId], references: [id])
 
   @@index([authorId])
+  @@index([authorWallet])
   @@index([discussionId])
   @@map("comments")
 }
