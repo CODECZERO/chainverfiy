@@ -6,7 +6,7 @@ import { loginUser } from '../dbQueries/user.Queries.js';
 import { createAccount } from '../services/stellar/account.stellar.js';
 import logger from '../util/logger.js';
 import { prisma } from '../lib/prisma.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export interface userSingupData {
