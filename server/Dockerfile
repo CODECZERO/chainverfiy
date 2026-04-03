@@ -42,7 +42,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm install --omit=dev --legacy-peer-deps
+RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
 
 # Copy built assets and generated client from builder stage
 COPY --from=builder /app/dist ./dist
