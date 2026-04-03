@@ -15,7 +15,7 @@ COPY prisma ./prisma/
 # Install dependencies (including devDependencies for build)
 # We use --foreground-scripts=false to prevent postinstall from running 
 # before we are ready or if it fails due to missing source files.
-RUN npm install --legacy-peer-deps --foreground-scripts=false
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -42,7 +42,7 @@ COPY prisma ./prisma/
 
 # Install only production dependencies
 # Skip scripts to avoid postinstall issues
-RUN npm install --omit=dev --legacy-peer-deps --foreground-scripts=false
+RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
 
 # Copy built assets from builder stage
 COPY --from=builder /app/dist ./dist

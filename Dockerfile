@@ -9,7 +9,7 @@ COPY server/package*.json ./
 COPY server/prisma ./prisma/
 
 # Install dependencies (skip scripts to avoid early build/generate)
-RUN npm ci --foreground-scripts=false
+RUN npm ci --ignore-scripts
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -29,7 +29,7 @@ WORKDIR /app/server
 COPY server/package*.json ./
 
 # Install only production dependencies (skip scripts)
-RUN npm ci --omit=dev --foreground-scripts=false
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy built assets and generated client from builder stage
 COPY --from=server-builder /app/server/dist ./dist
