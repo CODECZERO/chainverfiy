@@ -8,8 +8,8 @@ COPY server/package*.json ./
 # Copy prisma directory before install to support postinstall
 COPY server/prisma ./prisma/
 
-# Install dependencies - skipping scripts to avoid "tsc not found" errors during install
-RUN npm install --legacy-peer-deps --ignore-scripts
+# Install dependencies (include devDependencies for tsc)
+RUN npm install --include=dev --legacy-peer-deps --ignore-scripts
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -17,8 +17,8 @@ RUN npx prisma generate
 # Copy the rest of the server source
 COPY server/ ./
 
-# Build the application (explicitly use npx for safety)
-RUN npx tsc
+# Build the application (explicitly use npx and config for safety)
+RUN npx tsc -p tsconfig.json
 
 # ─── Server Production stage ─────────────────────────────────────
 FROM node:20-slim
