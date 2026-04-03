@@ -7,7 +7,7 @@
     "start": "node ./dist/index.js",
     "dev": "nodemon --exec tsx ./src/index.ts",
     "build": "tsc",
-    "postinstall": "prisma generate && npm run build",
+    "postinstall": "npx prisma generate && npm run build",
     "format": "prettier --write .",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --forceExit",
     "prisma:generate": "prisma generate",

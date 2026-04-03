@@ -2,25 +2,39 @@
 
 import { useState, useEffect } from "react"
 import { Header } from "@/components/header"
-import { Trophy, Star, ShieldCheck, TrendingUp, Medal, Sparkles } from "lucide-react"
-import { motion } from "framer-motion"
+import { Trophy, Star, ShieldCheck, TrendingUp, Medal, Sparkles, ArrowRight, Activity, Zap } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 const RANK_STYLES: Record<number, string> = {
-  1: "bg-amber-500/10 border-amber-500/30 shadow-[0_0_30px_rgba(245,158,11,0.15)]",
-  2: "bg-slate-300/10 border-slate-300/30 shadow-[0_0_30px_rgba(203,213,225,0.15)]",
-  3: "bg-orange-600/10 border-orange-600/30 shadow-[0_0_30px_rgba(234,88,12,0.15)]",
+  1: "bg-amber-500/10 border-amber-500/30 shadow-[0_0_40px_rgba(245,158,11,0.1)]",
+  2: "bg-slate-300/10 border-slate-300/30 shadow-[0_0_40px_rgba(203,213,225,0.1)]",
+  3: "bg-orange-600/10 border-orange-600/30 shadow-[0_0_40px_rgba(234,88,12,0.1)]",
 }
 
 const RANK_ICON: Record<number, React.ReactNode> = {
-  1: <Trophy className="w-8 h-8 text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />,
-  2: <Medal className="w-8 h-8 text-slate-300 drop-shadow-[0_0_10px_rgba(203,213,225,0.5)]" />,
-  3: <Medal className="w-8 h-8 text-orange-500 drop-shadow-[0_0_10px_rgba(234,88,12,0.5)]" />,
+  1: <Trophy className="w-8 h-8 text-amber-400 drop-shadow-[0_0_15px_rgba(245,158,11,0.6)]" />,
+  2: <Medal className="w-8 h-8 text-slate-300 drop-shadow-[0_0_15px_rgba(203,213,225,0.6)]" />,
+  3: <Medal className="w-8 h-8 text-orange-500 drop-shadow-[0_0_15px_rgba(234,88,12,0.6)]" />,
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
 }
 
 export default function LeaderboardPage() {
   const [leaders, setLeaders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-
   const [stats, setStats] = useState({ verifiers: "0", products: "0", tokens: "0" })
 
   useEffect(() => {
@@ -48,7 +62,6 @@ export default function LeaderboardPage() {
       .catch(() => setLeaders([]))
       .finally(() => setLoading(false))
 
-    // Global Stats for the top cards
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/stats`)
       .then(r => {
         if (!r.ok || r.status === 204) return { data: null }
@@ -67,127 +80,197 @@ export default function LeaderboardPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="min-h-screen bg-[#020408] text-foreground pb-32 selection:bg-blue-500/30 selection:text-blue-200">
       <Header />
       
-      {/* ── Page Header ── */}
-      <div className="relative border-b border-white/[0.04] bg-[#0A0D14] overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/3 translate-x-1/3" />
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 relative z-10 text-center">
-          <span className="inline-flex items-center justify-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-widest mb-6">
-            <Trophy className="w-4 h-4" /> Global Rankings
-          </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-white drop-shadow-xl">
-            Protocol Guardians
-          </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Leading community members securing the network through accurate consensus voting.
-          </p>
+      {/* ── Dynamic Hero Section ── */}
+      <div className="relative border-b border-white/[0.04] bg-[#0A0D14]/50 overflow-hidden pt-12">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="max-w-7xl mx-auto px-4 py-20 relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-flex items-center justify-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-2xl backdrop-blur-md">
+              <Zap className="w-3.5 h-3.5" /> High-Reputation Guardians
+            </span>
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-6xl md:text-8xl font-black tracking-tighter mb-8 text-white uppercase italic tracking-[-0.04em]"
+          >
+            Network <span className="text-[#2775CA] drop-shadow-[0_0_30px_rgba(39,117,202,0.3)]">Consensus</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed"
+          >
+            Real-time standings of the world's leading product verifiers. Securing physical supply chains through decentralized proof audits.
+          </motion.p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-16">
 
-        {/* ── Global Stats ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+        {/* ── Staggered Global Stats ── */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-24"
+        >
           {[
-            { label: "Active Guardians", value: stats.verifiers, icon: <ShieldCheck className="w-6 h-6 text-orange-400" />, glow: "shadow-orange-500/10" },
-            { label: "Assets Verified", value: stats.products, icon: <Star className="w-6 h-6 text-amber-400" />, glow: "shadow-amber-500/10" },
-            { label: "Consensus Points", value: stats.tokens, icon: <TrendingUp className="w-6 h-6 text-emerald-400" />, glow: "shadow-emerald-500/10" },
+            { label: "Active Guardians", value: stats.verifiers, icon: ShieldCheck, color: "text-blue-400", bg: "from-blue-600/10" },
+            { label: "Market Intelligence", value: stats.products, icon: Activity, color: "text-emerald-400", bg: "from-emerald-500/10" },
+            { label: "Consensus Weight", value: stats.tokens, icon: TrendingUp, color: "text-amber-400", bg: "from-amber-600/10" },
           ].map((s, i) => (
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              key={s.label} 
-              className={`premium-card rounded-3xl p-8 text-center shadow-xl border-white/[0.06] ${s.glow}`}
+              key={s.label}
+              variants={itemVariants}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-10 text-center relative overflow-hidden group shadow-2xl"
             >
-              <div className="w-14 h-14 bg-[#0C0F17] rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/[0.04] shadow-inner">
-                {s.icon}
-              </div>
-              <div className="text-4xl font-bold font-mono text-white tracking-tighter mb-2">{s.value}</div>
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+               <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-30 pointer-events-none`} />
+               <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-500">
+                 <s.icon className={`w-8 h-8 ${s.color}`} />
+               </div>
+               <div className="text-5xl font-black text-white tracking-tighter mb-2 tabular-nums">{s.value}</div>
+               <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{s.label}</div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* ── Leaderboard Rankings ── */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 px-6 pb-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
-            <div className="w-16 md:w-24 text-center">Rank</div>
-            <div className="flex-1">Guardian Identity</div>
-            <div className="text-right w-32 md:w-48">Consensus Weight</div>
+        {/* ── Leaderboard Table Redesign ── */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-6 px-10 pb-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.25em]">
+            <div className="w-20 text-center">Node Rank</div>
+            <div className="flex-1">Identity Profile</div>
+            <div className="text-right w-48">Reputation Settlement</div>
           </div>
 
-          {loading ? (
-            [...Array(5)].map((_, i) => (
-              <div key={i} className="premium-card rounded-2xl p-6 h-28 animate-pulse border-white/[0.04]" />
-            ))
-          ) : leaders.map((l, i) => {
-            const rank = l.rank || i + 1
-            const rowStyle = RANK_STYLES[rank] || "bg-[#0C0F17] border-white/[0.04] hover:bg-white/[0.02]"
-            const isTop3 = rank <= 3
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-4"
+          >
+            {loading ? (
+              [...Array(6)].map((_, i) => (
+                <div key={i} className="premium-card rounded-[2.5rem] bg-[#0A0D14]/40 border border-white/[0.04] p-8 h-32 animate-pulse" />
+              ))
+            ) : leaders.map((l, i) => {
+              const rank = l.rank || i + 1
+              const rowStyle = RANK_STYLES[rank] || "bg-[#0A0D14]/40 border-white/[0.04] hover:bg-white/[0.02]"
+              const isTop3 = rank <= 3
 
-            return (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                key={rank} 
-                className={`flex items-center gap-4 md:gap-8 rounded-[2rem] px-6 py-5 md:py-6 transition-all group ${rowStyle}`}
-              >
-                {/* Rank Badge */}
-                <div className="w-16 md:w-24 flex justify-center shrink-0">
-                  {RANK_ICON[rank] ? (
-                    <div>{RANK_ICON[rank]}</div>
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-[#1F2D40] flex items-center justify-center font-bold text-slate-300 font-mono shadow-inner border border-white/5">
-                      #{rank}
-                    </div>
+              return (
+                <motion.div 
+                  key={rank}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.01, x: 5 }}
+                  className={`flex flex-col md:flex-row items-center gap-6 md:gap-10 rounded-[3rem] px-10 py-8 transition-all group relative overflow-hidden backdrop-blur-3xl border ${rowStyle}`}
+                >
+                  {isTop3 && (
+                    <motion.div 
+                      animate={{ opacity: [0.1, 0.3, 0.1] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className="absolute inset-0 bg-blue-500/5" 
+                    />
                   )}
-                </div>
 
-                {/* Identity */}
-                <div className="flex-1 min-w-0 flex items-center gap-5">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shrink-0 ${
-                    isTop3 ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white' : 'bg-[#1F2D40] text-slate-300 border border-white/5'
-                  }`}>
-                    {(l.name || "U")[0]}
+                  {/* Rank Node */}
+                  <div className="w-20 flex justify-center shrink-0 relative">
+                    {RANK_ICON[rank] ? (
+                      <motion.div 
+                        initial={{ rotateY: 0 }}
+                        animate={{ rotateY: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      >
+                        {RANK_ICON[rank]}
+                      </motion.div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-2xl bg-white/[0.03] flex items-center justify-center font-black text-slate-500 text-sm border border-white/5 shadow-inner">
+                        #{rank}
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <h3 className={`text-xl font-bold truncate ${isTop3 ? 'text-white' : 'text-slate-200 group-hover:text-white transition-colors'}`}>
-                      {l.name || `Guardian ${rank}`}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      {isTop3 && <Sparkles className="w-3.5 h-3.5 text-amber-400" />}
-                      <span className={`text-xs font-bold uppercase tracking-wider ${isTop3 ? 'text-amber-400/90' : 'text-slate-500'}`}>
-                        {l.badge || "Verifier"}
-                      </span>
+
+                  {/* Guardian Identity */}
+                  <div className="flex-1 min-w-0 flex items-center gap-8">
+                    <div className="relative group-hover:scale-110 transition-transform duration-500">
+                      <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center font-black text-2xl shadow-2xl shrink-0 ${
+                        isTop3 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white border border-white/20' : 'bg-[#1F2D40] text-slate-400 border border-white/5'
+                      }`}>
+                        {(l.name || "U")[0]}
+                      </div>
+                      {isTop3 && (
+                        <div className="absolute -top-2 -right-2 bg-[#2775CA] p-1.5 rounded-xl border-4 border-[#0A0D14] shadow-xl">
+                          <ShieldCheck className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className={`text-2xl font-black tracking-tight truncate ${isTop3 ? 'text-white' : 'text-slate-300 group-hover:text-blue-400 transition-colors'}`}>
+                        {l.name || `Verifier ${rank}`}
+                      </h3>
+                      <div className="flex items-center gap-3 mt-1.5">
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${
+                          isTop3 ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-white/[0.02] text-slate-500 border-white/[0.06]'
+                        }`}>
+                          <Sparkles className={`w-3 h-3 ${isTop3 ? "text-amber-400" : "text-slate-600"}`} /> {l.badge || "Verified Auditor"}
+                        </div>
+                        <span className="text-slate-700 text-xs font-black uppercase tracking-tighter">•</span>
+                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic">{l.accuracy || "High"} Accuracy Score</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Tokens & Stats */}
-                <div className="text-right shrink-0 w-32 md:w-48">
-                  <div className="text-2xl font-bold font-mono text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">
-                    {l.tokens.toLocaleString()}
+                  {/* Weight Data */}
+                  <div className="text-right shrink-0 w-full md:w-auto mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-0 border-white/[0.04]">
+                    <div className="text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(39,117,202,0.4)]">
+                      {l.tokens.toLocaleString()} <span className="text-xs text-blue-500 uppercase tracking-widest ml-1">Tokens</span>
+                    </div>
+                    <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-1.5 flex items-center justify-end gap-2">
+                       {l.votes} SUCCESSFUL AUDITS <ArrowRight className="w-3 h-3 text-emerald-500" />
+                    </div>
                   </div>
-                  <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider mt-1">
-                    {l.votes} Votes
-                  </div>
-                </div>
-              </motion.div>
-            )
-          })}
+                </motion.div>
+              )
+            })}
+          </motion.div>
         </div>
 
-        <div className="premium-card rounded-3xl p-8 mt-16 text-center shadow-2xl">
-          <ShieldCheck className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2">Join the Vanguard</h3>
-          <p className="text-slate-400 max-w-md mx-auto leading-relaxed">
-            Connect your stellar wallet and start auditing proof to secure the network and climb the global rankings.
+        {/* Global Call to Action */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="premium-card bg-gradient-to-br from-[#0A141A] to-[#020408] rounded-[3.5rem] p-16 mt-32 text-center shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/[0.06] relative overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-blue-600/[0.02] pointer-events-none" />
+          <div className="w-24 h-24 bg-white/[0.03] rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-700">
+             <ShieldCheck className="w-12 h-12 text-blue-500" />
+          </div>
+          <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-6 drop-shadow-2xl">Join the Protocol Vanguard</h3>
+          <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed font-medium mb-12">
+            Secure the global network through cryptographic consensus. Connect your Stellar wallet and start auditing proof to climb the global rankings.
           </p>
-        </div>
+          <button 
+             onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal'))}
+             className="bg-white text-black hover:bg-slate-200 h-16 px-12 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all active:scale-95"
+          >
+             Initialize Auditor Node
+          </button>
+        </motion.div>
       </div>
     </div>
   )
