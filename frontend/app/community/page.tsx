@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
   MessageSquare, Search, ShieldCheck, Lock, Sparkles, 
-  MessageCircle, Loader2, Plus, Wallet, Award, User as UserIcon, ArrowUpRight, Activity, Globe, Zap, Clock
+  MessageCircle, Loader2, Plus, Wallet, Award, User as UserIcon, ArrowUpRight, Activity, Globe, Zap, Clock, Package
 } from "lucide-react"
 import { getDiscussions, createDiscussion } from "@/lib/api-service"
 import { motion, AnimatePresence } from "framer-motion"
@@ -24,6 +24,7 @@ export default function CommunityPage() {
   const { isConnected, publicKey } = useSelector((s: RootState) => s.wallet)
   
   const [discussions, setDiscussions] = useState<any[]>([])
+  const [joinedNodes, setJoinedNodes] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [q, setQ] = useState("")
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -32,20 +33,29 @@ export default function CommunityPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const fetchDiscussions = async () => {
-    setLoading(true)
     try {
       const res = await getDiscussions()
       if (res.success) setDiscussions(res.data)
     } catch (error) {
       console.error(error)
-    } finally {
-      setLoading(false)
+    }
+  }
+
+  const fetchJoinedNodes = async () => {
+    if (!isAuthenticated && !isConnected) return
+    try {
+      const { getJoinedCommunities } = await import("@/lib/api-service")
+      const res = await getJoinedCommunities()
+      if (res.success) setJoinedNodes(res.data)
+    } catch (error) {
+      console.error(error)
     }
   }
 
   useEffect(() => {
-    fetchDiscussions()
-  }, [])
+    setLoading(true)
+    Promise.all([fetchDiscussions(), fetchJoinedNodes()]).finally(() => setLoading(false))
+  }, [isAuthenticated, isConnected])
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -175,6 +185,31 @@ export default function CommunityPage() {
 
         {/* Discourse Ledger */}
         <div className="space-y-8">
+          {/* Enrolled Protocols (Silent Join Visualization) */}
+          {joinedNodes.length > 0 && (
+            <div className="mb-20">
+               <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 flex items-center gap-4 italic mb-8">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 animate-pulse" /> Enrolled Node Hubs
+               </h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {joinedNodes.map((node: any) => (
+                    <div key={node.id} className="glass-premium bg-emerald-500/[0.03] border border-emerald-500/10 rounded-2xl p-6 flex items-center justify-between group hover:bg-emerald-500/[0.06] transition-all">
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                             <Package className="w-6 h-6 text-emerald-500" />
+                          </div>
+                          <div>
+                             <div className="text-xs font-black text-white uppercase italic tracking-tight">{node.supplier?.name}</div>
+                             <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">{node.supplier?.category} Node</div>
+                          </div>
+                       </div>
+                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[8px] uppercase font-black italic tracking-widest">Protocol Member</Badge>
+                    </div>
+                  ))}
+               </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mb-12">
              <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 flex items-center gap-4 italic">
                 <Activity className="w-4 h-4 text-blue-500 animate-pulse" /> Live Truth Ledger
@@ -213,9 +248,12 @@ export default function CommunityPage() {
                         </div>
                         <div className="flex-1 min-w-0 text-center sm:text-left w-full">
                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 md:gap-5 mb-3 md:mb-4">
-                            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
+                             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
                                <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Auth_Node"}
                             </div>
+                            {joinedNodes.some(n => n.supplierId === p.author?.supplierProfile?.id) && (
+                               <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[8px] uppercase font-black italic tracking-widest">Network Member</Badge>
+                            )}
                             <span className="text-slate-800 font-black text-xs opacity-50 hidden sm:inline">/</span>
                             <span className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>
                           </div>

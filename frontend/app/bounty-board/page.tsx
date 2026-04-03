@@ -129,6 +129,18 @@ export default function BountyBoardPage() {
                       <div className="flex items-center gap-3 flex-wrap mb-3">
                         <span className="font-bold text-xl group-hover:text-amber-500 transition-colors">{String(b.product?.title || "Product Proof")}</span>
                         <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 font-bold text-[10px] uppercase tracking-wider px-2 py-0.5">Verification</Badge>
+                        <Badge variant="outline" className={`text-[8px] font-black uppercase tracking-widest italic ${
+                          b.status === 'ACTIVE' ? 'border-emerald-500/20 text-emerald-400' : 
+                          b.status === 'COMPLETED' ? 'border-blue-500/20 text-blue-400' : 
+                          'border-white/10 text-slate-500'
+                        }`}>
+                          {b.status || 'ACTIVE'}
+                        </Badge>
+                        {b.expiresAt && new Date(b.expiresAt).getTime() - Date.now() < 86400000 * 2 && (
+                          <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[8px] font-black uppercase tracking-widest italic animate-pulse">
+                            Priority: <Clock className="w-3 h-3 ml-1" /> {Math.max(0, Math.floor((new Date(b.expiresAt).getTime() - Date.now()) / 3600000))}h left
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl italic">"{String(b.description || "")}"</p>
                       
@@ -139,6 +151,11 @@ export default function BountyBoardPage() {
                         <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
                           <Clock className="w-3 h-3 text-amber-500/70" /> {b.createdAt ? new Date(b.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                         </span>
+                        {b.expiresAt && (
+                          <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50 text-amber-500/80">
+                            Deadline: {new Date(b.expiresAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        )}
                         {b.issuer?.email && (
                           <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
                             By {b.issuer.email.split('@')[0]}

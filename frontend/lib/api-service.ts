@@ -54,6 +54,7 @@ export const castVote = (data: any) =>
   apiFetch('/community/vote', { method: 'POST', body: JSON.stringify(data) });
 
 export const getLeaderboard = () => apiFetch('/community/leaderboard');
+export const getJoinedCommunities = () => apiFetch('/community/joined');
 
 // ─── Stats ───
 export const getStats = () => apiFetch('/stats');

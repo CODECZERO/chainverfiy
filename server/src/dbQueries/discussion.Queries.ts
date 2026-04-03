@@ -22,7 +22,7 @@ export const createDiscussion = async (data: {
           email: true,
           stellarWallet: true,
           role: true,
-          supplierProfile: { select: { name: true, isVerified: true } }
+          supplierProfile: { select: { id: true, name: true, isVerified: true } }
         }
       }
     }
@@ -48,7 +48,7 @@ export const getDiscussions = async (filters?: { tag?: string; search?: string }
           email: true,
           stellarWallet: true,
           role: true,
-          supplierProfile: { select: { name: true, isVerified: true } }
+          supplierProfile: { select: { id: true, name: true, isVerified: true } }
         }
       },
       _count: { select: { comments: true } }
@@ -67,7 +67,7 @@ export const getDiscussionById = async (id: string) => {
           email: true,
           stellarWallet: true,
           role: true,
-          supplierProfile: { select: { name: true, isVerified: true } }
+          supplierProfile: { select: { id: true, name: true, isVerified: true } }
         }
       },
       comments: {
@@ -78,7 +78,7 @@ export const getDiscussionById = async (id: string) => {
               email: true,
               stellarWallet: true,
               role: true,
-              supplierProfile: { select: { name: true, isVerified: true } }
+              supplierProfile: { select: { id: true, name: true, isVerified: true } }
             }
           }
         },

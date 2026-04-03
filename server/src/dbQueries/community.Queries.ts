@@ -138,3 +138,20 @@ export const getVotesForUser = async (userId: string) => {
     orderBy: { createdAt: 'desc' }
   });
 };
+export const getJoinedCommunities = async (userId: string) => {
+  return prisma.communityMember.findMany({
+    where: { userId },
+    include: {
+      supplier: {
+        select: {
+          id: true,
+          name: true,
+          location: true,
+          trustScore: true,
+          category: true,
+        }
+      }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+};

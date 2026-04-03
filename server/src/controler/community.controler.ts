@@ -59,3 +59,12 @@ export const getUserHistory = asyncHandler(async (req: Request, res: Response) =
   const history = await getVotesForUser(targetId as string);
   return res.json(new ApiResponse(200, history, 'User voting history fetched'));
 });
+
+export const getJoinedNodes = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.query.userId as string || (req as any).user?.id;
+  if (!userId) return res.status(400).json(new ApiResponse(400, null, 'User ID required'));
+  
+  const { getJoinedCommunities } = await import('../dbQueries/community.Queries.js');
+  const communities = await getJoinedCommunities(userId);
+  return res.json(new ApiResponse(200, communities, 'Joined communities fetched'));
+});
