@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 // ─── Redis Client ───
 // Graceful fallback: if Redis is unavailable, all operations silently return null/void
@@ -16,11 +16,11 @@ if (process.env.NODE_ENV === 'test' || process.env.DISABLE_REDIS === 'true') {
 
   redis = globalForRedis.redis || new Redis(redisUrl, {
     maxRetriesPerRequest: null, // ioredis will keep trying to reconnect
-    retryStrategy(times) {
+    retryStrategy(times: number) {
       const delay = Math.min(times * 100, 3000);
       return delay;
     },
-    reconnectOnError(err) {
+    reconnectOnError(err: Error) {
       const targetError = 'READONLY';
       if (err.message.includes(targetError)) return true;
       return false;
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'test' || process.env.DISABLE_REDIS === 'true') {
     ...(useTls ? { tls: {} } : {}),
   });
 
-  redis.on('error', (err) => {
+  redis.on('error', (err: Error) => {
     console.warn('[REDIS] Connection error (falling back to Postgres):', err.message);
   });
 
@@ -109,7 +109,10 @@ export async function cacheDel(key: string): Promise<void> {
  */
 export function buildCacheKey(prefix: string, params: Record<string, any>): string {
   const sorted = Object.keys(params)
-    .filter(k => params[k] !== undefined && params[k] !== null && params[k] !== '')
+    .filter(k => {
+      const val = params[k];
+      return val !== undefined && val !== null && val !== '';
+    })
     .sort()
     .map(k => `${k}=${params[k]}`)
     .join('&');

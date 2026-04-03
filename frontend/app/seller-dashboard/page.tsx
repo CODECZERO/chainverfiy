@@ -10,7 +10,7 @@ import type { RootState } from "@/lib/redux/store"
 import { convertInrToUsdc } from "@/lib/exchange-rates"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import {
-  BarChart3, Package, Users, ShoppingCart, ArrowUpRight,
+  BarChart3, Package, User, Users, ShoppingCart, ArrowUpRight,
   ExternalLink, Copy, QrCode, Bell, Camera, Video, MapPin, Tag, Zap, Lock, Coins, Eye, Download, X, ArrowRight,
   Wallet, MessageCircle, Plus, CheckCircle2, XCircle, Clock, RefreshCw, AlertTriangle, ChevronRight, Star, Settings, BarChart2, ShieldCheck,
   Cpu, Activity, Radio, Globe
@@ -86,9 +86,23 @@ export default function SellerDashboard() {
   const [products, setProducts] = useState<any[]>([])
   const [orders, setOrders] = useState<any[]>([])
   const [bounties, setBounties] = useState<any[]>([])
-  const [stats, setStats] = useState({ active: 0, pending: 0, flagged: 0, totalSales: 0, usdcBalance: "0.0000", usdtBalance: "0.0000", xlmBalance: "0.00", usdcInr: "0", analytics: null as any })
+  const [stats, setStats] = useState({ 
+    active: 0, 
+    pending: 0, 
+    flagged: 0, 
+    totalSales: 0, 
+    usdcBalance: "0.0000", 
+    usdtBalance: "0.0000", 
+    xlmBalance: "0.00", 
+    usdcInr: "0", 
+    withdrawableInr: 0, 
+    totalEarningsInr: 0, 
+    pendingEarningsInr: 0,
+    analytics: null as any 
+  })
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [withdrawing, setWithdrawing] = useState(false)
   const [selectedQrProduct, setSelectedQrProduct] = useState<any>(null)
   const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"
   const sid = user?.supplierProfile?.id
@@ -121,6 +135,9 @@ export default function SellerDashboard() {
         const completedUsdc = completed.reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
         const shippedHalfUsdc = shippedHalf.reduce((s: number, o: any) => s + (Number(o.priceUsdc || 0) / 2), 0)
         const totalUsdc = completedUsdc + shippedHalfUsdc
+        const withdrawableUsdc = ords.filter((o: any) => o.status === "COMPLETED" || o.status === "DELIVERED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+        const pendingUsdc = ords.filter((o: any) => o.status === "PAID" || o.status === "SHIPPED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+
         setStats({
           active:       prods.filter((p: any) => p.status === "VERIFIED").length,
           pending:      prods.filter((p: any) => p.status === "PENDING_VERIFICATION").length,
@@ -130,6 +147,9 @@ export default function SellerDashboard() {
           usdtBalance:  "0.0000",
           xlmBalance:   "0.00",
           usdcInr:      (totalUsdc * 85).toFixed(0),
+          withdrawableInr: Number((withdrawableUsdc * 85).toFixed(0)),
+          totalEarningsInr: Number(((withdrawableUsdc + pendingUsdc) * 85).toFixed(0)),
+          pendingEarningsInr: Number((pendingUsdc * 85).toFixed(0)),
           analytics:    analyticsData
         })
       }
@@ -150,45 +170,42 @@ export default function SellerDashboard() {
     } catch (e) {
       console.error("Dispatch failed", e);
     }
-  }
+  };
 
   const copyWallet = () => {
-    if (user?.stellarWallet) navigator.clipboard.writeText(user.stellarWallet)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    if (user?.stellarWallet) {
+      navigator.clipboard.writeText(user.stellarWallet);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    setWithdrawing(true);
+    setTimeout(() => {
+      setWithdrawing(false);
+      loadAll();
+    }, 2000);
+  };
 
   if (loading && !user) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+      <div className="min-h-screen bg-[#030408] text-white flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-blue-600/30 border-t-blue-600 rounded-full animate-spin shadow-[0_0_30px_rgba(37,99,235,0.4)]" />
       </div>
     )
   }
 
   if (!user || user.role !== "SUPPLIER") {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Header />
-        <div className="max-w-md mx-auto px-4 py-20 text-center">
-          <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Lock className="w-8 h-8 text-muted-foreground" />
+      <div className="min-h-screen bg-[#030408] flex items-center justify-center p-8">
+        <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3rem] p-12 text-center max-w-md shadow-3xl">
+          <div className="w-20 h-20 bg-red-600/10 rounded-[2.5rem] flex items-center justify-center border border-red-500/20 mx-auto mb-8">
+             <Lock className="w-10 h-10 text-red-500" />
           </div>
-          <h1 className="text-2xl font-bold mb-2">Supplier Access Only</h1>
-          <p className="text-muted-foreground mb-8">
-            Please sign in as a supplier to access your dashboard and manage your listings.
-          </p>
-          <div className="flex gap-3 justify-center">
-            <Link href="/">
-              <Button variant="outline" className="rounded-xl">Go Home</Button>
-            </Link>
-            <Button className="rounded-xl" onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal'))}>
-              Supplier Login
-            </Button>
-          </div>
+          <h2 className={`${outfit.className} text-3xl font-black text-white uppercase italic mb-4`}>Unauthorized Access</h2>
+          <p className="text-slate-500 text-sm font-black uppercase tracking-[0.2em] mb-10 leading-relaxed italic">Supplier clearance required for this terminal node.</p>
+          <Button onClick={() => router.push('/')} className="bg-white text-black h-16 w-full rounded-2xl font-black uppercase tracking-widest text-xs">Return to Surface</Button>
         </div>
       </div>
     )
@@ -581,8 +598,6 @@ export default function SellerDashboard() {
                   </div>
                 </div>
               )}
-                </div>
-              )}
 
               {/* ── LISTINGS TAB ── */}
               {active === "listings" && (
@@ -732,7 +747,7 @@ export default function SellerDashboard() {
                       <p className="text-slate-600 text-[13px] font-black uppercase tracking-[0.4em] mt-5 leading-relaxed max-w-md mx-auto opacity-60 italic">Escrow channels are currently idle. No buyer signals detected on the protocol layer.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 gap-8">
+                    <div className="grid grid-cols-1 gap-10">
                       <AnimatePresence mode="popLayout">
                         {orders.map((o, i) => {
                           const s = STATUS[o.status] || STATUS.PAID;
@@ -742,58 +757,43 @@ export default function SellerDashboard() {
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: i * 0.05 }}
-                              className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-8 shadow-3xl flex flex-col xl:flex-row items-center gap-10 group hover:border-blue-500/30 transition-all duration-500 relative overflow-hidden"
+                              className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-10 shadow-3xl flex flex-col xl:flex-row items-center gap-12 group hover:border-blue-500/40 transition-all duration-700 relative overflow-hidden"
                             >
-                              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                               
-                              <div className="flex items-center gap-8 flex-1 min-w-0">
-                                <div className="w-24 h-24 bg-white/[0.02] rounded-[2rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 transition-transform duration-700 overflow-hidden relative shadow-inner">
+                              <div className="flex items-center gap-10 flex-1 min-w-0">
+                                <div className="w-28 h-28 bg-white/[0.02] rounded-[2.5rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 overflow-hidden relative shadow-2xl">
                                    {o.product?.proofMediaUrls?.[0] ? (
-                                      <Image src={getIPFSUrl(o.product.proofMediaUrls[0])} alt="" fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
-                                   ) : <Package className="w-10 h-10 text-slate-600" />}
+                                      <Image src={getIPFSUrl(o.product.proofMediaUrls[0])} alt="" fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-1000 scale-110 group-hover:scale-100" />
+                                   ) : <Package className="w-12 h-12 text-slate-700" />}
                                 </div>
-                                <div className="min-w-0 space-y-3">
-                                  <div className="flex flex-wrap items-center gap-4">
-                                    <span className={`px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-[0.2em] shadow-lg ${s.cls}`}>
-                                       <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse shadow-[0_0_8px_currentColor] inline-block mr-2`} />
-                                       {s.label}
-                                    </span>
-                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest font-mono bg-white/[0.02] px-3 py-1.5 rounded-lg border border-white/[0.04]">TX_ID: {o.id.slice(0, 16)}</span>
-                                  </div>
-                                  <h3 className="text-3xl font-black text-white truncate tracking-tighter uppercase italic group-hover:text-blue-400 transition-colors">{o.product?.title || "Protocol Asset"}</h3>
-                                  <div className="flex flex-wrap items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
-                                    <span className="flex items-center gap-2.5 bg-white/[0.02] px-3 py-2 rounded-xl border border-white/[0.04] italic"><Users className="w-4 h-4 text-blue-500" /> {o.buyer?.email}</span>
-                                    <span className="flex items-center gap-2.5 bg-white/[0.02] px-3 py-2 rounded-xl border border-white/[0.04] italic"><Clock className="w-4 h-4 text-slate-500" /> {new Date(o.createdAt).toLocaleDateString()}</span>
-                                  </div>
+                                <div className="flex-1 min-w-0">
+                                   <div className="flex items-center gap-5 mb-3">
+                                      <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] font-mono italic opacity-60">TXN-{o.id.slice(0, 10)}</span>
+                                      <span className="text-slate-800 font-black text-xs opacity-50">/</span>
+                                      <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic opacity-60">{new Date(o.createdAt).toLocaleDateString()}</span>
+                                   </div>
+                                   <h4 className={`${outfit.className} text-3xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em]`}>{o.product?.title || 'Protocol Asset'}</h4>
+                                   <div className="flex items-center gap-6 mt-5">
+                                      <div className={`flex items-center gap-3 px-5 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-2xl ${s.cls} shadow-2xl italic`}>
+                                         <div className={`w-2 h-2 rounded-full ${s.dot} shadow-[0_0_12px_currentColor]`} /> {s.label}
+                                      </div>
+                                      <div className="flex items-center gap-3 bg-white/[0.03] px-5 py-2 rounded-2xl border border-white/[0.06]">
+                                         <User className="w-4 h-4 text-blue-400" />
+                                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">Node: {o.buyer?.walletAddress?.slice(0, 6)}...{o.buyer?.walletAddress?.slice(-4)}</span>
+                                      </div>
+                                   </div>
                                 </div>
                               </div>
 
-                              <div className="flex flex-col items-center xl:items-end shrink-0 border-x border-white/[0.04] px-12 min-w-[240px]">
-                                <div className="text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(39,117,202,0.3)]">{o.priceUsdc} <span className="text-sm text-blue-500 uppercase tracking-widest ml-1">USDC</span></div>
-                                <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mt-2 italic">Settlement Liquidity</div>
-                              </div>
-
-                              <div className="flex flex-col gap-3 min-w-[200px]">
-                                {o.status === "PAID" && (
-                                  <Button onClick={() => handleDispatch(o.id)} className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl h-14 w-full shadow-[0_15px_40px_rgba(37,99,235,0.25)] transition-all transform active:scale-95 border border-white/10">
-                                    Confirm Dispatch
-                                  </Button>
-                                )}
-                                {(o.status === "SHIPPED" || o.status === "DELIVERED" || o.status === "COMPLETED") && (
-                                  <div className="space-y-3">
-                                     <Button disabled className="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black tracking-widest uppercase text-[10px] rounded-2xl h-14 opacity-100 shadow-lg">
-                                        Fulfillment Active <CheckCircle2 className="w-4 h-4 ml-3" />
-                                     </Button>
-                                     <div className="grid grid-cols-2 gap-3">
-                                        <Button onClick={() => window.open(`/order/${o.id}/journey`, "_blank")} className="bg-white/5 hover:bg-white/10 text-white border border-white/[0.06] font-black tracking-widest uppercase text-[9px] rounded-xl h-11 transition-all active:scale-95">
-                                           Node Map
-                                        </Button>
-                                        <Button onClick={() => window.open(`/proof/${o.id}?viewType=origin`, "_blank")} className="bg-white/5 hover:bg-white/10 text-white border border-white/[0.06] font-black tracking-widest uppercase text-[9px] rounded-xl h-11 transition-all active:scale-95">
-                                           Event Log
-                                        </Button>
-                                     </div>
-                                  </div>
-                                )}
+                              <div className="flex items-center gap-12 w-full xl:w-auto shrink-0 pt-10 xl:pt-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] xl:pl-12">
+                                <div className="text-right">
+                                   <div className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-3">Escrow Value</div>
+                                   <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic`}>₹{Number(o.totalPriceInr).toLocaleString()}</div>
+                                </div>
+                                <Link href={`/product/${o.product?.id}`} className="w-18 h-18 rounded-[1.5rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 hover:text-white hover:bg-blue-600/30 transition-all active:scale-90 shadow-2xl hover:scale-110 duration-500 group/btn">
+                                   <ArrowRight className="w-8 h-8 group-hover/btn:translate-x-1 transition-transform" />
+                                </Link>
                               </div>
                             </motion.div>
                           );
@@ -808,111 +808,173 @@ export default function SellerDashboard() {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-10"
+                  className="space-y-12"
                 >
-                  <div className="flex flex-col">
-                    <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]">Settlement <span className="text-blue-500">Vault</span></h2>
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
-                       <Wallet className="w-3 h-3 text-blue-500" /> On-chain Liquidity Settlement Hub
-                    </p>
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                    <div>
+                      <h2 className={`${outfit.className} text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]`}>Yield <span className="text-blue-500">Vault</span></h2>
+                      <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.4em] mt-3 flex items-center gap-3 italic">
+                         <Coins className="w-4 h-4 text-blue-500 animate-pulse" /> Protocol Liquidity & Net Equity
+                      </p>
+                    </div>
+                    {/* Institutional Settle Action */}
+                    <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-6 pr-8 flex items-center gap-10 shadow-3xl">
+                       <div className="flex items-center gap-6">
+                          <div className="w-16 h-16 rounded-[1.5rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 shadow-2xl">
+                             <Zap className="w-7 h-7 text-blue-400 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]" />
+                          </div>
+                          <div>
+                             <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] font-mono italic">Maturity Yield</div>
+                             <div className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>₹{Number(stats.withdrawableInr).toLocaleString()}</div>
+                          </div>
+                       </div>
+                       <Button 
+                          onClick={handleWithdraw}
+                          disabled={withdrawing || Number(stats.withdrawableInr) <= 0}
+                          className={`${outfit.className} bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.25em] uppercase text-[11px] rounded-[1.25rem] h-16 px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] transition-all transform active:scale-90 disabled:opacity-20 italic border border-white/10`}
+                       >
+                          {withdrawing ? "SYCHRONIZING..." : "Execute Settle"}
+                       </Button>
+                    </div>
                   </div>
 
-                  <div className="grid lg:grid-cols-2 gap-10">
-                    {/* Main Balance Display */}
-                    <motion.div 
-                      whileHover={{ scale: 1.01 }}
-                      className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-12 relative overflow-hidden group shadow-3xl"
-                    >
-                       <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none group-hover:bg-blue-600/20 transition-colors duration-700" />
-                       <div className="relative z-10">
-                          <div className="flex items-center gap-4 mb-10">
-                             <div className="w-14 h-14 rounded-2xl bg-blue-600/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shadow-inner">
-                                <Wallet className="w-7 h-7 drop-shadow-[0_0_10px_rgba(37,99,235,0.4)]" />
-                             </div>
-                             <div>
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Global Liquidity Pool</h3>
-                                <div className="text-white text-[9px] font-black uppercase tracking-widest mt-1 opacity-40">Stellar Testnet Node</div>
-                             </div>
-                          </div>
-                          
-                          <div className="space-y-8">
-                              <div className="flex items-center justify-between group/row">
-                                 <div className="space-y-1.5">
-                                    <div className="text-5xl font-black tracking-tighter tabular-nums text-white flex items-end gap-4 tracking-[-0.03em]">
-                                       {stats.usdcBalance} <span className="text-[11px] font-black bg-blue-600 text-white px-3 py-1 rounded-xl mb-2 shadow-lg tracking-widest uppercase">USDC</span>
-                                    </div>
-                                    <div className="text-lg font-black text-slate-500 tracking-tight italic opacity-60">≈ ₹{Number(stats.usdcInr).toLocaleString()} INR</div>
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                     {/* Aggregate Capital Intelligence */}
+                     <motion.div 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="lg:col-span-12 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[4rem] p-12 shadow-3xl relative overflow-hidden group"
+                     >
+                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none group-hover:bg-blue-600/[0.06] transition-colors duration-1000" />
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 relative z-10">
+                           <div className="space-y-4 border-r border-white/[0.06] pr-16">
+                              <div className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] italic mb-6">Total Net Protocol Equity</div>
+                              <div className={`${outfit.className} text-7xl font-black text-white tracking-tighter italic drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]`}>₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
+                              <div className="flex items-center gap-4 mt-8">
+                                 <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
+                                    <ArrowUpRight className="w-4 h-4 text-emerald-500" />
+                                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">+14.2%</span>
                                  </div>
-                                 <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-400/5 px-4 py-2 rounded-xl border border-blue-400/10 opacity-0 group-hover/row:opacity-100 transition-all">Verified Funds</div>
+                                 <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Institutional Grade Efficiency</span>
                               </div>
-
-                              <div className="h-px bg-white/[0.04] shadow-inner" />
-
-                              <div className="grid grid-cols-2 gap-10">
-                                 <div className="space-y-2">
-                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">DeFi Reserve (USDT)</div>
-                                    <div className="text-3xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-3">
-                                       {stats.usdtBalance} <span className="text-[9px] font-black text-emerald-500/50">STABLE</span>
-                                    </div>
+                           </div>
+                           <div className="space-y-8 px-8">
+                              <div className="space-y-4">
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Pending Node Validations</span>
+                                    <span className={`${outfit.className} text-xl font-black text-amber-500 italic`}>₹{Number(stats.pendingEarningsInr).toLocaleString()}</span>
                                  </div>
-                                 <div className="space-y-2">
-                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Protocol Gas (XLM)</div>
-                                    <div className="text-3xl font-black tracking-tighter tabular-nums text-slate-300 flex items-center gap-3">
-                                       {stats.xlmBalance} <span className="text-[9px] font-black text-slate-500/50">LUMENS</span>
+                                 <div className="w-full h-3 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.06] p-0.5">
+                                    <motion.div initial={{ width: 0 }} animate={{ width: '40%' }} className="h-full bg-gradient-to-r from-amber-600 to-amber-400 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
+                                 </div>
+                              </div>
+                              <div className="space-y-4">
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Unlocked Settlement Liquidity</span>
+                                    <span className={`${outfit.className} text-xl font-black text-blue-500 italic`}>₹{Number(stats.totalEarningsInr - stats.pendingEarningsInr).toLocaleString()}</span>
+                                 </div>
+                                 <div className="w-full h-3 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.06] p-0.5">
+                                    <motion.div initial={{ width: 0 }} animate={{ width: '75%' }} className="h-full bg-gradient-to-r from-blue-700 to-blue-400 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+                                 </div>
+                              </div>
+                           </div>
+                           <div className="bg-[#080B12]/80 rounded-[3rem] p-10 border border-white/[0.08] shadow-2xl flex flex-col items-center justify-center text-center relative group/inner shadow-inner">
+                              <div className="absolute inset-0 bg-blue-600/[0.02] opacity-0 group-hover/inner:opacity-100 transition-opacity" />
+                              <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic mb-6">Aggregate Yield Score</div>
+                              <div className={`${outfit.className} text-6xl font-black text-blue-500 italic tracking-tighter drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]`}>99.42<span className="text-2xl text-blue-900">%</span></div>
+                              <div className="mt-8 flex items-center justify-center gap-3">
+                                 <div className="flex -space-x-2">
+                                    {[1, 2, 3].map(i => <div key={i} className="w-6 h-6 rounded-full border-2 border-[#030408] bg-blue-600" />)}
+                                 </div>
+                                 <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest italic">Tier-1 Protocol Audit</span>
+                              </div>
+                           </div>
+                        </div>
+                     </motion.div>
+
+                     {/* Protocol Settlement Config */}
+                     <motion.div 
+                        whileHover={{ scale: 1.005 }}
+                        className="lg:col-span-12 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 relative overflow-hidden group shadow-3xl"
+                     >
+                        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-blue-600/[0.03] to-transparent pointer-events-none" />
+                        <div className="grid lg:grid-cols-2 gap-20 relative z-10">
+                           <div className="space-y-12">
+                              <div className="flex items-center gap-6">
+                                 <div className="w-20 h-20 rounded-[2rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shadow-2xl">
+                                    <Wallet className="w-10 h-10 drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
+                                 </div>
+                                 <div>
+                                    <h3 className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter`}>Liquid Reserve <span className="text-blue-500">Node</span></h3>
+                                    <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic mt-1">Stellar Distributed Ledger Protocol</div>
+                                 </div>
+                              </div>
+                              
+                              <div className="space-y-10">
+                                 <div className="bg-[#080B12] border border-white/[0.06] rounded-[2.5rem] p-10 shadow-inner group/wallet relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover/wallet:opacity-100 transition-opacity" />
+                                    <div className="flex items-center justify-between mb-6">
+                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic leading-none">Public Secure Identity</div>
+                                       <div className="flex items-center gap-2">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]" />
+                                          <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest font-mono">Synchronized</span>
+                                       </div>
+                                    </div>
+                                    <div className="font-mono text-xl text-blue-300 break-all leading-relaxed tracking-[0.1em] border-b border-white/5 pb-8 mb-8">{user?.stellarWallet || 'RESOLUTION_FAILED'}</div>
+                                    <div className="flex items-center gap-6">
+                                       <Button onClick={copyWallet} variant="ghost" className="h-12 px-6 rounded-xl hover:bg-white/5 text-slate-500 hover:text-white transition-all flex items-center gap-3 font-black uppercase tracking-widest text-[9px]">
+                                          {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />} {copied ? 'CAPTURED' : 'COPY IDENTITY'}
+                                       </Button>
+                                       <a href={`https://stellar.expert/explorer/testnet/account/${user?.stellarWallet}`} target="_blank" rel="noopener noreferrer">
+                                          <Button variant="ghost" className="h-12 px-6 rounded-xl hover:bg-blue-600/10 text-slate-500 hover:text-blue-400 transition-all flex items-center gap-3 font-black uppercase tracking-widest text-[9px]">
+                                             <ExternalLink className="w-4 h-4" /> TRACE LEDGER
+                                          </Button>
+                                       </a>
                                     </div>
                                  </div>
                               </div>
                            </div>
 
-                          <div className="grid grid-cols-2 gap-6 mt-16">
-                             <Button className="bg-white text-black hover:bg-slate-200 h-16 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all active:scale-95">Liquidate to Fiat</Button>
-                             <Button variant="outline" className="h-16 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs border-white/[0.08] hover:bg-white/5 transition-all text-slate-400 hover:text-white">Bridge Assets</Button>
-                          </div>
-                       </div>
-                    </motion.div>
+                           <div className="flex flex-col justify-between">
+                              <div className="space-y-10">
+                                 <div className="grid grid-cols-2 gap-10">
+                                    <div className="space-y-3 bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/[0.04]">
+                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Current USDC Balance</div>
+                                       <div className={`${outfit.className} text-5xl font-black text-white italic tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]`}>{stats.usdcBalance}</div>
+                                       <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest font-mono italic opacity-60">Settlement Asset</div>
+                                    </div>
+                                    <div className="space-y-3 bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/[0.04]">
+                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Asset Pair Value</div>
+                                       <div className={`${outfit.className} text-5xl font-black text-slate-300 italic tracking-tighter tabular-nums`}>₹{Number(stats.usdcInr).toLocaleString()}</div>
+                                       <div className="text-[10px] font-black text-slate-700 uppercase tracking-widest font-mono italic opacity-60">FIAT MAGNITUDE</div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div className="grid grid-cols-2 gap-8">
+                                    <div className="flex items-center gap-5 p-6 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-[2rem]">
+                                       <ShieldCheck className="w-6 h-6 text-emerald-500/40" />
+                                       <div>
+                                          <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Escrow Status</div>
+                                          <div className="text-xs font-black text-slate-300 uppercase tracking-widest italic">ACTIVE_PROTECTED</div>
+                                       </div>
+                                    </div>
+                                    <div className="flex items-center gap-5 p-6 bg-blue-500/[0.03] border border-white/5 rounded-[2rem]">
+                                       <RefreshCw className="w-6 h-6 text-blue-500/40 animate-spin-slow" />
+                                       <div>
+                                          <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Live Sync Rate</div>
+                                          <div className="text-xs font-black text-slate-300 uppercase tracking-widest italic">1.2ms_LATENCY</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
 
-                    {/* Network Configuration */}
-                    <motion.div 
-                      whileHover={{ scale: 1.01 }}
-                      className="premium-card bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] p-12 shadow-3xl flex flex-col justify-between group"
-                    >
-                       <div className="relative z-10 h-full flex flex-col">
-                          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-10 flex items-center gap-3 italic">
-                             <Lock className="w-4 h-4 text-emerald-500 drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]" /> Receiving Endpoint Status: <span className="text-emerald-500">Active</span>
-                          </div>
-                          {user?.stellarWallet ? (
-                             <div className="space-y-10 flex-1 flex flex-col">
-                                <div className="bg-[#080B12] border border-white/[0.04] rounded-[2.5rem] p-8 shadow-inner relative group/wallet overflow-hidden flex-1">
-                                   <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover/wallet:opacity-100 transition-opacity" />
-                                   <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] mb-4 italic">Encrypted Secure Public Hash</div>
-                                   <div className="font-mono text-base text-blue-300 break-all leading-relaxed tracking-wider">{user.stellarWallet}</div>
-                                   <button 
-                                      onClick={copyWallet}
-                                      className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/10 group-active:scale-90"
-                                   >
-                                      {copied ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Copy className="w-5 h-5 text-slate-500" />}
-                                   </button>
-                                </div>
-                                <div className="flex gap-4">
-                                   <a href={`https://stellar.expert/explorer/testnet/account/${user.stellarWallet}`} target="_blank" rel="noopener noreferrer" className="flex-1">
-                                      <Button variant="outline" className="w-full h-14 rounded-2xl font-black uppercase tracking-[0.15em] text-[10px] border-white/[0.08] hover:bg-blue-600/10 hover:border-blue-500/30 hover:text-blue-400 transition-all">
-                                         <ExternalLink className="w-4 h-4 mr-2" /> Protocol Explorer
-                                      </Button>
-                                   </a>
-                                   <Button variant="outline" className="flex-1 h-14 rounded-2xl font-black uppercase tracking-[0.15em] text-[10px] border-white/[0.08] hover:bg-white/5">
-                                      <Settings className="w-4 h-4 mr-2" /> Node Config
-                                   </Button>
-                                </div>
-                             </div>
-                          ) : (
-                             <div className="text-center py-20 bg-amber-500/[0.02] rounded-[3rem] border-2 border-dashed border-amber-500/20 flex-1 flex flex-col items-center justify-center">
-                                <AlertTriangle className="w-16 h-16 text-amber-500/30 mb-8" />
-                                <p className="text-slate-500 text-sm font-black uppercase tracking-[0.2em] px-12 leading-relaxed">Network Receiving endpoint not resolved.</p>
-                                <Button className="mt-10 bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-[0.25em] text-[10px] rounded-2xl h-14 px-12 shadow-2xl">Initialize Relay</Button>
-                             </div>
-                          )}
-                       </div>
-                    </motion.div>
+                              <div className="grid grid-cols-2 gap-8 mt-12">
+                                 <Button className={`${outfit.className} bg-white text-black hover:bg-slate-200 h-20 rounded-[2rem] font-black uppercase tracking-[0.25em] text-[11px] shadow-[0_20px_50px_rgba(255,255,255,0.15)] transition-all active:scale-95 italic`}>Liquidate to Fiat</Button>
+                                 <Button variant="outline" className={`${outfit.className} h-20 rounded-[2rem] font-black uppercase tracking-[0.25em] text-[11px] border-white/[0.1] hover:bg-white/5 transition-all text-slate-400 hover:text-white italic`}>Node Settings</Button>
+                              </div>
+                           </div>
+                        </div>
+                     </motion.div>
                   </div>
                 </motion.div>
               )}

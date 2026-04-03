@@ -122,7 +122,7 @@ export const getTransparencyStats = async () => {
   // Process volume trend into daily buckets
   const dailyBuckets: Record<string, number> = {};
   volumeTrendRaw.forEach(o => {
-    const date = o.createdAt.toISOString().split('T')[0];
+    const date = o.createdAt.toISOString().split('T')[0] as string;
     dailyBuckets[date] = (dailyBuckets[date] || 0) + Number(o.priceUsdc || 0);
   });
 
