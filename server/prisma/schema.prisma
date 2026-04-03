@@ -1,14 +1,444 @@
 generator client {
   provider        = "prisma-client-js"
   output          = "../src/generated/prisma"
-  previewFeatures = ["postgresqlExtensions", "driverAdapters", "fullTextSearchPostgres"]
+  previewFeatures = ["driverAdapters", "fullTextSearchPostgres", "postgresqlExtensions"]
+}
+
+generator seed {
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
+model User {
+  id              String             @id @default(uuid())
+  email           String?            @unique
+  passwordHash    String?
+  role            UserRole           @default(BUYER)
+  stellarWallet   String?            @unique
+  managedSecret   String?
+  whatsappNumber  String?            @unique
+  isVerified      Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  issuedBounties  Bounty[]           @relation("IssuerBounties")
+  solvedBounties  Bounty[]           @relation("SolverBounties")
+  buyerProfile    BuyerProfile?
+  comments        Comment[]
+  discussions     Discussion[]
+  notifications   Notification[]
+  buyerOrders     Order[]            @relation("BuyerOrders")
+  supplierProfile Supplier?
+  trustTokens     TrustTokenLedger[]
+  votes           Vote[]
+  communities     CommunityMember[]
 
+  @@map("users")
+}
+
+model Supplier {
+  id              String           @id @default(uuid())
+  userId          String           @unique
+  name            String
+  description     String?
+  location        String?
+  category        String?
+  stellarWallet   String?
+  managedSecret   String?
+  whatsappNumber  String           @unique
+  trustScore      Float            @default(0)
+  totalSales      Int              @default(0)
+  flagCount       Int              @default(0)
+  isVerified      Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  machineScanners MachineScanner[]
+  products        Product[]
+  badges          SellerBadge[]
+  user            User             @relation(fields: [userId], references: [id])
+  members         CommunityMember[]
+
+  @@index([trustScore])
+  @@index([location])
+  @@map("suppliers")
+}
+
+model Product {
+  id             String        @id @default(uuid())
+  supplierId     String
+  title          String
+  description    String?
+  category       String
+  priceInr       Decimal       @db.Decimal(10, 2)
+  priceUsdc      Decimal?      @db.Decimal(18, 7)
+  quantity       String?
+  status         ProductStatus @default(PENDING_VERIFICATION)
+  proofMediaUrls String[]
+  qrCodeUrl      String?
+  stellarTxId    String?
+  voteReal       Int           @default(0)
+  voteFake       Int           @default(0)
+  voteNeedsProof Int           @default(0)
+  verifiedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  bounties       Bounty[]
+  orders         Order[]
+  supplier       Supplier      @relation(fields: [supplierId], references: [id])
+  qrCodes        QRCode[]
+  stageUpdates   StageUpdate[]
+  votes          Vote[]
+
+  @@index([category])
+  @@index([status])
+  @@index([priceInr])
+  @@index([supplierId])
+  @@map("products")
+}
+
+model StageUpdate {
+  id          String   @id @default(uuid())
+  productId   String
+  stageName   String
+  stageNumber Int
+  note        String?
+  photoUrl    String?
+  videoUrl    String?
+  gpsLat      Float?
+  gpsLng      Float?
+  gpsAddress  String?
+  stellarTxId String?
+  createdAt   DateTime @default(now())
+  product     Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@map("stage_updates")
+}
+
+model Vote {
+  id            String   @id @default(uuid())
+  productId     String
+  userId        String
+  voteType      VoteType
+  reason        String?
+  isAccurate    Boolean?
+  stakedAmount  Int      @default(0)
+  stakeReleased Boolean  @default(false)
+  stakeSlashed  Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  product       Product  @relation(fields: [productId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+  @@map("votes")
+}
+
+model Order {
+  id                   String        @id @default(uuid())
+  productId            String
+  buyerId              String
+  quantity             Int           @default(1)
+  priceInr             Decimal       @db.Decimal(10, 2)
+  priceUsdc            Decimal       @db.Decimal(18, 7)
+  paymentMethod        PaymentMethod
+  sourceCurrency       String?
+  sourceAmount         Decimal?      @db.Decimal(18, 7)
+  status               OrderStatus   @default(PENDING)
+  escrowContractId     String?
+  escrowTxId           String?
+  pathPaymentTxId      String?
+  releaseTxId          String?
+  refundTxId           String?
+  buyerRating          Int?
+  buyerReview          String?
+  qrCodeUrl            String?
+  qrBuyerToken         String?       @unique
+  qrSupplierToken      String?       @unique
+  qrBuyerScannedAt     DateTime?
+  qrSupplierScannedAt  DateTime?
+  deliveryCertCid      String?
+  deliveryCertTxId     String?
+  deliveredAt          DateTime?
+  shippingFullName     String?
+  shippingPhone        String?
+  shippingAddress      String?
+  shippingCity         String?
+  shippingState        String?
+  shippingPincode      String?
+  shippingCountry      String?       @default("India")
+  deliveryConfirmedAt  DateTime?
+  proofDeadlineAt      DateTime?
+  autoCompletedAt      DateTime?
+  buyerProofCid        String?
+  buyerProofUploadedAt DateTime?
+  buyerDisputeReason   String?
+  refundEligible       Boolean       @default(true)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  buyer                User          @relation("BuyerOrders", fields: [buyerId], references: [id])
+  product              Product       @relation(fields: [productId], references: [id])
+  qrCode               QRCode?
+
+  @@index([buyerId])
+  @@index([productId])
+  @@index([status])
+  @@map("orders")
+}
+
+model TrustTokenLedger {
+  id          String   @id @default(uuid())
+  userId      String
+  amount      Int
+  reason      String
+  referenceId String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("trust_token_ledger")
+}
+
+model SellerBadge {
+  id         String    @id @default(uuid())
+  supplierId String
+  tier       BadgeTier
+  awardedAt  DateTime  @default(now())
+  supplier   Supplier  @relation(fields: [supplierId], references: [id])
+
+  @@unique([supplierId, tier])
+  @@map("seller_badges")
+}
+
+model WhatsAppSession {
+  id            String        @id @default(uuid())
+  phoneNumber   String        @unique
+  supplierId    String?
+  state         WhatsAppState @default(IDLE)
+  sessionData   Json?
+  lastMessageAt DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+
+  @@index([phoneNumber])
+  @@map("whatsapp_sessions")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  body        String
+  isRead      Boolean          @default(false)
+  referenceId String?
+  createdAt   DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id])
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model BuyerProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  fullName    String?
+  phoneNumber String?
+  address     String?
+  city        String?
+  state       String?
+  pincode     String?
+  country     String?  @default("India")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("buyer_profiles")
+}
+
+model MachineScanner {
+  id              String    @id @default(uuid())
+  apiKey          String    @unique
+  apiKeyHint      String
+  name            String
+  deviceModel     String?
+  firmwareVersion String?
+  supplierId      String?
+  fixedLat        Float?
+  fixedLng        Float?
+  fixedLocation   String?
+  fixedCountry    String?
+  isActive        Boolean   @default(true)
+  totalScans      Int       @default(0)
+  lastSeenAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  supplier        Supplier? @relation(fields: [supplierId], references: [id])
+  scans           QRScan[]
+
+  @@index([supplierId])
+  @@map("machine_scanners")
+}
+
+model QRCode {
+  id                 String    @id @default(uuid())
+  orderId            String?   @unique
+  productId          String?
+  supplierId         String?
+  token              String    @unique
+  shortCode          String    @unique
+  purpose            QRPurpose
+  totalScans         Int       @default(0)
+  browserScans       Int       @default(0)
+  machineScans       Int       @default(0)
+  uniqueDevices      Int       @default(0)
+  countriesReached   String[]
+  firstScannedAt     DateTime?
+  lastScannedAt      DateTime?
+  lastScannedCity    String?
+  lastScannedCountry String?
+  genesisAnchorTx    String?
+  latestAnchorTx     String?
+  totalAnchors       Int       @default(0)
+  productGTIN        String?
+  serialNumber       String?
+  gs1DigitalLink     String?
+  expiresAt          DateTime?
+  isExpired          Boolean   @default(false)
+  anomalyCount       Int       @default(0)
+  lastAnomalyAt      DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  order              Order?    @relation(fields: [orderId], references: [id])
+  product            Product?  @relation(fields: [productId], references: [id])
+  scans              QRScan[]
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("qr_codes")
+}
+
+model QRScan {
+  id                  String          @id @default(uuid())
+  qrCodeId            String
+  scanSource          ScanSource
+  machineScannerIdRef String?
+  scanNumber          Int
+  clientTimestamp     DateTime?
+  serverTimestamp     DateTime        @default(now())
+  userAgent           String?
+  deviceType          String?
+  os                  String?
+  browser             String?
+  screenResolution    String?
+  language            String?
+  timezone            String?
+  connectionType      String?
+  referrer            String?
+  isOnline            Boolean?
+  gpsLat              Float?
+  gpsLng              Float?
+  gpsAccuracy         Float?
+  gpsAltitude         Float?
+  locationPermission  String?
+  machineDeviceId     String?
+  machineModel        String?
+  machineFirmware     String?
+  rawScanData         String?
+  machineEventType    String?
+  ipAddress           String?
+  ipCountry           String?
+  ipCountryName       String?
+  ipCity              String?
+  ipRegion            String?
+  ipIsp               String?
+  ipIsProxy           Boolean?        @default(false)
+  ipLat               Float?
+  ipLng               Float?
+  resolvedLat         Float?
+  resolvedLng         Float?
+  resolvedLocation    String?
+  coordinateSource    String?
+  scannerRole         String?
+  walletConnected     Boolean         @default(false)
+  walletAddress       String?
+  anchoredOnChain     Boolean         @default(false)
+  anchorTxId          String?
+  anchorReason        String?
+  anomalyScore        Int             @default(0)
+  anomalyReasons      String[]
+  scanToken           String?         @unique
+  scanTokenUsed       Boolean         @default(false)
+  viewType            String?
+  createdAt           DateTime        @default(now())
+  machineScanner      MachineScanner? @relation(fields: [machineScannerIdRef], references: [id])
+  qrCode              QRCode          @relation(fields: [qrCodeId], references: [id])
+
+  @@index([qrCodeId])
+  @@index([serverTimestamp])
+  @@index([ipCountry])
+  @@index([scanSource])
+  @@map("qr_scans")
+}
+
+model Bounty {
+  id              String        @id @default(uuid())
+  productId       String
+  issuerId        String?
+  issuerWallet    String?
+  amount          Decimal       @db.Decimal(18, 7)
+  description     String
+  status          BountyStatus  @default(PENDING)
+  paymentMethod   PaymentMethod @default(STELLAR_USDC)
+  transactionHash String?       @unique
+  solverId        String?
+  proofCid        String?
+  proofUploadedAt DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  expiresAt       DateTime?
+  issuer          User?         @relation("IssuerBounties", fields: [issuerId], references: [id])
+  product         Product       @relation(fields: [productId], references: [id])
+  solver          User?         @relation("SolverBounties", fields: [solverId], references: [id])
+
+  @@index([productId])
+  @@index([issuerId])
+  @@index([solverId])
+  @@map("bounties")
+}
+
+model Discussion {
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  authorId  String
+  tags      String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+  author    User      @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
+  @@map("discussions")
+}
+
+model Comment {
+  id           String     @id @default(uuid())
+  content      String
+  authorId     String
+  discussionId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  author       User       @relation(fields: [authorId], references: [id])
+  discussion   Discussion @relation(fields: [discussionId], references: [id])
+
+  @@index([authorId])
+  @@index([discussionId])
+  @@map("comments")
+}
 
 enum UserRole {
   SUPPLIER
@@ -44,7 +474,6 @@ enum PaymentMethod {
   UPI
   INTERNAL
 }
-
 
 enum BountyStatus {
   PENDING
@@ -92,266 +521,6 @@ enum NotificationType {
   REFUND_WINDOW_CLOSING
 }
 
-model User {
-  id             String   @id @default(uuid())
-  email          String?  @unique
-  passwordHash   String?
-  role           UserRole @default(BUYER)
-  stellarWallet  String?  @unique
-  managedSecret  String? // For backend-managed wallets
-  whatsappNumber String?  @unique
-  isVerified     Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  supplierProfile Supplier?
-  buyerProfile    BuyerProfile?
-  buyerOrders     Order[]            @relation("BuyerOrders")
-  votes           Vote[]
-  notifications   Notification[]
-  trustTokens     TrustTokenLedger[]
-  issuedBounties  Bounty[]           @relation("IssuerBounties")
-  solvedBounties  Bounty[]           @relation("SolverBounties")
-  discussions     Discussion[]
-  comments        Comment[]
-  communityMemberships CommunityMember[]
-
-  @@map("users")
-}
-
-model Supplier {
-  id             String   @id @default(uuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
-  name           String
-  description    String?
-  location       String?
-  category       String?
-  stellarWallet  String?
-  managedSecret  String? // For backend-managed wallets
-  whatsappNumber String   @unique
-  trustScore     Float    @default(0)
-  totalSales     Int      @default(0)
-  flagCount      Int      @default(0)
-  isVerified     Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  products Product[]
-  badges   SellerBadge[]
-  machineScanners  MachineScanner[]
-  communityMembers CommunityMember[]
-
-  @@index([trustScore])
-  @@index([location])
-  @@map("suppliers")
-}
-
-model Product {
-  id             String        @id @default(uuid())
-  supplierId     String
-  supplier       Supplier      @relation(fields: [supplierId], references: [id])
-  title          String
-  description    String?
-  category       String
-  priceInr       Decimal       @db.Decimal(10, 2)
-  priceUsdc      Decimal?      @db.Decimal(18, 7)
-  quantity       String?
-  status         ProductStatus @default(PENDING_VERIFICATION)
-  proofMediaUrls String[]
-  qrCodeUrl      String?
-  stellarTxId    String?
-  voteReal       Int           @default(0)
-  voteFake       Int           @default(0)
-  voteNeedsProof Int           @default(0)
-  verifiedAt     DateTime?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-
-  stageUpdates StageUpdate[]
-  votes        Vote[]
-  orders       Order[]
-  qrCodes      QRCode[]
-  bounties     Bounty[]
-
-  @@index([category])
-  @@index([status])
-  @@index([priceInr])
-  @@index([supplierId])
-  @@map("products")
-}
-
-model StageUpdate {
-  id          String   @id @default(uuid())
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id])
-  stageName   String
-  stageNumber Int
-  note        String?
-  photoUrl    String?
-  videoUrl    String?
-  gpsLat      Float?
-  gpsLng      Float?
-  gpsAddress  String?
-  stellarTxId String?
-  createdAt   DateTime @default(now())
-
-  @@index([productId])
-  @@map("stage_updates")
-}
-
-model Vote {
-  id         String   @id @default(uuid())
-  productId  String
-  product    Product  @relation(fields: [productId], references: [id])
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  voteType   VoteType
-  reason        String?
-  isAccurate    Boolean?
-  stakedAmount  Int      @default(0)
-  stakeReleased Boolean  @default(false)
-  stakeSlashed  Boolean  @default(false)
-  createdAt     DateTime @default(now())
-
-  @@unique([productId, userId])
-  @@index([productId])
-  @@index([userId])
-  @@map("votes")
-}
-
-model Order {
-  id                String        @id @default(uuid())
-  productId         String
-  product           Product       @relation(fields: [productId], references: [id])
-  buyerId           String
-  buyer             User          @relation("BuyerOrders", fields: [buyerId], references: [id])
-  quantity          Int           @default(1)
-  priceInr          Decimal       @db.Decimal(10, 2)
-  priceUsdc         Decimal       @db.Decimal(18, 7)
-  paymentMethod     PaymentMethod
-  sourceCurrency    String?
-  sourceAmount      Decimal?      @db.Decimal(18, 7)
-  status            OrderStatus   @default(PENDING)
-  escrowContractId  String?
-  escrowTxId        String?
-  pathPaymentTxId   String?
-  releaseTxId       String?
-  refundTxId          String?
-  buyerRating         Int?
-  buyerReview         String?
-  qrCodeUrl           String?
-
-  qrBuyerToken        String?       @unique
-  qrSupplierToken     String?       @unique
-  qrBuyerScannedAt    DateTime?
-  qrSupplierScannedAt DateTime?
-  deliveryCertCid     String?
-  deliveryCertTxId    String?
-  deliveredAt         DateTime?
-
-  // ── Shipping Details snapshot ──────────────────────────────────────
-  shippingFullName    String?
-  shippingPhone        String?
-  shippingAddress     String?
-  shippingCity        String?
-  shippingState       String?
-  shippingPincode      String?
-  shippingCountry     String?      @default("India")
-
-  // ── Delivery confirmation ──────────────────────────────────────────
-  deliveryConfirmedAt  DateTime?   // when buyer clicked "I received it"
-  proofDeadlineAt      DateTime?   // deliveryConfirmedAt + 72 hours
-  autoCompletedAt      DateTime?   // set by background job if no proof in 72h
-
-  // ── Buyer dispute proof ────────────────────────────────────────────
-  buyerProofCid        String?     // IPFS CID of buyer's evidence (photo/video)
-  buyerProofUploadedAt DateTime?
-  buyerDisputeReason   String?     // free text, max 500 chars
-  refundEligible       Boolean     @default(true)
-
-  createdAt           DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-
-  @@index([buyerId])
-  @@index([productId])
-  @@index([status])
-  @@map("orders")
-
-  qrCode          QRCode?
-}
-
-model TrustTokenLedger {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  amount      Int
-  reason      String
-  referenceId String?
-  createdAt   DateTime @default(now())
-
-  @@index([userId])
-  @@map("trust_token_ledger")
-}
-
-model SellerBadge {
-  id         String    @id @default(uuid())
-  supplierId String
-  supplier   Supplier  @relation(fields: [supplierId], references: [id])
-  tier       BadgeTier
-  awardedAt  DateTime  @default(now())
-
-  @@unique([supplierId, tier])
-  @@map("seller_badges")
-}
-
-model WhatsAppSession {
-  id            String        @id @default(uuid())
-  phoneNumber   String        @unique
-  supplierId    String?
-  state         WhatsAppState @default(IDLE)
-  sessionData   Json?
-  lastMessageAt DateTime      @default(now())
-  createdAt     DateTime      @default(now())
-
-  @@index([phoneNumber])
-  @@map("whatsapp_sessions")
-}
-
-model Notification {
-  id          String           @id @default(uuid())
-  userId      String
-  user        User             @relation(fields: [userId], references: [id])
-  type        NotificationType
-  title       String
-  body        String
-  isRead      Boolean          @default(false)
-  referenceId String?
-  createdAt   DateTime         @default(now())
-
-  @@index([userId, isRead])
-  @@map("notifications")
-}
-
-model BuyerProfile {
-  id             String   @id @default(uuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
-  fullName       String?
-  phoneNumber    String?
-  address        String?
-  city           String?
-  state          String?
-  pincode        String?
-  country        String?  @default("India")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@map("buyer_profiles")
-}
-
-// ─── Living QR Enums ──────────────────────────────────────────────────────────
-
 enum QRPurpose {
   ORDER_BUYER
   ORDER_SUPPLIER
@@ -364,243 +533,14 @@ enum ScanSource {
   MACHINE
   API
 }
-
-// ─── Machine Scanner Registry ─────────────────────────────────────────────────
-
-model MachineScanner {
-  id              String    @id @default(uuid())
-  apiKey          String    @unique
-  apiKeyHint      String
-  name            String
-  deviceModel     String?
-  firmwareVersion String?
-  supplierId      String?
-  supplier        Supplier? @relation(fields: [supplierId], references: [id])
-
-  fixedLat        Float?
-  fixedLng        Float?
-  fixedLocation   String?
-  fixedCountry    String?
-
-  isActive        Boolean   @default(true)
-  totalScans      Int       @default(0)
-  lastSeenAt      DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  scans           QRScan[]
-
-  @@index([supplierId])
-  @@map("machine_scanners")
-}
-
-// ─── QR Code Master Record ────────────────────────────────────────────────────
-
-model QRCode {
-  id               String     @id @default(uuid())
-
-  orderId          String?    @unique
-  order            Order?     @relation(fields: [orderId], references: [id])
-  productId        String?
-  product          Product?   @relation(fields: [productId], references: [id])
-  supplierId       String?
-
-  token            String     @unique
-  shortCode        String     @unique
-  purpose          QRPurpose
-
-  totalScans       Int        @default(0)
-  browserScans     Int        @default(0)
-  machineScans     Int        @default(0)
-  uniqueDevices    Int        @default(0)
-  countriesReached String[]
-  firstScannedAt   DateTime?
-  lastScannedAt    DateTime?
-  lastScannedCity  String?
-  lastScannedCountry String?
-
-  genesisAnchorTx  String?
-  latestAnchorTx   String?
-  totalAnchors     Int        @default(0)
-
-  // GS1 Digital Link
-  productGTIN    String?
-  serialNumber   String?
-  gs1DigitalLink String?
-
-  // Expiry
-  expiresAt      DateTime?
-  isExpired      Boolean   @default(false)
-
-  // Anomaly tracking
-  anomalyCount   Int       @default(0)
-  lastAnomalyAt  DateTime?
-
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-
-  scans            QRScan[]
-
-  @@index([orderId])
-  @@index([productId])
-  @@map("qr_codes")
-}
-
-// ─── Individual Scan Event ────────────────────────────────────────────────────
-
-model QRScan {
-  id               String         @id @default(uuid())
-  qrCodeId         String
-  qrCode           QRCode         @relation(fields: [qrCodeId], references: [id])
-
-  scanSource       ScanSource
-  machineScannerIdRef String?
-  machineScanner   MachineScanner? @relation(fields: [machineScannerIdRef], references: [id])
-
-  scanNumber       Int
-
-  clientTimestamp  DateTime?
-  serverTimestamp  DateTime       @default(now())
-
-  userAgent        String?        @db.Text
-  deviceType       String?
-  os               String?
-  browser          String?
-  screenResolution String?
-  language         String?
-  timezone         String?
-  connectionType   String?
-  referrer         String?        @db.Text
-  isOnline         Boolean?
-
-  gpsLat           Float?
-  gpsLng           Float?
-  gpsAccuracy      Float?
-  gpsAltitude      Float?
-  locationPermission String?
-
-  machineDeviceId  String?
-  machineModel     String?
-  machineFirmware  String?
-  rawScanData      String?        @db.Text
-  machineEventType String?
-
-  ipAddress        String?
-  ipCountry        String?
-  ipCountryName    String?
-  ipCity           String?
-  ipRegion         String?
-  ipIsp            String?
-  ipIsProxy        Boolean?       @default(false)
-  ipLat            Float?
-  ipLng            Float?
-
-  resolvedLat      Float?
-  resolvedLng      Float?
-  resolvedLocation String?
-  coordinateSource String?
-
-  scannerRole      String?
-  walletConnected  Boolean        @default(false)
-  walletAddress    String?
-
-  anchoredOnChain  Boolean        @default(false)
-  anchorTxId       String?
-  anchorReason     String?
-
-  // Anomaly detection
-  anomalyScore   Int       @default(0)
-  anomalyReasons String[]
-
-  // Ephemeral scan token (anti-replay)
-  scanToken      String?   @unique
-  scanTokenUsed  Boolean   @default(false)
-
-  // View routing
-  viewType       String?
-
-  createdAt        DateTime       @default(now())
-
-  @@index([qrCodeId])
-  @@index([serverTimestamp])
-  @@index([ipCountry])
-  @@index([scanSource])
-  @@map("qr_scans")
-}
-
-model Bounty {
-  id              String       @id @default(uuid())
-  productId       String
-  product         Product      @relation(fields: [productId], references: [id])
-  issuerId        String?
-  issuer          User?        @relation("IssuerBounties", fields: [issuerId], references: [id])
-  issuerWallet    String?
-  amount          Decimal      @db.Decimal(18, 7)
-  description     String
-  status          BountyStatus @default(PENDING)
-  paymentMethod   PaymentMethod @default(STELLAR_USDC)
-  transactionHash String?       @unique
-  solverId        String?
-  solver          User?        @relation("SolverBounties", fields: [solverId], references: [id])
-  proofCid        String?
-  proofUploadedAt DateTime?
-  expiresAt       DateTime?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-
-  @@index([productId])
-  @@index([issuerId])
-  @@index([solverId])
-  @@map("bounties")
-}
-
-model Discussion {
-  id           String   @id @default(uuid())
-  title        String
-  content      String   @db.Text
-  authorId     String?
-  author       User?    @relation(fields: [authorId], references: [id])
-  authorWallet String?
-  tags         String[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  comments  Comment[]
-
-  @@index([authorId])
-  @@index([authorWallet])
-  @@map("discussions")
-}
-
-model Comment {
-  id           String     @id @default(uuid())
-  content      String     @db.Text
-  authorId     String?
-  author       User?      @relation(fields: [authorId], references: [id])
-  authorWallet String?
-  discussionId String
-  discussion   Discussion @relation(fields: [discussionId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@index([authorId])
-  @@index([authorWallet])
-  @@index([discussionId])
-  @@map("comments")
-}
-
 model CommunityMember {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  supplierId  String
-  supplier    Supplier @relation(fields: [supplierId], references: [id])
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  userId     String
+  supplierId String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
 
   @@unique([userId, supplierId])
   @@map("community_members")
-}
-
-generator seed {
-  provider = "prisma-client-js"
 }

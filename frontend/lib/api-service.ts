@@ -4,9 +4,16 @@
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 async function apiFetch(path: string, options?: RequestInit) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
+
   const res = await fetch(`${API}${path}`, {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { 
+      'Content-Type': 'application/json', 
+      ...authHeaders,
+      ...options?.headers 
+    },
     ...options,
   });
   return res.json();
