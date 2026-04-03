@@ -180,67 +180,73 @@ export default function ProductPage() {
   const isVerified = product.status === "VERIFIED"
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="min-h-screen bg-[#05060B] text-foreground pb-24 selection:bg-blue-500/30 selection:text-blue-200">
       <Header />
       
+      {/* ── Dynamic Atmospheric Background ── */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full" />
+      </div>
+
       {/* ── Breadcrumb ── */}
-      <div className="border-b border-border bg-background/50 backdrop-blur-md sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/marketplace" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
+      <div className="border-b border-white/[0.04] bg-[#0A0D14]/80 backdrop-blur-3xl sticky top-16 z-40">
+        <div className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/marketplace" className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-white transition-all italic">
+            <ArrowLeft className="w-4 h-4 mr-3" /> Back to Market Index
           </Link>
-          <div className="flex items-center gap-3">
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-              isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+          <div className="flex items-center gap-4">
+            <span className={`inline-flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] italic ${
+              isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]" : "bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]"
             }`}>
               {isVerified ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-              {isVerified ? "Community Verified" : "Pending Verification"}
+              {isVerified ? "Oracle Verified" : "Analysis Pending"}
             </span>
             {isVerifiedUserForThisProduct && (
-              <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5" /> Verified Buyer
-              </span>
-            )}
-            {product.category && (
-              <span className="bg-accent text-muted-foreground border border-border px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                {product.category}
+              <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 italic">
+                <ShieldCheck className="w-3.5 h-3.5" /> Licensed Auditor
               </span>
             )}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid lg:grid-cols-12 gap-12">
+      <div className="max-w-[1600px] mx-auto px-6 py-16 relative z-10">
+        <div className="grid lg:grid-cols-12 gap-16">
 
           {/* ── Left Column: Media & Details (8 columns) ── */}
-          <div className="lg:col-span-8 space-y-10">
+          <div className="lg:col-span-8 space-y-16">
             
             {/* 1. Header & Title */}
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.15] mb-4">
+              <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] mb-6 italic flex items-center gap-3">
+                 <div className="w-8 h-[1px] bg-blue-500/30" />
+                 Product Identity Node
+              </div>
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] mb-10 text-white uppercase italic">
                 {String(product.title || "")}
               </h1>
-              <p className="text-lg text-slate-400 leading-relaxed max-w-3xl">
+              <p className="text-xl text-slate-400 leading-relaxed max-w-3xl font-medium italic border-l-2 border-white/5 pl-8">
                 {String(product.description || "")}
               </p>
             </div>
 
             {/* 2. Media Gallery */}
-            <div className="space-y-4">
-              <div className="aspect-[4/3] sm:aspect-[16/10] bg-[#111827] border border-white/[0.06] rounded-[2rem] overflow-hidden relative group">
+            <div className="space-y-6">
+              <div className="aspect-[16/10] bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[3rem] overflow-hidden relative group shadow-2xl">
+                <div className="absolute inset-0 bg-blue-500/5 mix-blend-overlay pointer-events-none" />
                 {product.proofMediaUrls?.[activeImg] ? (
                   <Image 
                     src={getIPFSUrl(product.proofMediaUrls[activeImg])} 
                     alt={product.title} 
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
                     priority
                   />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground/50">
-                    <Package className="w-24 h-24 mb-4" />
-                    <span className="text-lg font-medium">No Image Available</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-700">
+                    <Package className="w-24 h-24 mb-6 stroke-[1]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">No Visual Evidence Synchronized</span>
                   </div>
                 )}
               </div>
@@ -262,50 +268,51 @@ export default function ProductPage() {
             </div>
 
             {/* 3. Verification Trust Block */}
-            <div className="premium-card rounded-3xl p-8">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
+            <div className="bg-[#0A0D14]/80 backdrop-blur-3xl rounded-[3rem] p-12 border border-white/[0.08] shadow-3xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-blue-500/[0.02] pointer-events-none" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-12">
                 <div>
-                  <h3 className="text-xl font-bold flex items-center gap-2 mb-1">
-                    <ShieldCheck className="w-6 h-6 text-emerald-400" /> Community Verification
+                  <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] mb-3 italic">Consensus Protocol v2.4</div>
+                  <h3 className="text-3xl font-black flex items-center gap-4 text-white uppercase italic">
+                    <ShieldCheck className="w-8 h-8 text-blue-400" /> Community Audit
                   </h3>
-                  <p className="text-sm text-muted-foreground">Blockchain consensus on authenticity.</p>
                 </div>
                 <Button 
                   onClick={() => setShowBountyModal(true)}
-                  className="rounded-2xl h-12 px-6 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-lg shadow-orange-500/20 w-full sm:w-auto"
+                  className="rounded-2xl h-14 px-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_20px_40px_rgba(37,99,235,0.2)] border-none text-[10px] font-black uppercase tracking-[0.2em] italic transition-all active:scale-95"
                 >
-                  <Coins className="w-5 h-5 mr-2" /> Request More Proof
+                  <Coins className="w-5 h-5 mr-3" /> Request Deep Audit
                 </Button>
               </div>
 
-              <div className="grid sm:grid-cols-3 gap-6 mb-8">
-                <div className="bg-[#0C0F17] border border-white/[0.04] rounded-2xl p-5 text-center">
-                  <div className="text-3xl font-bold text-emerald-400 mb-1">{String(realPct)}%</div>
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Trust Consensus</div>
+              <div className="grid sm:grid-cols-3 gap-8 mb-12">
+                <div className="bg-[#0C0F17]/50 border border-white/[0.04] rounded-[2rem] p-8 text-center group-hover:border-blue-500/20 transition-all">
+                  <div className="text-5xl font-black text-blue-400 mb-3 drop-shadow-[0_0_20px_rgba(59,130,246,0.3)] italic">{String(realPct)}%</div>
+                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Trust Index</div>
                 </div>
-                <div className="bg-[#0C0F17] border border-white/[0.04] rounded-2xl p-5 text-center">
-                  <div className="text-3xl font-bold text-slate-200 mb-1">{String(total)}</div>
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Votes</div>
+                <div className="bg-[#0C0F17]/50 border border-white/[0.04] rounded-[2rem] p-8 text-center">
+                  <div className="text-5xl font-black text-white mb-3 italic">{String(total)}</div>
+                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Node Validations</div>
                 </div>
-                <div className="bg-[#0C0F17] border border-white/[0.04] rounded-2xl p-5 flex items-center justify-center gap-6">
+                <div className="bg-[#0C0F17]/50 border border-white/[0.04] rounded-[2rem] p-8 flex items-center justify-center gap-10">
                   <div className="text-center">
-                    <div className="text-xl font-bold text-emerald-400 mb-1 flex items-center justify-center gap-1"><CheckCircle2 className="w-4 h-4" />{String(product.voteReal)}</div>
-                    <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Real</div>
+                    <div className="text-2xl font-black text-emerald-400 mb-1 flex items-center justify-center gap-2 italic">{String(product.voteReal)}</div>
+                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] italic">Valid</div>
                   </div>
-                  <div className="w-px h-8 bg-border" />
+                  <div className="w-px h-12 bg-white/5" />
                   <div className="text-center">
-                    <div className="text-xl font-bold text-red-500 mb-1 flex items-center justify-center gap-1"><XCircle className="w-4 h-4" />{String(product.voteFake)}</div>
-                    <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Fake</div>
+                    <div className="text-2xl font-black text-red-500 mb-1 flex items-center justify-center gap-2 italic">{String(product.voteFake)}</div>
+                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] italic">Void</div>
                   </div>
                 </div>
               </div>
 
-              <div className="h-4 bg-[#0C0F17] rounded-full overflow-hidden p-0.5">
+              <div className="h-4 bg-[#0C0F17] rounded-full overflow-hidden p-1 border border-white/[0.04] shadow-inner mb-2 text-white">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${realPct}%` }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" 
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.5)]" 
                 />
               </div>
 
@@ -392,38 +399,45 @@ export default function ProductPage() {
 
             {/* 5. Production Journey Timeline */}
             {product.stageUpdates?.length > 0 && (
-              <div className="pt-6">
-                <h3 className="text-2xl font-bold mb-8">Verified Production Journey</h3>
-                <div className="pl-6 md:pl-8 border-l-2 border-border space-y-12">
+              <div className="pt-12">
+                 <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] mb-6 italic flex items-center gap-3">
+                    <div className="w-8 h-[1px] bg-blue-500/30" />
+                    Immutable Origin Ledger
+                 </div>
+                <h3 className="text-4xl font-black mb-12 text-white uppercase italic">Audit Trail</h3>
+                <div className="pl-12 border-l border-white/[0.08] space-y-16 relative">
+                   <div className="absolute top-0 left-[-1px] w-[1px] h-full bg-gradient-to-b from-blue-500/50 via-white/5 to-transparent" />
                   {product.stageUpdates.map((s: any, i: number) => (
                     <div key={s.id} className="relative">
                       {/* Timeline dot */}
-                      <div className="absolute -left-[35px] md:-left-[43px] top-1 w-8 h-8 rounded-full bg-background border-4 border-primary flex items-center justify-center shadow-[0_0_15px_rgba(232,119,46,0.3)]" />
+                      <div className="absolute -left-[57px] top-2 w-10 h-10 rounded-2xl bg-[#05060B] border border-blue-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.2)] group-hover:scale-110 transition-transform">
+                         <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                      </div>
                       
-                      <div className="bg-[#111827] border border-white/[0.04] rounded-2xl p-6 -mt-2 hover:border-white/[0.1] transition-colors">
-                        <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
-                          <h4 className="text-lg font-bold text-white">{String(s.stageName || "Update")}</h4>
-                          <span className="text-xs text-slate-500 font-mono bg-background px-3 py-1.5 rounded-lg border border-border">
-                            {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : 'N/A'}
+                      <div className="bg-[#0A0D14]/60 backdrop-blur-3xl border border-white/[0.06] rounded-[2.5rem] p-10 hover:border-blue-500/20 transition-all group/trail">
+                        <div className="flex flex-wrap items-center justify-between gap-6 mb-6">
+                          <h4 className="text-2xl font-black text-white uppercase italic">{String(s.stageName || "Data Point")}</h4>
+                          <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-white/[0.02] px-4 py-2 rounded-xl border border-white/[0.04] italic">
+                            {s.createdAt ? new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                           </span>
                         </div>
                         
-                        {s.note && <p className="text-slate-400 mb-5 leading-relaxed">{String(s.note)}</p>}
+                        {s.note && <p className="text-lg text-slate-400 mb-8 leading-relaxed italic font-medium">"{String(s.note)}"</p>}
                         
-                        <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-4">
                           {(s.gpsLat && s.gpsLng) && (
                             <a href={`https://www.google.com/maps?q=${encodeURIComponent(`${s.gpsLat},${s.gpsLng}`)}`}
                                target="_blank" rel="noopener noreferrer"
-                               className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg hover:bg-emerald-500/20 transition-colors">
-                              <MapPin className="w-3.5 h-3.5" />
-                              {String(s.gpsAddress ? s.gpsAddress : "Verified Location")}
+                               className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 bg-blue-500/10 border border-blue-500/20 px-6 py-3 rounded-2xl hover:bg-blue-500/20 transition-all italic">
+                              <MapPin className="w-4 h-4" />
+                              {String(s.gpsAddress ? s.gpsAddress : "Verified Coordinates")}
                             </a>
                           )}
                           {s.stellarTxId && (
                             <a href={`https://stellar.expert/explorer/testnet/tx/${s.stellarTxId}`} 
                                target="_blank" rel="noopener noreferrer" 
-                               className="inline-flex items-center gap-2 text-xs font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-lg hover:bg-orange-500/20 transition-colors">
-                              <ExternalLink className="w-3.5 h-3.5" /> Immutable Record
+                               className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-6 py-3 rounded-2xl hover:bg-indigo-500/20 transition-all italic">
+                              <ExternalLink className="w-4 h-4" /> Soroban Record
                             </a>
                           )}
                         </div>
@@ -440,24 +454,24 @@ export default function ProductPage() {
             <div className="sticky top-24 space-y-6">
 
               {/* Checkout Box */}
-              <div className="premium-card rounded-[2rem] p-8 border border-white/[0.08] shadow-2xl relative overflow-hidden">
+              <div className="bg-[#0A0D14]/80 backdrop-blur-3xl rounded-[3rem] p-10 border border-white/[0.08] shadow-3xl relative overflow-hidden">
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 blur-[60px] rounded-full pointer-events-none" />
                 
-                <div className="mb-8">
-                  <div className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Market Evaluation</div>
-                  <div className="flex flex-col gap-6">
-                    <div className="flex items-center justify-between bg-[#0C0F17]/50 border border-white/[0.04] p-5 rounded-3xl shadow-inner">
+                <div className="mb-10">
+                  <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-6 italic">Strategic Acquisition</div>
+                  <div className="flex flex-col gap-8">
+                    <div className="flex items-center justify-between bg-black/40 border border-white/[0.04] p-8 rounded-[2.5rem] shadow-inner">
                       <div>
-                        <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Local Price</div>
+                        <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 italic">Local Value</div>
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-black text-white tracking-tighter">₹{Number(product.priceInr || 0).toLocaleString()}</span>
-                          <span className="text-slate-500 font-bold text-xs uppercase">INR</span>
+                          <span className="text-4xl font-black text-white tracking-tighter italic">₹{Number(product.priceInr || 0).toLocaleString()}</span>
+                          <span className="text-slate-500 font-black text-[10px] uppercase italic">INR</span>
                         </div>
                       </div>
-                      <div className="h-10 w-px bg-white/[0.06]" />
+                      <div className="h-12 w-px bg-white/[0.06]" />
                       <div className="text-right">
-                        <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Settlement Asset</div>
-                        <div className="text-2xl font-black text-blue-400 font-mono tracking-tight">
+                        <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 italic">Settlement</div>
+                        <div className="text-3xl font-black text-blue-400 font-mono tracking-tight italic">
                           {(() => {
                             const price = Number(product.priceInr || 0)
                             if (selectedCurrency === 'USDC') return (price / (allRates?.USDC?.inr || 83.33)).toFixed(2)
@@ -465,17 +479,17 @@ export default function ProductPage() {
                             if (selectedCurrency === 'XLM') return (price / (allRates?.XLM?.inr || 28.6)).toFixed(1)
                             return price.toLocaleString()
                           })()}
-                          <span className="ml-1.5 text-xs text-blue-500/50 uppercase">{selectedCurrency}</span>
+                          <span className="ml-2 text-[10px] text-blue-500/50 uppercase italic">{selectedCurrency}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 bg-[#0C0F17]/30 p-2 rounded-2xl border border-white/[0.02]">
+                    <div className="flex items-center justify-center gap-3 bg-white/[0.02] p-2 rounded-2xl border border-white/[0.04]">
                       {PAYMENT_CURRENCIES.map(c => (
                         <button 
                           key={c}
                           onClick={() => setSelectedCurrency(c)}
-                          className={`flex-1 text-[10px] font-black py-2.5 rounded-xl transition-all border ${selectedCurrency === c ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 border-white/[0.05] text-slate-500 hover:text-slate-300'}`}
+                          className={`flex-1 text-[10px] font-black py-4 rounded-xl transition-all border italic ${selectedCurrency === c ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-transparent border-transparent text-slate-600 hover:text-slate-300'}`}
                         >
                           {c}
                         </button>
@@ -485,16 +499,16 @@ export default function ProductPage() {
                 </div>
 
                 {/* Escrow Notice */}
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 mb-8 flex gap-3">
-                  <Lock className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-emerald-100/70 leading-relaxed font-medium">
-                    Payment secured in <span className="text-emerald-400 font-bold">Stellar Soroban Escrow</span>. 
-                    Funds remain locked until you verify the product on-chain.
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 mb-10 flex gap-4">
+                  <Lock className="w-6 h-6 text-blue-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-blue-100/70 leading-relaxed font-black uppercase tracking-wider italic">
+                    Funds strictly secured in <span className="text-blue-400">Soroban Smart Escrow</span>. 
+                    Settlement occurs post-verification.
                   </div>
                 </div>
 
-                <Button onClick={checkProfileAndBuy} className="w-full rounded-2xl h-14 text-lg font-bold bg-white text-black hover:bg-slate-200 shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all transform active:scale-95">
-                  Secure This Item <ArrowRight className="w-5 h-5 ml-2" />
+                <Button onClick={checkProfileAndBuy} className="w-full rounded-[1.5rem] h-20 text-[11px] font-black uppercase tracking-[0.3em] bg-white text-black hover:bg-slate-200 shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all transform active:scale-95 italic">
+                  Initiate Secure Transaction <ArrowRight className="w-5 h-5 ml-3" />
                 </Button>
               </div>
 

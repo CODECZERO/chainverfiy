@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { CheckCircle2, Loader2, AlertCircle, Coins } from "lucide-react"
+import { CheckCircle2, Loader2, AlertCircle, Coins, ShieldCheck, ArrowRight, ExternalLink } from "lucide-react"
 import { submitBountyTransaction } from "@/lib/stellar-utils"
 import { useWallet } from "@/lib/wallet-context"
 import { getExchangeRate, convertRsToXlm } from "@/lib/exchange-rates"
@@ -238,32 +238,33 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md bg-[#111827] border-[#1F2D40] text-white">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <Coins className="text-amber-500 w-6 h-6" />
-            {step === "input" && "Issue Bounty"}
-            {step === "confirm" && "Confirm Bounty"}
-            {step === "processing" && "Processing"}
-            {step === "success" && "Bounty Activated"}
-            {step === "error" && "Action Failed"}
+      <DialogContent className="max-w-xl bg-[#0A0D14]/90 backdrop-blur-3xl border border-white/[0.1] text-white rounded-[3rem] p-10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="mb-8">
+          <DialogTitle className="text-3xl font-black flex items-center gap-4 text-white uppercase italic tracking-tighter">
+            <Coins className="text-blue-500 w-8 h-8 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+            {step === "input" && "Initialize Bounty"}
+            {step === "confirm" && "Audit Confirmation"}
+            {step === "processing" && "Network Sync"}
+            {step === "success" && "Bounty Deployed"}
+            {step === "error" && "Protocol Failure"}
           </DialogTitle>
         </DialogHeader>
 
         {step === "input" && (
-          <div className="space-y-4 pt-4">
+          <div className="space-y-6">
             {!isConnected && (
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 flex gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-amber-200">Connect wallet to issue a bounty</p>
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 flex gap-4">
+                <AlertCircle className="h-6 w-6 text-blue-400 shrink-0 mt-0.5" />
+                <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest italic">Authorization Required: Link Auditor Signature</p>
               </div>
             )}
 
             {(isConnected || user?.id) && (
-              <div className="rounded-xl p-3 border bg-blue-500/10 border-blue-500/20">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-400" />
-                  <p className="text-sm text-blue-300 font-bold">Anyone can issue bounties on Pramanik</p>
+              <div className="rounded-2xl p-5 border bg-white/[0.02] border-white/[0.08] relative overflow-hidden">
+                <div className="absolute inset-0 bg-blue-500/[0.02] pointer-events-none" />
+                <div className="flex items-center gap-4">
+                  <ShieldCheck className="w-6 h-6 text-blue-500" />
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Permission Level: Global Auditor Access Enabled</p>
                 </div>
               </div>
             )}
@@ -274,65 +275,66 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">What do you want to verify?</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Analysis Requirement</label>
               <Textarea
-                placeholder="Ex: Show clear video of the harvesting process with a timestamped note."
+                placeholder="Ex: Verify genetic lineage of biological batch #4402..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="bg-[#1C2333] border-[#1F2D40] text-white rounded-xl placeholder:text-slate-500"
+                className="bg-black/40 border-white/[0.08] text-white rounded-2xl placeholder:text-slate-700 min-h-[120px] focus:border-blue-500/40 transition-all italic text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Reward Amount (₹)</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Consensus Bounty (INR)</label>
               <Input
                 type="number"
-                placeholder="500"
+                placeholder="5000"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="bg-[#1C2333] border-[#1F2D40] text-white rounded-xl"
+                className="bg-black/40 border-white/[0.08] text-white rounded-2xl h-16 text-2xl font-black italic focus:border-blue-500/40 transition-all"
                 disabled={!isConnected}
               />
               {amount && (
-                <div className="mt-3 p-4 bg-blue-500/5 rounded-xl border border-blue-500/20 space-y-1">
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-blue-400 font-semibold">
-                    <span>Stellar Equivalent</span>
-                    <span>{isLoadingRate ? "Updating..." : "Live Rate"}</span>
+                <div className="mt-4 p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20 space-y-3 relative overflow-hidden">
+                   <div className="absolute inset-0 bg-blue-500/[0.02] animate-pulse" />
+                  <div className="flex items-center justify-between text-[9px] uppercase tracking-widest text-blue-400 font-black italic relative z-10">
+                    <span>Stellar Settlement Index</span>
+                    <span>{isLoadingRate ? "Syncing..." : "Oracle Rate Active"}</span>
                   </div>
-                  <p className="text-2xl font-bold text-blue-400 font-mono">
-                    {stellarAmount.toFixed(4)} XLM
+                  <p className="text-4xl font-black text-white font-mono tracking-tighter italic relative z-10">
+                    {stellarAmount.toFixed(2)} <span className="text-[10px] uppercase text-blue-500 ml-1">XLM</span>
                   </p>
-                  <p className="text-[10px] text-slate-500">1 XLM ≈ ₹{exchangeRate.toFixed(2)}</p>
+                  <p className="text-[9px] text-slate-600 font-black uppercase tracking-widest italic relative z-10">1 XLM ≈ ₹{exchangeRate.toFixed(2)} Base Index</p>
                 </div>
               )}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4 mt-8">
               <Button
                 onClick={() => setStep("confirm")}
                 disabled={!amount || !description || !isConnected}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-xl"
+                className="w-full bg-white text-black hover:bg-slate-200 font-black h-20 rounded-[1.5rem] text-[11px] uppercase tracking-[0.3em] italic shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all active:scale-95"
               >
-                Stellar Pay (External Wallet)
+                Deploy via Stellar Wallet
               </Button>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex gap-4">
                 {user?.id && (
                   <>
                     <Button
                       onClick={() => handleUpiBounty()}
                       disabled={!amount || !description}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 rounded-xl"
+                      className="flex-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black h-20 rounded-[1.5rem] text-[10px] uppercase tracking-[0.3em] italic transition-all"
                     >
-                      UPI Pay
+                      UPI Bridge
                     </Button>
                     {user?.role === 'SUPPLIER' && (
                       <Button
                         onClick={() => handleManagedWalletBounty()}
                       disabled={!amount || !description}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold h-12 rounded-xl"
+                        className="flex-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 font-black h-20 rounded-[1.5rem] text-[10px] uppercase tracking-[0.3em] italic transition-all"
                       >
-                        Managed Wallet
+                        Internal Node
                       </Button>
                     )}
                   </>
@@ -343,71 +345,78 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
         )}
 
         {step === "confirm" && (
-          <div className="space-y-4 pt-4">
-            <div className="bg-[#1C2333] rounded-xl p-4 border border-[#1F2D40]">
-              <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Requesting Proof for</p>
-              <p className="font-semibold text-white">{String(product?.title || "")}</p>
+          <div className="space-y-6">
+            <div className="bg-black/40 rounded-2xl p-6 border border-white/[0.08] relative overflow-hidden group">
+               <div className="absolute inset-0 bg-blue-500/[0.01] pointer-events-none" />
+              <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-3 italic">Audit Objective</p>
+              <p className="text-xl font-black text-white italic tracking-tight">{String(product?.title || "")}</p>
             </div>
 
-            <div className="bg-[#1C2333] rounded-xl p-4 border border-[#1F2D40]">
-              <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Description</p>
-              <p className="text-sm text-slate-300 leading-relaxed">{String(description || "")}</p>
+            <div className="bg-black/40 rounded-2xl p-6 border border-white/[0.08] relative overflow-hidden">
+              <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-3 italic">Protocol Mandate</p>
+              <p className="text-sm text-slate-400 leading-relaxed italic font-medium">"{String(description || "")}"</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[#1C2333] rounded-xl p-4 border border-[#1F2D40]">
-                <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Reward</p>
-                <p className="text-xl font-bold text-white">₹{String(amount || 0)}</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-black/40 rounded-2xl p-6 border border-white/[0.08]">
+                <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-2 italic">Flat Reserve</p>
+                <p className="text-2xl font-black text-white italic tracking-tighter">₹{String(amount || 0)}</p>
               </div>
-              <div className="bg-blue-500/5 rounded-xl p-4 border border-blue-500/20">
-                <p className="text-xs text-blue-400/70 uppercase tracking-widest font-bold mb-1">Stellar</p>
-                <p className="text-xl font-bold text-blue-400 font-mono">{stellarAmount.toFixed(3)}</p>
+              <div className="bg-blue-500/10 rounded-2xl p-6 border border-blue-500/20">
+                <p className="text-[9px] text-blue-400/70 uppercase tracking-widest font-black mb-2 italic">Crypto Settlement</p>
+                <p className="text-2xl font-black text-blue-400 font-mono tracking-tighter italic">{stellarAmount.toFixed(2)} XLM</p>
               </div>
             </div>
 
-            <Button onClick={handleCreateAndPay} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-xl">
-              Confirm & Pay (Stellar)
-            </Button>
-            <Button onClick={() => setStep("input")} variant="ghost" className="w-full text-slate-400 hover:text-white">
-              Back to Edit
-            </Button>
+            <div className="pt-6 space-y-4">
+              <Button onClick={handleCreateAndPay} className="w-full bg-white text-black hover:bg-slate-200 font-black h-20 rounded-[1.5rem] text-[11px] uppercase tracking-[0.3em] italic shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all">
+                Authorize & Deploy <ArrowRight className="w-5 h-5 ml-3" />
+              </Button>
+              <Button onClick={() => setStep("input")} variant="ghost" className="w-full text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] italic">
+                Revise Parameters
+              </Button>
+            </div>
           </div>
         )}
 
         {step === "processing" && (
-          <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-            <Loader2 className="h-12 w-12 text-amber-500 animate-spin" />
+          <div className="py-20 flex flex-col items-center justify-center text-center space-y-8">
+            <div className="relative">
+               <div className="absolute inset-0 bg-blue-500/20 blur-[40px] rounded-full animate-pulse" />
+               <Loader2 className="h-20 w-20 text-blue-500 animate-spin relative z-10 stroke-[1]" />
+            </div>
             <div>
-              <p className="text-lg font-bold">Processing Bounty</p>
-              <p className="text-slate-400 text-sm">Please sign the transaction in your wallet...</p>
+              <p className="text-2xl font-black text-white uppercase italic tracking-tighter mb-3">Syncing with Oracle</p>
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] italic">Awaiting Cryptographic Signature...</p>
             </div>
           </div>
         )}
 
         {step === "success" && (
-          <div className="space-y-6 pt-4 text-center">
+          <div className="space-y-10">
             <div className="flex justify-center">
-              <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.2)]">
+                <CheckCircle2 className="h-12 w-12 text-emerald-500" />
               </div>
             </div>
             
-            <div>
-              <h3 className="text-xl font-bold text-white">Bounty Active!</h3>
-              <p className="text-slate-400 text-sm mt-1">Sellers and verifiers will now see your request.</p>
+            <div className="text-center">
+              <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-3">Bounty Active</h3>
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] italic">Consensus mandate broadcast to global auditor network.</p>
             </div>
 
-            <div className="bg-[#1C2333] rounded-xl p-4 text-left border border-[#1F2D40]">
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Transaction</p>
-              <p className="font-mono text-xs text-slate-300 break-all">{String(txHash || "")}</p>
+            <div className="bg-black/40 rounded-2xl p-8 border border-white/[0.08] relative overflow-hidden">
+               <div className="absolute inset-0 bg-blue-500/[0.02] pointer-events-none" />
+              <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-3 italic">Transaction Hash</p>
+              <p className="font-mono text-xs text-blue-400/70 break-all leading-relaxed mb-6">{String(txHash || "")}</p>
               <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noopener noreferrer"
-                 className="text-amber-500 hover:text-amber-400 text-xs font-semibold mt-2 inline-block transition-colors">
-                View on Stellar Expert →
+                 className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-white bg-blue-600/20 border border-blue-500/30 px-6 py-3 rounded-xl hover:bg-blue-600/30 transition-all italic">
+                <ExternalLink className="w-4 h-4" /> Stellar Explorer
               </a>
             </div>
 
-            <Button onClick={handleClose} className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold h-12 rounded-xl">
-              Done
+            <Button onClick={handleClose} className="w-full bg-white text-black hover:bg-slate-200 font-black h-20 rounded-[1.5rem] text-[11px] uppercase tracking-[0.3em] italic shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all">
+              Finalize Sequence
             </Button>
           </div>
         )}

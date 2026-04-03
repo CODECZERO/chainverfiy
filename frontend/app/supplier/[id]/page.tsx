@@ -93,81 +93,88 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
   const totalSales = products.reduce((acc, p) => acc + (p.soldCount || 0), 0)
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-32 md:pb-12">
+    <div className="min-h-screen bg-[#05060B] text-foreground pb-32 selection:bg-blue-500/30 selection:text-blue-200">
       <Header />
 
-      {/* ── COVER GRADIENT ── */}
-      <div className="h-48 md:h-64 bg-muted relative">
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      {/* ── Dynamic Atmospheric Background ── */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 -mt-24 md:-mt-32 relative z-10 flex flex-col md:flex-row gap-6 md:gap-8">
+      {/* ── COVER GRADIENT ── */}
+      <div className="h-64 md:h-80 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-[#0A0D14] to-[#05060B]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#05060B] to-transparent" />
+      </div>
+
+      <div className="max-w-[1600px] mx-auto px-6 -mt-32 md:-mt-48 relative z-10 flex flex-col md:flex-row gap-8 md:gap-16">
         
         {/* ── AVATAR & TRUST SCORE ── */}
         <div className="flex flex-col items-center md:items-start shrink-0">
-          <div className={`relative w-32 h-32 md:w-48 md:h-48 bg-card rounded-full flex items-center justify-center border-[6px] border-background shadow-2xl ring-4 ${ringColor}/30`}>
+          <div className="relative w-40 h-40 md:w-64 md:h-64 bg-[#0A0D14]/80 backdrop-blur-3xl rounded-[4rem] flex items-center justify-center border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] group overflow-hidden">
+            <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors" />
             {profile.logoUrl ? (
-              <img src={profile.logoUrl} alt={profile.name} className="w-full h-full object-cover rounded-full" />
+              <img src={profile.logoUrl} alt={profile.name} className="w-full h-full object-cover p-2 rounded-[4rem] group-hover:scale-105 transition-transform duration-700" />
             ) : (
-              <span className="text-4xl md:text-6xl font-bold bg-gradient-to-br from-primary to-orange-500 bg-clip-text text-transparent">
+              <span className="text-6xl md:text-8xl font-black bg-gradient-to-br from-blue-400 to-indigo-600 bg-clip-text text-transparent italic drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                 {profile.name?.[0]?.toUpperCase() || "S"}
               </span>
             )}
             
-            {/* Trust progress circle overlay */}
-            <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="48" fill="none" className="stroke-border" strokeWidth="4" />
-              <circle cx="50" cy="50" r="48" fill="none" 
-                className={`stroke-current ${colorClass} transition-all duration-1000 ease-out`} 
-                strokeWidth="4" strokeDasharray="301" strokeDashoffset={301 - (301 * ts) / 100} strokeLinecap="round" />
-            </svg>
-            
-            <div className="absolute -bottom-2 md:-bottom-4 left-1/2 -translate-x-1/2 bg-background px-3 py-1 md:py-1.5 rounded-full border border-border flex items-center gap-1.5 shadow-xl whitespace-nowrap">
-              <ShieldCheck className={`w-3.5 h-3.5 md:w-4 md:h-4 ${colorClass}`} />
-              <span className={`text-xs md:text-sm font-bold ${colorClass}`}>{ts} Trust Score</span>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-blue-600 px-6 py-2 rounded-full border border-blue-500 shadow-[0_0_30px_rgba(37,99,235,0.5)] flex items-center gap-2 whitespace-nowrap z-20">
+              <ShieldCheck className="w-4 h-4 text-white" />
+              <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">{ts} Trust Index</span>
             </div>
           </div>
         </div>
 
         {/* ── HEADER INFO ── */}
-        <div className="flex-1 mt-4 md:mt-36 text-center md:text-left">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex-1 mt-8 md:mt-48 text-center md:text-left">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold flex items-center justify-center md:justify-start gap-2">
+              <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] mb-6 italic flex items-center justify-center md:justify-start gap-3">
+                 <div className="w-8 h-[1px] bg-blue-500/30" />
+                 Validated Merchant Entity
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 text-white uppercase italic leading-none flex items-center justify-center md:justify-start gap-6">
                 {profile.name}
                 {profile.isVerified && (
-                  <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                )}
-              </h1>
-              <p className="text-[#9CA3AF] mt-2 mb-4 leading-relaxed max-w-2xl text-sm md:text-base">
-                {profile.description || "A verified supplier on the Pramanik network. All products listed here are vetted by the community smart contracts."}
-              </p>
-              
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs md:text-sm text-muted-foreground font-medium">
-                {profile.location && (
-                  <div className="flex items-center gap-1.5 bg-card border border-border px-3 py-1.5 rounded-lg">
-                    <MapPin className="w-4 h-4" /> {profile.location}
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                     <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 bg-card border border-border px-3 py-1.5 rounded-lg">
-                  <Calendar className="w-4 h-4" /> Joined 2024
+              </h1>
+              <p className="text-xl text-slate-400 mt-2 mb-10 leading-relaxed max-w-2xl font-medium italic border-l-2 border-white/5 pl-8 text-left">
+                {profile.description || "A high-trust production node within the Pramanik Oracle Network. All biological records and shipments are verified via multi-sig consensus."}
+              </p>
+              
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 italic">
+                {profile.location && (
+                  <div className="flex items-center gap-3 bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] px-6 py-3 rounded-2xl">
+                    <MapPin className="w-4 h-4 text-blue-500" /> {profile.location}
+                  </div>
+                )}
+                <div className="flex items-center gap-3 bg-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] px-6 py-3 rounded-2xl">
+                  <Calendar className="w-4 h-4 text-blue-500" /> Genesis 2024
                 </div>
               </div>
             </div>
             
-            {/* Desktop Message Button */}
-            <div className="hidden md:flex shrink-0 gap-3 items-center">
+            {/* Desktop Action Terminal */}
+            <div className="hidden lg:flex shrink-0 gap-4 items-center bg-[#0A0D14]/40 backdrop-blur-3xl p-4 rounded-[2.5rem] border border-white/[0.04]">
               <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hi ${profile.name}`} target="_blank" rel="noopener noreferrer">
-                <button className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 font-bold rounded-xl px-6 py-3 transition-all flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5" /> Contact on WhatsApp
+                <button className="h-20 px-10 bg-white text-black hover:bg-slate-200 font-black rounded-2xl text-[10px] uppercase tracking-[0.3em] transition-all flex items-center gap-4 italic shadow-[0_20px_40px_rgba(255,255,255,0.1)] active:scale-95">
+                  <MessageCircle className="w-6 h-6" /> Contact Node
                 </button>
               </a>
               <button 
                 onClick={handleFlagSupplier}
                 disabled={flagging}
-                className="bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 hover:bg-red-500/20 font-bold rounded-xl px-6 py-3 transition-all flex items-center gap-2"
+                className="h-20 px-10 bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 font-black rounded-2xl text-[10px] uppercase tracking-[0.3em] transition-all flex items-center gap-4 italic active:scale-95"
               >
-                <AlertTriangle className="w-5 h-5" /> {flagging ? "Flagging..." : "Flag Supplier"}
+                <AlertTriangle className="w-6 h-6" /> {flagging ? "Reporting..." : "Flag Violation"}
               </button>
             </div>
           </div>
@@ -175,19 +182,20 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
       </div>
 
       {/* ── STATS ROW ── */}
-      <div className="max-w-6xl mx-auto px-4 mt-8 md:mt-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="max-w-[1600px] mx-auto px-6 mt-20 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: "Verified Products", value: verifiedCount, icon: Package, col: "text-orange-400", bg: "from-orange-500/10" },
-            { label: "Community Trust", value: `${ts}%`, icon: ShieldCheck, col: colorClass, bg: "from-primary/10" },
-            { label: "Total Sales", value: totalSales || "0", icon: CheckCircle2, col: "text-emerald-400", bg: "from-emerald-500/10" },
-            { label: "Flags", value: profile.flagCount || 0, icon: AlertTriangle, col: "text-red-400", bg: "from-red-500/10" }
+            { label: "Verified Assets", value: verifiedCount, icon: Package, col: "text-blue-400", bg: "from-blue-500/10" },
+            { label: "Network Trust", value: `${ts}%`, icon: ShieldCheck, col: "text-indigo-400", bg: "from-indigo-500/10" },
+            { label: "Settled Orders", value: totalSales || "0", icon: CheckCircle2, col: "text-emerald-400", bg: "from-emerald-500/10" },
+            { label: "Protocol Violations", value: profile.flagCount || 0, icon: AlertTriangle, col: "text-red-400", bg: "from-red-500/10" }
           ].map(s => (
-            <div key={s.label} className={`bg-gradient-to-br ${s.bg} to-card border border-border rounded-2xl p-4 md:p-5 group relative`}>
-              <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2 md:mb-3">{s.label}</div>
+            <div key={s.label} className={`bg-gradient-to-br ${s.bg} to-[#0A0D14]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[2.5rem] p-8 group relative overflow-hidden shadow-2xl`}>
+               <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-4 italic">{s.label}</div>
               <div className="flex items-end justify-between">
-                <div className={`text-2xl md:text-3xl font-bold font-mono ${s.col}`}>{s.value}</div>
-                <s.icon className={`w-6 h-6 ${s.col} opacity-50 group-hover:opacity-100 transition-opacity`} />
+                <div className={`text-5xl font-black font-mono ${s.col} italic tabular-nums tracking-tighter drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]`}>{s.value}</div>
+                <s.icon className={`w-8 h-8 ${s.col} opacity-30 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110`} />
               </div>
             </div>
           ))}
@@ -195,10 +203,10 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
       </div>
 
       {/* ── PRODUCT GRID ── */}
-      <div className="max-w-6xl mx-auto px-4 mt-12 md:mt-16">
-        <div className="flex items-center justify-between mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-            Storefront <span className="text-muted-foreground text-sm font-medium">({products.length})</span>
+      <div className="max-w-[1600px] mx-auto px-6 mt-32 relative z-10">
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-4xl font-black uppercase italic tracking-tighter text-white flex items-center gap-6">
+            Merchant Index <span className="text-slate-600 text-xl font-medium tracking-normal not-italic">({products.length} active nodes)</span>
           </h2>
         </div>
 
