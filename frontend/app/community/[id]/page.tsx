@@ -8,11 +8,15 @@ import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { 
   ArrowLeft, MessageCircle, Loader2, Send, 
-  User, Award, Calendar, Share2, ShieldCheck, Clock, Lock as LockIcon
+  User, Award, Calendar, Share2, ShieldCheck, Clock, Lock as LockIcon, Activity, Zap, Globe
 } from "lucide-react"
 import { getDiscussion, addDiscussionComment } from "@/lib/api-service"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
+import { Outfit, Inter } from "next/font/google"
+
+const outfit = Outfit({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export default function DiscussionDetailPage() {
   const { id } = useParams()
@@ -66,11 +70,11 @@ export default function DiscussionDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020408] text-white">
+      <div className={`min-h-screen bg-[#030408] text-white ${inter.className}`}>
         <Header />
         <div className="flex flex-col items-center justify-center py-40">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-500 mb-4" />
-          <p className="text-slate-500 font-bold tracking-widest uppercase text-xs">Accessing Truth Node...</p>
+          <div className="w-16 h-16 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin shadow-[0_0_30px_rgba(37,99,235,0.3)] mb-8" />
+          <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-600 italic animate-pulse">Accessing Truth Node Vector...</p>
         </div>
       </div>
     )
@@ -78,12 +82,15 @@ export default function DiscussionDetailPage() {
 
   if (!discussion) {
     return (
-      <div className="min-h-screen bg-[#020408] text-white">
+      <div className={`min-h-screen bg-[#030408] text-white ${inter.className}`}>
         <Header />
-        <div className="max-w-2xl mx-auto px-4 py-40 text-center">
-          <h1 className="text-3xl font-bold mb-4">Node Not Identified</h1>
-          <p className="text-slate-400 mb-8">This discussion thread has been purged or never existed in the current ledger state.</p>
-          <Button onClick={() => router.push('/community')} className="bg-white text-black font-bold h-12 rounded-xl">
+        <div className="max-w-2xl mx-auto px-8 py-40 text-center">
+          <div className="w-20 h-20 bg-red-600/10 rounded-[2rem] flex items-center justify-center mx-auto mb-10 border border-red-500/20 shadow-2xl">
+              <LockIcon className="w-10 h-10 text-red-500" />
+          </div>
+          <h1 className={`${outfit.className} text-4xl font-black uppercase italic tracking-tighter mb-4`}>Node Not Identified</h1>
+          <p className="text-slate-500 text-sm font-black uppercase tracking-[0.2em] mb-12 italic opacity-70">This discussion thread has been purged or never existed in the current ledger state.</p>
+          <Button onClick={() => router.push('/community')} className={`${outfit.className} bg-white text-black font-black h-16 px-12 rounded-2xl uppercase tracking-widest text-xs italic active:scale-95 transition-all`}>
             Return to Hub
           </Button>
         </div>
@@ -92,156 +99,176 @@ export default function DiscussionDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#020408] text-slate-100 pb-32">
+    <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden relative pb-40`}>
+      {/* ── Deep Space Atmospheric Effects ── */}
+      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
+      
       <Header />
       
-      <div className="max-w-4xl mx-auto px-4 pt-12">
+      <div className="max-w-5xl mx-auto px-8 pt-20 relative z-10">
         <Button 
           variant="ghost" 
           onClick={() => router.push('/community')}
-          className="mb-10 text-slate-500 hover:text-white font-bold gap-2 -ml-2"
+          className="mb-16 text-slate-600 hover:text-white font-black uppercase tracking-[0.4em] text-[10px] gap-4 -ml-4 italic hover:bg-white/5 px-6 rounded-xl transition-all group"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Discourse
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Discourse Matrix
         </Button>
 
-        {/* Main Discussion Card */}
-        <motion.div 
+        {/* ── Main Truth Node Card ── */}
+        <motion.article 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-10 rounded-[2.5rem] bg-[#0C121E] border border-white/5 shadow-2xl relative overflow-hidden mb-12"
+          className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[4rem] p-12 md:p-16 shadow-3xl relative overflow-hidden mb-20 group"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none" />
           
           <div className="relative z-10">
-            <div className="flex items-center justify-between gap-4 mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                  {discussion.author?.supplierProfile ? <Award className="w-8 h-8 text-white" /> : <User className="w-8 h-8 text-white" />}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 mb-16 pb-12 border-b border-white/[0.06]">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_15px_40px_rgba(37,99,235,0.3)] border border-white/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
+                  {discussion.author?.supplierProfile ? <Award className="w-10 h-10 text-white" /> : <User className="w-10 h-10 text-white" />}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold text-white text-lg">
-                      {discussion.author?.supplierProfile?.name || discussion.author?.email?.split('@')[0] || "Anonymous"}
+                  <div className="flex items-center gap-4 mb-2">
+                    <span className={`${outfit.className} font-black text-white text-2xl uppercase italic tracking-tight`}>
+                      {discussion.author?.supplierProfile?.name || discussion.author?.email?.split('@')[0] || "Auth_Node"}
                     </span>
                     {discussion.author?.role === 'SUPPLIER' && (
-                      <Badge className="bg-emerald-500/20 border-emerald-500/30 text-emerald-400 font-bold uppercase text-[9px]">Verified Supplier</Badge>
+                      <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-[9px] rounded-lg italic">Verified Node</div>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-slate-500 text-xs font-semibold">
-                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(discussion.createdAt).toLocaleDateString()}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(discussion.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <div className="flex items-center gap-4 text-slate-600 text-[10px] font-black uppercase tracking-[0.2em] italic">
+                    <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {new Date(discussion.createdAt).toLocaleDateString()}</span>
+                    <span className="text-slate-800 opacity-30">/</span>
+                    <span className="flex items-center gap-2 font-mono tracking-widest">{new Date(discussion.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} UTC</span>
                   </div>
                 </div>
               </div>
-              <Button variant="outline" className="rounded-xl border-white/5 bg-white/5 hover:bg-white/10 h-10 w-10 p-0">
-                <Share2 className="w-4 h-4" />
-              </Button>
+              <div className="flex gap-4">
+                <Button variant="outline" className="rounded-2xl border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] h-14 w-14 p-0 shadow-2xl transition-all">
+                  <Share2 className="w-6 h-6 text-slate-500" />
+                </Button>
+                <div className="h-14 px-6 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-blue-400 italic shadow-2xl">
+                   <ShieldCheck className="w-4 h-4" /> Immutable Thread
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight tracking-tight">
+            <h1 className={`${outfit.className} text-4xl md:text-6xl font-black text-white mb-10 leading-[0.95] uppercase italic tracking-[-0.04em] drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]`}>
               {discussion.title}
             </h1>
             
-            <div className="text-lg text-slate-400 font-light leading-relaxed mb-8 whitespace-pre-wrap">
+            <div className="text-xl text-slate-400 font-medium leading-relaxed mb-12 whitespace-pre-wrap selection:bg-blue-500/30 selection:text-blue-100 opacity-80 italic">
               {discussion.content}
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {discussion.tags?.map((tag: string) => (
-                <span key={tag} className="px-4 py-1.5 rounded-full bg-white/5 text-[11px] font-bold uppercase tracking-widest border border-white/5 text-slate-400">
+                <span key={tag} className="px-5 py-2 rounded-xl bg-white/[0.03] text-[10px] font-black uppercase tracking-[0.3em] border border-white/[0.06] text-slate-500 group-hover:text-slate-200 transition-colors italic">
                   #{tag}
                 </span>
               ))}
             </div>
           </div>
-        </motion.div>
+        </motion.article>
 
-        {/* Interaction Section */}
-        <div className="flex items-center gap-4 mb-10 pb-4 border-b border-white/5">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            Discourse <span className="text-slate-600 font-black tracking-tighter ml-1">({discussion.comments?.length || 0})</span>
+        {/* ── Discourse Interaction Feed ── */}
+        <div className="flex items-center gap-8 mb-16">
+          <h2 className={`${outfit.className} text-3xl font-black text-white uppercase italic tracking-tighter flex items-center gap-6`}>
+             Discourse <span className="text-slate-800 font-mono tracking-[0.2em] italic text-xl">[{discussion.comments?.length || 0}]</span>
           </h2>
-          <div className="h-0.5 grow bg-white/5" />
+          <div className="h-px grow bg-gradient-to-r from-white/[0.08] to-transparent" />
+          <div className="flex items-center gap-3 text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] italic">
+             <Activity className="w-4 h-4 text-emerald-500 animate-pulse" /> Real-time Feed
+          </div>
         </div>
 
-        {/* Comment Form */}
+        {/* ── Comment Command Terminal ── */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-24"
         >
           {isAuthenticated || isConnected ? (
-            <form onSubmit={handleComment} className="relative">
-              <textarea 
-                value={commentContent}
-                onChange={e => setCommentContent(e.target.value)}
-                placeholder={isAuthenticated ? "Submit your insights to the thread..." : "Stellar Contributor - Anchor your insights to this thread..."}
-                className="w-full h-32 rounded-[1.5rem] bg-[#0C121E] border border-white/5 text-white p-6 focus:ring-2 focus:ring-blue-500/40 focus:outline-none placeholder:text-slate-600 font-light transition-all shadow-inner"
-              />
-              <div className="absolute bottom-4 right-4">
-                <Button 
-                  disabled={isSubmitting || !commentContent.trim()}
-                  className="h-10 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-lg shadow-blue-500/20"
-                >
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> Post</>}
-                </Button>
+            <form onSubmit={handleComment} className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-5 group-focus-within:opacity-20 transition-opacity" />
+              <div className="relative">
+                <textarea 
+                  value={commentContent}
+                  onChange={e => setCommentContent(e.target.value)}
+                  placeholder={isAuthenticated ? "Submit your technical insights to the truth layer..." : "Stellar Contributor - Anchor your insights to this secure thread..."}
+                  className={`${outfit.className} w-full h-48 rounded-[2.5rem] bg-[#0A0D14]/90 border border-white/[0.08] text-white p-10 focus:ring-2 focus:ring-blue-500/20 focus:outline-none placeholder:text-slate-800 font-black uppercase tracking-[0.15em] italic transition-all shadow-3xl resize-none selection:bg-blue-500/40`}
+                />
+                <div className="absolute bottom-8 right-8">
+                  <Button 
+                    disabled={isSubmitting || !commentContent.trim()}
+                    className={`${outfit.className} h-16 px-12 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.25em] text-[11px] transition-all shadow-[0_20px_50px_rgba(37,99,235,0.3)] italic border border-white/10 active:scale-95`}
+                  >
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5 mr-3" /> Post Insight</>}
+                  </Button>
+                </div>
               </div>
             </form>
           ) : (
-            <div className="p-8 rounded-[1.5rem] bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center">
-              <div className="bg-amber-500/10 p-3 rounded-full mb-4">
-                <LockIcon className="w-6 h-6 text-amber-500" />
-              </div>
-              <h4 className="text-white font-bold text-lg mb-2 italic">Access Restricted</h4>
-              <p className="text-slate-500 text-sm font-medium mb-6">You must establish a verified identity session to participate in discourse.</p>
-              <Button onClick={() => router.push('/marketplace')} variant="outline" className="border-amber-500/20 text-amber-500 hover:bg-amber-500/10 font-bold h-11 px-8 rounded-xl">
-                Sign In to Post
-              </Button>
+            <div className="glass-premium bg-[#0A0D14]/80 border border-amber-500/20 rounded-[3rem] p-12 flex flex-col items-center text-center shadow-3xl relative overflow-hidden">
+               <div className="absolute inset-0 bg-amber-500/[0.02] animate-pulse" />
+               <div className="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl">
+                 <LockIcon className="w-10 h-10 text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
+               </div>
+               <h4 className={`${outfit.className} text-3xl font-black text-white mb-4 uppercase italic tracking-tighter`}>Access Restricted</h4>
+               <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.3em] mb-12 italic opacity-70 leading-relaxed max-w-md mx-auto">You must establish a verified identity session to participate in the decentralized discourse layer.</p>
+               <Button onClick={() => router.push('/marketplace')} className={`${outfit.className} bg-amber-500 hover:bg-amber-400 text-black font-black h-16 px-12 rounded-2xl uppercase tracking-widest text-[11px] italic shadow-[0_20px_50px_rgba(245,158,11,0.2)] active:scale-95 transition-all`}>
+                 Sign In to Protocol
+               </Button>
             </div>
           )}
         </motion.div>
 
-        {/* Comments List */}
-        <div className="space-y-8">
-          <AnimatePresence>
+        {/* ── Discourse Stream ── */}
+        <div className="space-y-12">
+          <AnimatePresence mode="popLayout">
             {discussion.comments?.map((comment: any, i: number) => (
               <motion.div
                 key={comment.id}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="flex gap-6 relative"
+                transition={{ delay: i * 0.08 }}
+                className="flex gap-10 relative group"
               >
-                <div className="shrink-0">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
-                    comment.author?.role === 'SUPPLIER' 
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-600' 
-                    : 'bg-gradient-to-br from-slate-700 to-slate-800'
-                  }`}>
-                    {comment.author?.role === 'SUPPLIER' ? <Award className="w-6 h-6 text-white" /> : <User className="w-6 h-6 text-white" />}
-                  </div>
+                <div className="shrink-0 relative">
+                   <div className="absolute -top-4 bottom-0 left-1/2 w-px bg-white/[0.03] group-last:bg-transparent" />
+                   <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-2xl relative z-10 border border-white/10 group-hover:scale-110 transition-transform duration-500 ${
+                     comment.author?.role === 'SUPPLIER' 
+                     ? 'bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-500/20' 
+                     : 'bg-gradient-to-br from-slate-800 to-slate-900 shadow-black'
+                   }`}>
+                     {comment.author?.role === 'SUPPLIER' ? <Award className="w-8 h-8 text-white" /> : <User className="w-8 h-8 text-white" />}
+                   </div>
                 </div>
                 
-                <div className="flex-1 pb-8 border-b border-white/[0.03]">
-                  <div className="flex items-center justify-between gap-4 mb-3">
-                    <div className="flex items-center gap-2">
-                       <span className="font-bold text-slate-200">
+                <div className="flex-1 pb-16 border-b border-white/[0.03] group-last:border-none">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                    <div className="flex items-center gap-4">
+                       <span className={`${outfit.className} font-black text-slate-100 text-xl uppercase italic tracking-tight`}>
                         {comment.author?.supplierProfile?.name || 
                          comment.author?.email?.split('@')[0] || 
-                         (comment.authorWallet ? `${comment.authorWallet.slice(0,6)}...${comment.authorWallet.slice(-4)}` : "Anonymous")}
+                         (comment.authorWallet ? `${comment.authorWallet.slice(0,8)}...${comment.authorWallet.slice(-8)}` : "Auth_Node")}
                       </span>
                       {comment.author?.role === 'SUPPLIER' && (
-                        <Badge className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 font-bold uppercase text-[8px] h-4">Supplier</Badge>
+                        <div className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-[8px] rounded-md italic">Node_Auth</div>
                       )}
                       {!comment.author && comment.authorWallet && (
-                        <Badge className="bg-blue-500/10 border-blue-500/20 text-blue-400 font-bold uppercase text-[8px] h-4">Stellar ID</Badge>
+                        <div className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-black uppercase tracking-widest text-[8px] rounded-md italic">Stellar_ID</div>
                       )}
                     </div>
-                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
-                      <Clock className="w-3 h-3" /> {new Date(comment.createdAt).toLocaleDateString()}
-                    </span>
+                    <div className="flex items-center gap-4 text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">
+                       <Clock className="w-3.5 h-3.5" /> {new Date(comment.createdAt).toLocaleDateString()}
+                       <span className="text-slate-800">/</span>
+                       {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                   </div>
-                  <div className="text-slate-400 font-light leading-relaxed">
+                  <div className="text-lg text-slate-500 font-medium leading-relaxed selection:bg-blue-500/20 italic opacity-80 max-w-4xl">
                     {comment.content}
                   </div>
                 </div>
@@ -250,9 +277,11 @@ export default function DiscussionDetailPage() {
           </AnimatePresence>
           
           {(!discussion.comments || discussion.comments.length === 0) && (
-            <div className="text-center py-20 bg-white/[0.01] rounded-[2rem] border border-dashed border-white/5">
-              <MessageCircle className="w-10 h-10 text-slate-800 mx-auto mb-4" />
-              <p className="text-slate-600 font-bold uppercase tracking-widest text-[10px]">No Discourse Found</p>
+            <div className="text-center py-32 glass-premium bg-[#0A0D14]/40 border-2 border-dashed border-white/[0.06] rounded-[3rem] shadow-inner relative overflow-hidden group">
+              <div className="absolute inset-0 bg-blue-600/[0.01] animate-pulse" />
+              <MessageCircle className="w-16 h-16 text-slate-800 mx-auto mb-8 opacity-20 group-hover:scale-110 transition-transform duration-1000" />
+              <p className={`${outfit.className} text-xl font-black uppercase tracking-[0.5em] text-slate-700 italic opacity-50`}>No Discourse Detected</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-800 mt-4 italic">Signal void at current trace coordinates</p>
             </div>
           )}
         </div>
