@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
   MessageSquare, Search, ShieldCheck, Lock, Sparkles, 
-  MessageCircle, Loader2, Plus, Wallet, Award, User, ArrowUpRight, Activity, Globe, Zap, Clock
+  MessageCircle, Loader2, Plus, Wallet, Award, User as UserIcon, ArrowUpRight, Activity, Globe, Zap, Clock
 } from "lucide-react"
 import { getDiscussions, createDiscussion } from "@/lib/api-service"
 import { motion, AnimatePresence } from "framer-motion"
@@ -118,7 +118,7 @@ export default function CommunityPage() {
               
               <div className="relative z-10 flex flex-col items-center text-center">
                 <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center mb-8 shadow-[0_15px_40px_rgba(37,99,235,0.3)] border border-white/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
-                  {isAuthenticated ? <User className="w-12 h-12 text-white" /> : <Wallet className="w-12 h-12 text-white" />}
+                  {isAuthenticated ? <UserIcon className="w-12 h-12 text-white" /> : <Wallet className="w-12 h-12 text-white" />}
                 </div>
                 
                 {isAuthenticated ? (
@@ -214,7 +214,7 @@ export default function CommunityPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-5 mb-4">
                             <div className="flex items-center gap-3 px-4 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
-                               <User className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Auth_Node"}
+                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Auth_Node"}
                             </div>
                             <span className="text-slate-800 font-black text-xs opacity-50">/</span>
                             <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>

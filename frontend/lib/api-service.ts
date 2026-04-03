@@ -115,6 +115,8 @@ export const createBounty = (data: { productId: string; issuerId: string; amount
 export const verifyBountyPayment = (data: { bountyId: string; transactionHash: string; paymentMethod?: string }) =>
   apiFetch('/bounties/verify', { method: 'POST', body: JSON.stringify(data) });
 
+export const verifyDonation = verifyBountyPayment;
+
 export const submitBountyProof = (data: { bountyId: string; solverId: string; proofCid: string }) =>
   apiFetch('/bounties/submit-proof', { method: 'POST', body: JSON.stringify(data) });
 

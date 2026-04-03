@@ -40,7 +40,7 @@ export interface Supplier {
 }
 
 /** @deprecated Use Supplier instead */
-export type Supplier = Supplier;
+// export type Supplier = Supplier;
 
 export interface Order {
     _id: string;

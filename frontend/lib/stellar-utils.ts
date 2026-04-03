@@ -92,6 +92,8 @@ export async function submitBountyTransaction(
   }
 }
 
+export const submitDonationTransaction = submitBountyTransaction;
+
 export async function getAccountBalance(publicKey: string) {
   try {
 

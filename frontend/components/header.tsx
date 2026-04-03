@@ -10,7 +10,7 @@ import { disconnectWallet } from "@/lib/redux/slices/wallet-slice"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
-  ShieldCheck, LogOut, User, 
+  ShieldCheck, LogOut, User as UserIcon, 
   ChevronDown, Lock, LayoutGrid, ShoppingBag, 
   Wallet, Zap, Globe, Shield, Activity, Search
 } from "lucide-react"
@@ -201,7 +201,7 @@ export function Header() {
                     </>
                   ) : (
                     <>
-                      <User className="w-4 h-4 text-slate-500" />
+                      <UserIcon className="w-4 h-4 text-slate-500" />
                       <span className="text-[9px] font-display font-bold text-white uppercase tracking-widest">ID</span>
                     </>
                   )}
@@ -217,7 +217,7 @@ export function Header() {
                 
                 <DropdownMenuItem asChild>
                    <Link href="/profile/buyer-settings" className="px-3 py-2.5 text-[9px] font-display font-bold uppercase tracking-widest text-slate-400 hover:text-white cursor-pointer flex items-center gap-3">
-                      <User className="w-3.5 h-3.5" /> Node Settings
+                      <UserIcon className="w-3.5 h-3.5" /> Node Settings
                    </Link>
                 </DropdownMenuItem>
 

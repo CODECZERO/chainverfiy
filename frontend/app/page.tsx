@@ -10,7 +10,7 @@ import {
   ShieldCheck, MessageCircle, Wallet, ArrowRight, ArrowUpRight,
   Star, Users, Package, Zap, CheckCircle2, XCircle,
   Globe, Lock, TrendingUp, Sparkles, Eye, Award,
-  MessageSquare, LayoutGrid, Activity
+  MessageSquare, LayoutGrid, Activity, Clock
 } from "lucide-react"
 import { getStats } from "@/lib/api-service"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"

@@ -67,7 +67,7 @@ export function clearSupplierData() {
 }
 
 /** @deprecated Use clearSupplierData instead */
-export const clearSupplierData = clearSupplierData
+// export const clearSupplierData = clearSupplierData
 
 export function clearWalletData() {
   // Clear wallet-specific data

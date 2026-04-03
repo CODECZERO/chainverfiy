@@ -8,7 +8,7 @@ import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { 
   ArrowLeft, MessageCircle, Loader2, Send, 
-  User, Award, Calendar, Share2, ShieldCheck, Clock, Lock as LockIcon, Activity, Zap, Globe
+  User as UserIcon, Award, Calendar, Share2, ShieldCheck, Clock, Lock as LockIcon, Activity, Zap, Globe
 } from "lucide-react"
 import { getDiscussion, addDiscussionComment } from "@/lib/api-service"
 import { motion, AnimatePresence } from "framer-motion"
@@ -127,7 +127,7 @@ export default function DiscussionDetailPage() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 mb-16 pb-12 border-b border-white/[0.06]">
               <div className="flex items-center gap-6">
                 <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_15px_40px_rgba(37,99,235,0.3)] border border-white/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
-                  {discussion.author?.supplierProfile ? <Award className="w-10 h-10 text-white" /> : <User className="w-10 h-10 text-white" />}
+                  {discussion.author?.supplierProfile ? <Award className="w-10 h-10 text-white" /> : <UserIcon className="w-10 h-10 text-white" />}
                 </div>
                 <div>
                   <div className="flex items-center gap-4 mb-2">
@@ -243,7 +243,7 @@ export default function DiscussionDetailPage() {
                      ? 'bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-500/20' 
                      : 'bg-gradient-to-br from-slate-800 to-slate-900 shadow-black'
                    }`}>
-                     {comment.author?.role === 'SUPPLIER' ? <Award className="w-8 h-8 text-white" /> : <User className="w-8 h-8 text-white" />}
+                     {comment.author?.role === 'SUPPLIER' ? <Award className="w-8 h-8 text-white" /> : <UserIcon className="w-8 h-8 text-white" />}
                    </div>
                 </div>
                 

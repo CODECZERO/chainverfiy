@@ -7,7 +7,9 @@ import { MessageCircle, CheckCircle2, MapPin, Calendar, Package, AlertTriangle, 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-export default function SupplierProfilePage({ params }: { params: { id: string } }) {
+export default function SupplierProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params)
+  const id = resolvedParams.id
   const [profile, setProfile] = useState<any>(null)
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -18,8 +20,8 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
     async function fetchProfile() {
       try {
         const [profRes, prodRes] = await Promise.all([
-          fetch(`${api}/suppliers/${params.id}`),
-          fetch(`${api}/suppliers/${params.id}/products`)
+          fetch(`${api}/suppliers/${id}`),
+          fetch(`${api}/suppliers/${id}/products`)
         ])
         const prof = await profRes.json()
         const prods = (await prodRes.json()).data || []
@@ -32,7 +34,7 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
       }
     }
     fetchProfile()
-  }, [params.id, api])
+  }, [id, api])
 
   const handleFlagSupplier = async () => {
     if (!profile || flagging) return;
@@ -40,7 +42,7 @@ export default function SupplierProfilePage({ params }: { params: { id: string }
     
     setFlagging(true);
     try {
-      const res = await fetch(`${api}/suppliers/${params.id}/flag`, {
+      const res = await fetch(`${api}/suppliers/${id}/flag`, {
         method: 'POST'
       });
       
