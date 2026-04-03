@@ -27,6 +27,9 @@ COPY . .
 # Build the application
 RUN npx tsc -p tsconfig.json
 
+# Copy generated prisma client to dist (since it's excluded from tsc)
+RUN mkdir -p dist/generated && cp -r src/generated/prisma dist/generated/
+
 # ─── Production Stage ─────────────────────────────────────────────
 FROM node:20-slim
 
