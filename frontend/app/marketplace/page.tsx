@@ -92,21 +92,27 @@ export default function MarketplacePage() {
           <SidebarInset className="bg-transparent w-full">
             <main className="p-4 md:p-8 lg:p-12 max-w-[1600px] mx-auto w-full relative z-10">
               
+              {/* ── Mobile Sidebar Trigger ── */}
+              <div className="flex lg:hidden mb-8 items-center gap-4">
+                <SidebarTrigger className="h-12 w-12 rounded-xl bg-[#0A0D14]/80 border border-white/[0.08] text-blue-500 shadow-2xl backdrop-blur-xl" />
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Open Terminal Filters</span>
+              </div>
+              
               {/* ── Header Interface ── */}
-              <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 mb-20">
+              <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 md:gap-10 mb-12 md:mb-20">
                 <div className="max-w-3xl">
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-4 mb-6"
+                    className="flex items-center gap-4 mb-4 md:mb-6"
                   >
-                    <div className="w-10 h-1 rounded-full bg-blue-500/40" />
-                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] italic">Consensus Node Registry</span>
+                    <div className="w-8 md:w-10 h-1 rounded-full bg-blue-500/40" />
+                    <span className="text-[9px] md:text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] italic">Consensus Node Registry</span>
                   </motion.div>
-                  <h1 className={`${outfit.className} text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9]`}>
+                  <h1 className={`${outfit.className} text-4xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.95] md:leading-[0.9]`}>
                     Market <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Terminal</span>
                   </h1>
-                  <p className="text-lg text-slate-500 max-w-2xl mt-8 font-black uppercase tracking-[0.1em] italic opacity-70 leading-relaxed">
+                  <p className="text-base md:text-lg text-slate-500 max-w-2xl mt-4 md:mt-8 font-black uppercase tracking-[0.1em] italic opacity-70 leading-relaxed">
                     Access high-fidelity assets verified by the ChainVerify Decentralized Oracle Network. Peer-to-peer settlement via Soroban.
                   </p>
                 </div>

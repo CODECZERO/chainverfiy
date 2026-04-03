@@ -54,6 +54,7 @@ export default function DeliveryConfirmationPage() {
   const [uploadingProof, setUploadingProof] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null)
   const scanFired = useRef(false)
+  const lastFetchedRef = useRef<string | null>(null)
 
   // Fire a browser scan on page load for logging (no wallet required)
   useEffect(() => {
@@ -146,7 +147,11 @@ export default function DeliveryConfirmationPage() {
 
   const fetchOrderData = async () => {
     if (!effectiveWallet) return
+    const fetchKey = `${params.orderId}-${effectiveWallet}`
+    if (lastFetchedRef.current === fetchKey) return
+    
     try {
+      lastFetchedRef.current = fetchKey
       const res = await fetch(`${api}/delivery/${params.orderId}/delivery-view?wallet=${effectiveWallet}`)
       const data = await res.json()
       if (data.success) {
@@ -517,7 +522,7 @@ export default function DeliveryConfirmationPage() {
               )}
 
               {/* Disputed */}
-              {order.buyerProofCid && (
+              {(order.status === 'DISPUTED' || order.buyerProofCid) && (
                 <div className="premium-card rounded-[2.5rem] p-10 border-red-500/30 shadow-2xl relative overflow-hidden border">
                   <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-red-500/10 blur-[100px] rounded-full pointer-events-none" />
                   <div className="relative z-10">

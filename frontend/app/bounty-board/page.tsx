@@ -10,6 +10,10 @@ import { Card } from "@/components/ui/card"
 import { Briefcase, Search, ArrowRight, ShieldCheck, Sparkles, Coins, Clock, Package } from "lucide-react"
 import { getAllBounties } from "@/lib/api-service"
 import { useEffect } from "react"
+import { Outfit, Inter } from "next/font/google"
+
+const outfit = Outfit({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 type Bounty = {
   id: string
@@ -70,39 +74,39 @@ export default function BountyBoardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        <div className="flex items-start justify-between gap-4">
+      <div className="max-w-5xl mx-auto px-6 md:px-8 py-8 md:py-12">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-8 md:gap-4">
           <div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Briefcase className="w-4 h-4" />
-              <span className="text-sm">Community marketplace</span>
+              <span className="text-[10px] font-black uppercase tracking-widest italic">Community marketplace</span>
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight mt-2">Bounty Board</h1>
-            <p className="text-muted-foreground mt-2">Earn rewards by verifying product origins and providing proof.</p>
+            <h1 className={`${outfit.className} text-3xl md:text-5xl font-black tracking-tighter mt-4 uppercase italic`}>Bounty Board</h1>
+            <p className="text-muted-foreground mt-4 text-sm md:text-base leading-relaxed max-w-xl italic">Earn rewards by verifying product origins and providing proof.</p>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
+          <div className="flex w-full md:w-auto gap-3">
+            <Button asChild variant="outline" className="flex-1 md:flex-none h-12 md:h-14 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 uppercase text-[10px] font-black italic tracking-widest transition-all active:scale-95">
               <Link href="/marketplace">
                 <Package className="w-4 h-4 mr-2" />
-                Browse Products
+                Browse
               </Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="flex-1 md:flex-none h-12 md:h-14 rounded-xl bg-amber-500 hover:bg-amber-600 text-black uppercase text-[10px] font-black italic tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
               <Link href="/verify">
                 <ShieldCheck className="w-4 h-4 mr-2" />
-                Verify products
+                Verify
               </Link>
             </Button>
           </div>
         </div>
 
-        <div className="mt-8 flex items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search bounties by product or description..." className="pl-9" />
+        <div className="mt-12 flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="SEARCH BOUNTIES BY PRODUCT OR SIGNAL..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-xs font-black uppercase tracking-widest italic`} />
           </div>
-          <Badge variant="secondary" className="whitespace-nowrap">
-            <Sparkles className="w-3.5 h-3.5 mr-1" /> {filteredBounties.length} open
+          <Badge variant="secondary" className="whitespace-nowrap px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest italic animate-pulse">
+            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} open nodes
           </Badge>
         </div>
 

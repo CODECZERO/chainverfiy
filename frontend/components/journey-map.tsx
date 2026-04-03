@@ -45,27 +45,101 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
 
     if (validScans.length === 0) return
 
+    const coords = validScans.map(s => [s.resolvedLat!, s.resolvedLng!] as [number, number])
+
+    const getMarkerColor = (scan: Scan, index: number, total: number) => {
+      const isFirst = index === 0
+      const isLast = index === total - 1
+      const isMachine = scan.scanSource === 'MACHINE'
+      if (scan.ipIsProxy) return '#EF4444'         // red
+      if (isMachine) return '#F59E0B'              // amber
+      if (isFirst) return '#10B981'                // green
+      if (isLast) return '#F59E0B'                 // gold
+      return '#3B82F6'                             // blue
+    }
+
+    const getMarkerHtml = (scan: Scan, color: string) => `
+      <div style="
+        width: 32px; height: 32px;
+        background: ${color};
+        border: 3px solid white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: bold; color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      ">${scan.scanNumber}</div>
+    `
+
+    const getPopupHtml = (scan: Scan) => {
+      const date = new Date(scan.serverTimestamp).toLocaleString()
+      const isMachine = scan.scanSource === 'MACHINE'
+      const deviceLabel = isMachine
+        ? `🏭 ${scan.machineModel || 'Machine Scanner'}`
+        : `📱 ${scan.deviceType || 'Browser'} / ${scan.os || 'OS'}`
+      const ipLabel = scan.ipCountryName ? `🌐 ${scan.ipCountryName}` : ''
+      const anchorBadge = scan.anchoredOnChain
+        ? `<div style="margin-top:6px; padding-top:6px; border-top:1px solid #eee;"><a href="https://stellar.expert/explorer/testnet/tx/${scan.anchorTxId}" target="_blank" style="color:#10B981;font-size:11px;text-decoration:none;font-weight:bold;">⛓️ Verified on Stellar</a></div>`
+        : ''
+
+      return `
+        <div style="font-family:sans-serif; min-width:220px; padding: 4px;">
+          <div style="font-weight:bold; font-size:14px; margin-bottom:6px; color: #111827;">Checkpoint #${scan.scanNumber}</div>
+          <div style="font-size:13px; color:#374151; font-weight: 500; margin-bottom:4px;">${scan.resolvedLocation || `${scan.ipCountry || 'Unknown Transit Hub'}`}</div>
+          <div style="font-size:11px; color:#6B7280; line-height: 1.5; margin-top:6px;">
+            <strong>Time:</strong> ${date}<br/>
+            <strong>Device:</strong> ${deviceLabel}<br/>
+            ${ipLabel ? `<strong>Region:</strong> ${ipLabel}<br/>` : ''}
+            ${anchorBadge}
+          </div>
+        </div>
+      `
+    }
+
+    // ─── Update existing map if initialized ───
+    if (leafletMap.current) {
+      const L = (window as any).L
+      if (!L) return
+
+      leafletMap.current.eachLayer((layer: any) => {
+        if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+          leafletMap.current.removeLayer(layer)
+        }
+      })
+
+      if (coords.length > 1) {
+        L.polyline(coords, { color: '#3B82F6', weight: 4, opacity: 0.8 }).addTo(leafletMap.current)
+      }
+
+      validScans.forEach((scan, index) => {
+        const markerColor = getMarkerColor(scan, index, validScans.length)
+        const icon = L.divIcon({
+          className: '',
+          html: getMarkerHtml(scan, markerColor),
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+        })
+        const popup = getPopupHtml(scan)
+        L.marker([scan.resolvedLat!, scan.resolvedLng!], { icon })
+          .addTo(leafletMap.current)
+          .bindPopup(popup)
+      })
+
+      if (coords.length !== (leafletMap.current as any)._lastScanCount) {
+        if (coords.length > 1) leafletMap.current.fitBounds(L.latLngBounds(coords), { padding: [50, 50] })
+        (leafletMap.current as any)._lastScanCount = coords.length
+      }
+      return
+    }
+
+    if (isInitializing.current) return
     isInitializing.current = true
 
-    // Dynamically import Leaflet (browser only)
     import('leaflet').then(L => {
+      (window as any).L = L
       isInitializing.current = false
       if (!mapRef.current || leafletMap.current) return
 
-      // Extra safeguard for React strict mode fast re-renders
-      if ((mapRef.current as any)._leaflet_id) {
-         (mapRef.current as any)._leaflet_id = null;
-      }
-      // Inject Leaflet CSS once
-      if (!document.querySelector('#leaflet-css')) {
-        const link = document.createElement('link')
-        link.id = 'leaflet-css'
-        link.rel = 'stylesheet'
-        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-        document.head.appendChild(link)
-      }
-
-      // Fix default marker icon path (common Next.js issue)
+      // Fix default marker icons
       delete (L.Icon.Default.prototype as any)._getIconUrl
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -73,9 +147,6 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       })
 
-      const coords = validScans.map(s => [s.resolvedLat!, s.resolvedLng!] as [number, number])
-
-      // Centre map on midpoint of journey
       const avgLat = coords.reduce((a, c) => a + c[0], 0) / coords.length
       const avgLng = coords.reduce((a, c) => a + c[1], 0) / coords.length
 
@@ -88,92 +159,36 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
         })
         leafletMap.current = map
       } catch (e) {
-        console.error("Leaflet initialization error:", e)
+        console.error("Leaflet init error:", e)
         isInitializing.current = false
         return
       }
 
-      // Dark theme map tiles
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '© OpenStreetMap',
         maxZoom: 18,
       }).addTo(leafletMap.current)
 
-      // Route polyline connecting all scan points in order (Solid Bright Blue)
       if (coords.length > 1) {
-        L.polyline(coords, {
-          color: '#3B82F6',    // bright blue
-          weight: 4,
-          opacity: 0.8,
-        }).addTo(leafletMap.current)
+        L.polyline(coords, { color: '#3B82F6', weight: 4, opacity: 0.8 }).addTo(leafletMap.current)
       }
 
-      // Add a marker for each scan
       validScans.forEach((scan, index) => {
-        const isFirst = index === 0
-        const isLast = index === validScans.length - 1
-        const isMachine = scan.scanSource === 'MACHINE'
-        const isAnchored = scan.anchoredOnChain
-
-        // Colour logic: green=origin, gold=final, amber=machine, blue=browser, red=proxy
-        let markerColor = '#3B82F6'      // blue — browser scan
-        if (scan.ipIsProxy) markerColor = '#EF4444'         // red
-        else if (isMachine) markerColor = '#F59E0B'         // amber — machine/warehouse
-        else if (isFirst) markerColor = '#10B981'           // green — origin
-        else if (isLast) markerColor = '#F59E0B'            // gold — final (buyer)
-
+        const markerColor = getMarkerColor(scan, index, validScans.length)
         const icon = L.divIcon({
           className: '',
-          html: `
-            <div style="
-              width: 32px; height: 32px;
-              background: ${markerColor};
-              border: 3px solid white;
-              border-radius: 50%;
-              display: flex; align-items: center; justify-content: center;
-              font-size: 13px; font-weight: bold; color: white;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            ">${scan.scanNumber}</div>
-          `,
+          html: getMarkerHtml(scan, markerColor),
           iconSize: [32, 32],
           iconAnchor: [16, 16],
         })
-
-        const date = new Date(scan.serverTimestamp).toLocaleString()
-        const deviceLabel = isMachine
-          ? `🏭 ${scan.machineModel || 'Machine Scanner'}`
-          : `📱 ${scan.deviceType || 'Browser'} / ${scan.os || 'OS'}`
-        const ipLabel = scan.ipCountryName ? `🌐 ${scan.ipCountryName}` : ''
-        const anchorBadge = isAnchored
-          ? `<div style="margin-top:6px; padding-top:6px; border-top:1px solid #eee;"><a href="https://stellar.expert/explorer/testnet/tx/${scan.anchorTxId}" target="_blank" style="color:#10B981;font-size:11px;text-decoration:none;font-weight:bold;">⛓️ Verified on Stellar Blockchain</a></div>`
-          : ''
-
-        const popup = `
-          <div style="font-family:sans-serif; min-width:220px; padding: 4px;">
-            <div style="font-weight:bold; font-size:14px; margin-bottom:6px; color: #111827;">
-              Checkpoint #${scan.scanNumber}
-            </div>
-            <div style="font-size:13px; color:#374151; font-weight: 500; margin-bottom:4px;">
-              ${scan.resolvedLocation || `${scan.ipCountry || 'Unknown Transit Hub'}`}
-            </div>
-            <div style="font-size:11px; color:#6B7280; line-height: 1.5; margin-top:6px;">
-              <strong>Time:</strong> ${date}<br/>
-              <strong>Device:</strong> ${deviceLabel}<br/>
-              ${ipLabel ? `<strong>Region:</strong> ${ipLabel}<br/>` : ''}
-              ${anchorBadge}
-            </div>
-          </div>
-        `
-
+        const popup = getPopupHtml(scan)
         L.marker([scan.resolvedLat!, scan.resolvedLng!], { icon })
           .addTo(leafletMap.current)
           .bindPopup(popup)
       })
 
-      // Fit map to show all markers
-      if (coords.length > 1) {
-        leafletMap.current.fitBounds(L.latLngBounds(coords), { padding: [50, 50] })
-      }
+      if (coords.length > 1) leafletMap.current.fitBounds(L.latLngBounds(coords), { padding: [50, 50] })
+      (leafletMap.current as any)._lastScanCount = coords.length
     })
 
     // Listen for Escape key and native fullscreen exit events

@@ -299,6 +299,27 @@ export const uploadDisputeProof = async (req: any, res: Response) => {
     },
   });
 
+  // ─── Auto-Bounty Creation ──────────────────────────────────────────
+  // Create a verification bounty for the community to audit the dispute
+  try {
+    const bountyDeadline = new Date();
+    bountyDeadline.setHours(bountyDeadline.getHours() + 48); // 2 day deadline suggestion (implicit in description)
+
+    await prisma.bounty.create({
+      data: {
+        productId: order.productId,
+        issuerId: order.buyerId,
+        issuerWallet: walletPublicKey || order.buyer.stellarWallet,
+        amount: 5, // Default incentive for verification
+        description: `DISPUTE AUDIT: Order #${order.id.slice(0, 8)}. Buyer claims: "${disputeReason.slice(0, 100)}...". Please verify product integrity.`,
+        status: 'ACTIVE',
+        expiresAt: bountyDeadline,
+      }
+    });
+  } catch (e) {
+    console.error("[Dispute] Failed to create auto-bounty", e);
+  }
+
   await notifySupplier(order.product.supplierId, 'DISPUTE_OPENED', {
     orderId: order.id,
     reason: disputeReason,

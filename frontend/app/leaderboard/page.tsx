@@ -103,7 +103,7 @@ export default function LeaderboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-6xl md:text-8xl font-black tracking-tighter mb-8 text-white uppercase italic tracking-[-0.04em]"
+            className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter mb-8 text-white uppercase italic tracking-[-0.04em]"
           >
             Network <span className="text-[#2775CA] drop-shadow-[0_0_30px_rgba(39,117,202,0.3)]">Consensus</span>
           </motion.h1>
@@ -130,8 +130,8 @@ export default function LeaderboardPage() {
         >
           {[
             { label: "Active Guardians", value: stats.verifiers, icon: ShieldCheck, color: "text-blue-400", bg: "from-blue-600/10" },
-            { label: "Market Intelligence", value: stats.products, icon: Activity, color: "text-emerald-400", bg: "from-emerald-500/10" },
-            { label: "Consensus Weight", value: stats.tokens, icon: TrendingUp, color: "text-amber-400", bg: "from-amber-600/10" },
+            { label: "Assets Verified", value: stats.products, icon: Activity, color: "text-emerald-400", bg: "from-emerald-500/10" },
+            { label: "Consensus Points", value: stats.tokens, icon: TrendingUp, color: "text-amber-400", bg: "from-amber-600/10" },
           ].map((s, i) => (
             <motion.div 
               key={s.label}
@@ -139,22 +139,22 @@ export default function LeaderboardPage() {
               whileHover={{ y: -5, scale: 1.02 }}
               className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-10 text-center relative overflow-hidden group shadow-2xl"
             >
-               <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-30 pointer-events-none`} />
-               <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-500">
-                 <s.icon className={`w-8 h-8 ${s.color}`} />
-               </div>
-               <div className="text-5xl font-black text-white tracking-tighter mb-2 tabular-nums">{s.value}</div>
-               <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{s.label}</div>
+                <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-30 pointer-events-none`} />
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-white/[0.03] rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 border border-white/[0.06] shadow-inner group-hover:scale-110 transition-transform duration-500">
+                  <s.icon className={`w-6 h-6 md:w-8 md:h-8 ${s.color}`} />
+                </div>
+                <div className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter mb-2 tabular-nums">{s.value}</div>
+                <div className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{s.label}</div>
             </motion.div>
           ))}
         </motion.div>
 
         {/* ── Leaderboard Table Redesign ── */}
         <div className="space-y-6">
-          <div className="flex items-center gap-6 px-10 pb-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.25em]">
-            <div className="w-20 text-center">Node Rank</div>
-            <div className="flex-1">Identity Profile</div>
-            <div className="text-right w-48">Reputation Settlement</div>
+          <div className="flex items-center gap-6 px-6 md:px-10 pb-4 text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.25em]">
+            <div className="w-12 md:w-20 text-center">Rank</div>
+            <div className="flex-1">Guardian Identity</div>
+            <div className="text-right w-48 hidden md:block">Consensus Weight</div>
           </div>
 
           <motion.div
@@ -177,7 +177,7 @@ export default function LeaderboardPage() {
                   key={rank}
                   variants={itemVariants}
                   whileHover={{ scale: 1.01, x: 5 }}
-                  className={`flex flex-col md:flex-row items-center gap-6 md:gap-10 rounded-[3rem] px-10 py-8 transition-all group relative overflow-hidden backdrop-blur-3xl border ${rowStyle}`}
+                  className={`flex flex-col md:flex-row items-center gap-6 md:gap-10 rounded-[2.5rem] md:rounded-[3rem] px-6 md:px-10 py-6 md:py-8 transition-all group relative overflow-hidden backdrop-blur-3xl border ${rowStyle}`}
                 >
                   {isTop3 && (
                     <motion.div 
@@ -206,8 +206,8 @@ export default function LeaderboardPage() {
 
                   {/* Guardian Identity */}
                   <div className="flex-1 min-w-0 flex items-center gap-8">
-                    <div className="relative group-hover:scale-110 transition-transform duration-500">
-                      <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center font-black text-2xl shadow-2xl shrink-0 ${
+                    <div className="relative group-hover:scale-110 transition-transform duration-500 shrink-0">
+                      <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] flex items-center justify-center font-black text-xl md:text-2xl shadow-2xl shrink-0 ${
                         isTop3 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white border border-white/20' : 'bg-[#1F2D40] text-slate-400 border border-white/5'
                       }`}>
                         {(l.name || "U")[0]}
@@ -219,27 +219,27 @@ export default function LeaderboardPage() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h3 className={`text-2xl font-black tracking-tight truncate ${isTop3 ? 'text-white' : 'text-slate-300 group-hover:text-blue-400 transition-colors'}`}>
+                      <h3 className={`text-xl md:text-2xl font-black tracking-tight truncate ${isTop3 ? 'text-white' : 'text-slate-300 group-hover:text-blue-400 transition-colors'}`}>
                         {l.name || `Verifier ${rank}`}
                       </h3>
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-1.5">
+                        <div className={`flex items-center gap-1 px-2 md:gap-1.5 md:px-3 py-1 rounded-full border text-[7px] md:text-[9px] font-black uppercase tracking-widest ${
                           isTop3 ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-white/[0.02] text-slate-500 border-white/[0.06]'
                         }`}>
-                          <Sparkles className={`w-3 h-3 ${isTop3 ? "text-amber-400" : "text-slate-600"}`} /> {l.badge || "Verified Auditor"}
+                          <ShieldCheck className={`w-2 h-2 md:w-3 md:h-3 ${isTop3 ? "text-amber-400" : "text-slate-600"}`} /> {l.badge || "Verified Auditor"}
                         </div>
-                        <span className="text-slate-700 text-xs font-black uppercase tracking-tighter">•</span>
-                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic">{l.accuracy || "High"} Accuracy Score</span>
+                        <span className="hidden md:inline text-slate-700 text-xs font-black uppercase tracking-tighter">•</span>
+                        <span className="text-[8px] md:text-[10px] font-black text-slate-600 uppercase tracking-widest italic">{l.accuracy || "High"} Accuracy Score</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Weight Data */}
-                  <div className="text-right shrink-0 w-full md:w-auto mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-0 border-white/[0.04]">
-                    <div className="text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(39,117,202,0.4)]">
-                      {l.tokens.toLocaleString()} <span className="text-xs text-blue-500 uppercase tracking-widest ml-1">Tokens</span>
+                  <div className="text-center md:text-right shrink-0 w-full md:w-auto mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-0 border-white/[0.04]">
+                    <div className="text-3xl md:text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(39,117,202,0.4)]">
+                      {l.tokens.toLocaleString()} <span className="text-[10px] md:text-xs text-blue-500 uppercase tracking-widest ml-1">Tokens</span>
                     </div>
-                    <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-1.5 flex items-center justify-end gap-2">
+                    <div className="text-[8px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-1.5 flex items-center justify-center md:justify-end gap-2">
                        {l.votes} SUCCESSFUL AUDITS <ArrowRight className="w-3 h-3 text-emerald-500" />
                     </div>
                   </div>

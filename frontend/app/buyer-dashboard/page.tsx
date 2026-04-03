@@ -280,7 +280,25 @@ export default function BuyerDashboard() {
         </aside>
 
         {/* ── Command Interface ── */}
-        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-12 relative">
+        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-6 md:p-12 relative">
+           {/* Mobile Navigation Matrix */}
+           <div className="lg:hidden flex overflow-x-auto gap-4 pb-8 mb-4 scrollbar-hide no-scrollbar -mx-2 px-2">
+             {NAV.map((n) => (
+               <button
+                 key={n.id}
+                 onClick={() => setActive(n.id)}
+                 className={`flex-none flex items-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest italic transition-all ${
+                   active === n.id 
+                     ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+                     : "bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300"
+                 }`}
+               >
+                 <n.icon className="w-4 h-4" />
+                 {n.label}
+               </button>
+             ))}
+           </div>
+
            <AnimatePresence mode="wait">
              <motion.div
                key={active}
@@ -293,7 +311,7 @@ export default function BuyerDashboard() {
                {/* Module Header */}
                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                   <div>
-                    <h2 className={`${outfit.className} text-6xl font-black text-white tracking-tighter uppercase italic leading-[0.85]`}>
+                    <h2 className={`${outfit.className} text-3xl md:text-6xl font-black text-white tracking-tighter uppercase italic leading-[0.95] md:leading-[0.85]`}>
                       {active === "orders" ? <span className="text-white">Principal <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">Ledger</span></span> : 
                        active === "tracking" ? <span className="text-white">Active <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">Logistics</span></span> : 
                        active === "completed" ? <span className="text-white">Verified <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">History</span></span> : 
@@ -319,11 +337,11 @@ export default function BuyerDashboard() {
                {active === "orders" && (
                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
                     {/* Settlement Velocity Chart */}
-                    <div className="xl:col-span-8 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[3.5rem] p-12 relative overflow-hidden group shadow-3xl hover:border-white/[0.12] transition-colors duration-500">
+                    <div className="xl:col-span-8 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl hover:border-white/[0.12] transition-colors duration-500">
                        <div className="flex items-center justify-between mb-16">
                           <div>
-                             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 italic">Financial Telemetry</h3>
-                             <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter mt-3 uppercase italic leading-none`}>Settlement Velocity</div>
+                             <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 italic">Financial Telemetry</h3>
+                             <div className={`${outfit.className} text-2xl md:text-4xl font-black text-white tracking-tighter mt-3 uppercase italic leading-none`}>Settlement Velocity</div>
                           </div>
                           <div className="bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-3.5 flex items-center gap-4 shadow-inner">
                              <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
@@ -354,7 +372,7 @@ export default function BuyerDashboard() {
                     </div>
 
                     {/* Capital Composition Pie */}
-                    <div className="xl:col-span-4 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[3.5rem] p-12 shadow-3xl relative overflow-hidden flex flex-col group hover:border-white/[0.12] transition-colors duration-500">
+                    <div className="xl:col-span-4 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group hover:border-white/[0.12] transition-colors duration-500">
                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-12 italic">Capital Composition</h3>
                        <div className="flex-1 relative min-h-[250px]">
                           <ResponsiveContainer width="100%" height="100%">
@@ -391,7 +409,7 @@ export default function BuyerDashboard() {
 
                {/* Operations Log / Transactions */}
                {active === "bounties" ? (
-                 <div className="glass-premium bg-[#0A0D14]/40 border-2 border-dashed border-white/[0.06] rounded-[4rem] p-32 text-center relative overflow-hidden group shadow-inner">
+                 <div className="glass-premium bg-[#0A0D14]/40 border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group shadow-inner">
                     <div className="absolute inset-0 bg-blue-600/[0.01] group-hover:bg-blue-600/[0.03] transition-colors" />
                     <div className="w-32 h-32 rounded-[2.5rem] bg-blue-500/5 flex items-center justify-center mx-auto mb-10 shadow-2xl border border-white/[0.03] group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 opacity-20">
                        <Coins className="w-16 h-16 text-blue-500" />
@@ -426,15 +444,15 @@ export default function BuyerDashboard() {
                                  initial={{ opacity: 0, x: -40, filter: "blur(10px)" }}
                                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                                  transition={{ delay: idx * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                                 className="glass-premium bg-[#0A0D14]/70 border border-white/[0.08] hover:border-blue-500/30 rounded-[3.5rem] p-12 transition-all group relative overflow-hidden shadow-3xl hover:shadow-blue-500/10"
+                                 className="glass-premium bg-[#0A0D14]/70 border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 transition-all group relative overflow-hidden shadow-3xl hover:shadow-blue-500/10"
                                >
                                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/[0.01] rounded-full blur-[80px] pointer-events-none" />
                                   
-                                  <div className="flex flex-col xl:flex-row items-center gap-16 relative z-10">
+                                  <div className="flex flex-col xl:flex-row items-center gap-8 md:gap-16 relative z-10">
                                      {/* Asset Signature */}
-                                     <div className="flex items-center gap-12 flex-1 min-w-0">
-                                        <div className="w-36 h-36 bg-black/80 rounded-[3rem] border border-white/[0.06] relative overflow-hidden group-hover:scale-105 group-hover:rotate-2 transition-all duration-1000 shadow-inner group-hover:shadow-blue-500/20">
+                                     <div className="flex flex-col sm:flex-row items-center gap-8 md:gap-12 flex-1 min-w-0 w-full">
+                                        <div className="w-24 h-24 md:w-36 md:h-36 bg-black/80 rounded-[1.5rem] md:rounded-[3rem] border border-white/[0.06] relative overflow-hidden group-hover:scale-105 group-hover:rotate-2 transition-all duration-1000 shadow-inner group-hover:shadow-blue-500/20">
                                            {o.product?.proofMediaUrls?.[0] ? (
                                              <Image 
                                                src={getIPFSUrl(o.product.proofMediaUrls[0])} 
@@ -449,21 +467,21 @@ export default function BuyerDashboard() {
                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
                                            <div className="absolute bottom-4 left-0 w-full text-center text-[8px] font-black text-white/50 uppercase tracking-[0.2em] italic">Media Node</div>
                                         </div>
-                                        <div className="min-w-0 flex-1">
-                                           <div className="flex flex-wrap items-center gap-8 mb-6">
-                                              <h4 className={`${outfit.className} text-4xl font-black text-white tracking-tighter uppercase italic group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Protocol Asset"}</h4>
-                                              <span className={`px-6 py-2.5 rounded-2xl border text-[9px] font-black uppercase tracking-[0.3em] italic backdrop-blur-2xl shadow-3xl ${s.cls} group-hover:scale-105 transition-transform duration-500`}>
-                                                 <div className={`w-2 h-2 rounded-full ${s.dot} inline-block mr-4 animate-pulse shadow-[0_0_15px_currentColor]`} /> {s.label}
+                                        <div className="min-w-0 flex-1 text-center sm:text-left w-full">
+                                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 md:gap-8 mb-4 md:mb-6">
+                                              <h4 className={`${outfit.className} text-xl md:text-4xl font-black text-white tracking-tighter uppercase italic group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Protocol Asset"}</h4>
+                                              <span className={`px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl border text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] italic backdrop-blur-2xl shadow-3xl ${s.cls} group-hover:scale-105 transition-transform duration-500`}>
+                                                 <div className={`w-2 h-2 rounded-full ${s.dot} inline-block mr-3 md:mr-4 animate-pulse shadow-[0_0_15px_currentColor]`} /> {s.label}
                                               </span>
                                            </div>
-                                           <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic">
-                                              <span className="text-slate-400 flex items-center gap-3 bg-white/[0.03] px-5 py-2.5 rounded-2xl border border-white/[0.05] shadow-inner group-hover:text-blue-300 transition-colors">
+                                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 md:gap-x-10 gap-y-3 md:gap-y-4 text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic">
+                                              <span className="text-slate-400 flex items-center gap-2 md:gap-3 bg-white/[0.03] px-3 md:px-5 py-2 md:py-2.5 rounded-[1rem] md:rounded-2xl border border-white/[0.05] shadow-inner group-hover:text-blue-300 transition-colors">
                                                 <BarChart2 className="w-4 h-4 text-blue-500" /> NODE-{o.id.slice(0, 12)}
                                               </span>
-                                              <span className="flex items-center gap-3 hover:text-white transition-all cursor-pointer group-hover:translate-x-1 duration-500">
+                                              <span className="flex items-center gap-2 md:gap-3 hover:text-white transition-all cursor-pointer group-hover:translate-x-1 duration-500">
                                                 <Shield className="w-4 h-4 text-emerald-500/80" /> {o.product?.supplier?.name || "Verified Counterparty"}
                                               </span>
-                                              <span className="flex items-center gap-3 group-hover:text-slate-400 transition-colors">
+                                              <span className="flex items-center gap-2 md:gap-3 group-hover:text-slate-400 transition-colors">
                                                 <Clock className="w-4 h-4 text-slate-800" /> {new Date(o.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}
                                               </span>
                                            </div>
@@ -471,12 +489,12 @@ export default function BuyerDashboard() {
                                      </div>
 
                                      {/* Settlement Magnitude */}
-                                     <div className="hidden xl:flex flex-col items-center border-x border-white/[0.04] px-20 shrink-0 group/price relative">
+                                     <div className="xl:flex flex-col items-center border-y xl:border-x border-white/[0.04] py-8 md:py-10 xl:px-20 shrink-0 group/price relative w-full xl:w-auto">
                                         <div className="absolute inset-0 bg-blue-500/5 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className={`${outfit.className} text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10`}>
-                                           {o.priceUsdc} <span className="text-lg text-blue-500 font-black italic opacity-60">USDC</span>
+                                        <div className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10 text-center`}>
+                                           {o.priceUsdc} <span className="text-base md:text-lg text-blue-500 font-black italic opacity-60">USDC</span>
                                         </div>
-                                        <div className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] mt-4 italic group-hover:text-slate-400 transition-colors relative z-10">Escrow Magnitude</div>
+                                        <div className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] mt-3 md:mt-4 italic group-hover:text-slate-400 transition-colors relative z-10 text-center">Escrow Magnitude</div>
                                      </div>
 
                                      {/* Operation Cluster */}
@@ -484,9 +502,9 @@ export default function BuyerDashboard() {
                                         {(o.status === "PAID" || o.status === "SHIPPED" || o.status === "DELIVERED") && (
                                           <Button 
                                             onClick={() => window.open(`/delivery/confirm/${o.id}`, "_blank")}
-                                            className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.4em] text-[12px] rounded-[2rem] h-18 px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] active:scale-95 transition-all italic border border-white/10"
+                                            className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] rounded-[1.5rem] md:rounded-[2rem] h-14 md:h-18 px-8 md:px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] active:scale-95 transition-all italic border border-white/10"
                                           >
-                                             <ScanLine className="w-6 h-6 mr-4" /> Inspect Node 
+                                             <ScanLine className="w-5 h-5 md:w-6 md:h-6 mr-3 md:mr-4" /> Inspect Node 
                                           </Button>
                                         )}
                                         <div className="flex gap-4">
@@ -521,23 +539,23 @@ export default function BuyerDashboard() {
                                     <motion.div 
                                       whileHover={{ scale: 1.005, y: -4 }}
                                       onClick={() => setSelectedQr(o.qrCode.qrCodeUrl)}
-                                      className="mt-12 bg-black/60 border border-white/[0.05] rounded-[2.5rem] p-8 flex items-center gap-12 cursor-pointer hover:border-blue-500/50 transition-all group/handshake relative overflow-hidden shadow-inner"
+                                      className="mt-8 md:mt-12 bg-black/60 border border-white/[0.05] rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8 md:gap-12 cursor-pointer hover:border-blue-500/50 transition-all group/handshake relative overflow-hidden shadow-inner"
                                     >
                                        <div className="absolute inset-0 bg-blue-500/[0.02] translate-x-[-100%] group-hover/handshake:translate-x-0 transition-transform duration-1000" />
-                                       <div className="w-28 h-28 bg-white p-2.5 rounded-[2rem] shrink-0 group-hover/handshake:scale-110 group-hover:rotate-2 transition-all duration-700 shadow-[0_0_40px_rgba(255,255,255,0.15)] relative z-10">
+                                       <div className="w-24 h-24 md:w-28 md:h-28 bg-white p-2.5 rounded-[1.5rem] md:rounded-[2rem] shrink-0 group-hover/handshake:scale-110 group-hover:rotate-2 transition-all duration-700 shadow-[0_0_40px_rgba(255,255,255,0.15)] relative z-10">
                                           <Image src={o.qrCode.qrCodeUrl} alt="QR" fill className="object-contain p-3" unoptimized />
                                        </div>
-                                       <div className="flex-1 min-w-0 relative z-10">
-                                          <div className="flex justify-between items-center mb-4">
-                                             <div className="text-[12px] font-black text-blue-400 uppercase tracking-[0.4em] flex items-center gap-4 italic leading-none">
-                                                <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" /> Cryptographic Handshake Interface
+                                       <div className="flex-1 min-w-0 relative z-10 text-center sm:text-left">
+                                          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+                                             <div className="text-[10px] md:text-[12px] font-black text-blue-400 uppercase tracking-[0.4em] flex items-center gap-3 md:gap-4 italic leading-none">
+                                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" /> Cryptographic Handshake Interface
                                              </div>
-                                             <span className="text-[9px] font-black text-slate-700 uppercase tracking-[0.5em] italic group-hover/handshake:text-blue-500 transition-all">Propagate Signal</span>
+                                             <span className="text-[8px] md:text-[9px] font-black text-slate-700 uppercase tracking-[0.5em] italic group-hover/handshake:text-blue-500 transition-all">Propagate Signal</span>
                                           </div>
-                                          <p className="text-slate-500 text-[11px] leading-relaxed max-w-3xl font-medium uppercase tracking-[0.05em] italic opacity-80 group-hover:opacity-100 transition-opacity">This signed credential must be presented to the fulfilling node for identity verification and multi-signature sequence release. Physical proximity is required for terminal finality.</p>
+                                          <p className="text-slate-500 text-[10px] md:text-[11px] leading-relaxed max-w-3xl font-medium uppercase tracking-[0.05em] italic opacity-80 group-hover:opacity-100 transition-opacity">This signed credential must be presented to the fulfilling node for identity verification and multi-signature sequence release. Physical proximity is required for terminal finality.</p>
                                        </div>
-                                       <div className="shrink-0 w-14 h-14 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-800 group-hover/handshake:text-blue-500 group-hover/handshake:scale-110 transition-all">
-                                          <ChevronRight className="w-8 h-8" />
+                                       <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-800 group-hover/handshake:text-blue-500 group-hover/handshake:scale-110 transition-all">
+                                          <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
                                        </div>
                                     </motion.div>
                                   )}

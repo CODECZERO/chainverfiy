@@ -35,9 +35,12 @@ export default function OrderJourneyPage() {
   const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"
 
   const scanFired = useRef(false)
+  const lastFetchedRef = useRef<string | null>(null)
 
   useEffect(() => {
     const fetchOrder = async () => {
+      if (lastFetchedRef.current === id) return
+      lastFetchedRef.current = id as string
       try {
         const res = await fetch(`${api}/orders/${id}`)
         const data = await res.json()
@@ -241,20 +244,20 @@ export default function OrderJourneyPage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">
               Verified Journey
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight">{product?.title}</h1>
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{product?.title}</h1>
             <p className="text-slate-400 max-w-lg">
               This product has been tracked from origin to your purchase. 
               The timeline below is anchored on the Stellar blockchain for immutable proof.
             </p>
             
             <div className="pt-4 flex flex-wrap gap-4 items-center">
-              <div className="bg-white/5 border border-white/5 rounded-2xl px-5 py-3 text-center min-w-[120px]">
+              <div className="bg-white/5 border border-white/5 rounded-2xl px-5 py-3 text-center flex-1 sm:flex-none min-w-[120px]">
                 <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Order Status</div>
                 <div className="text-emerald-400 font-bold flex items-center justify-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> {order.status}
                 </div>
               </div>
-              <div className="bg-white/5 border border-white/5 rounded-2xl px-5 py-3 text-center min-w-[120px]">
+              <div className="bg-white/5 border border-white/5 rounded-2xl px-5 py-3 text-center flex-1 sm:flex-none min-w-[120px]">
                 <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Verification</div>
                 <div className="text-primary font-bold">100% On-Chain</div>
               </div>
@@ -263,7 +266,7 @@ export default function OrderJourneyPage() {
                 <button 
                   onClick={() => performGeolocation(id as string)}
                   disabled={sharingLocation}
-                  className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-blue-900/40 ml-auto"
+                  className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 w-full sm:w-auto sm:ml-auto"
                 >
                   {sharingLocation ? <Loader2 className="w-3 h-3 animate-spin" /> : <MapPin className="w-3 h-3" />}
                   {sharingLocation ? "Verifying..." : "Verify My Location"}

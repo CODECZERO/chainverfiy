@@ -105,6 +105,26 @@ export const placeOrder = async (req: any, res: Response) => {
     }
   }).catch(() => {}); // Fail silently if already exists
 
+  // ─── Silent Community Enrollment ───────────────────────────────────
+  try {
+    const finalBuyerIdStr = String(finalBuyerId);
+    await ((prisma as any).communityMember as any).upsert({
+      where: {
+        userId_supplierId: {
+          userId: finalBuyerIdStr,
+          supplierId: product.supplierId,
+        }
+      },
+      update: {}, 
+      create: {
+        userId: finalBuyerIdStr,
+        supplierId: product.supplierId,
+      }
+    });
+  } catch (e) {
+    console.error("[Order] Failed silent community enrollment", e);
+  }
+
   await notifySupplier(product.supplierId, 'ORDER_RECEIVED', {
     title: product.title,
     quantity,

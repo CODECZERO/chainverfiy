@@ -99,14 +99,21 @@ export default function VerifyPage() {
 
   const castVote = async (productId: string, voteType: "REAL" | "FAKE" | "NEEDS_MORE_PROOF") => {
     try {
-      if (!user?.id) return
+      const identifier = user?.id || wallet.publicKey;
+      if (!identifier) return
+
       const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/products/" + productId + "/vote", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + (localStorage.getItem("token") || "")
+          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
         },
-        body: JSON.stringify({ userId: user.id, voteType, reason: "" }),
+        body: JSON.stringify({ 
+          userId: user?.id, 
+          stellarWallet: wallet.publicKey,
+          voteType, 
+          reason: "" 
+        }),
         credentials: "include"
       })
       if (!res.ok) {
@@ -114,9 +121,6 @@ export default function VerifyPage() {
         alert(error.message || "Protocol rejection: Insufficient authorization or stake.");
         return;
       }
-
-      const identifier = user?.id || wallet.publicKey;
-      if (!identifier) return;
 
       await loadTokens(identifier);
     } catch { }
@@ -151,7 +155,7 @@ export default function VerifyPage() {
 
               <motion.h1
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="text-6xl md:text-9xl font-display font-black tracking-tighter mb-10 text-white uppercase italic leading-[0.85]"
+                className="text-5xl sm:text-7xl md:text-9xl font-display font-black tracking-tighter mb-10 text-white uppercase italic leading-[0.85]"
               >
                 ORACLE <span className="text-indigo-500">AUDIT</span>.
               </motion.h1>
@@ -165,7 +169,7 @@ export default function VerifyPage() {
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-10 glass-premium rounded-[3rem] p-8 md:p-10 shadow-3xl relative group overflow-hidden"
+                className="inline-flex items-center gap-6 md:gap-10 glass-premium rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 shadow-3xl relative group overflow-hidden w-full lg:w-auto"
               >
                 <div className="absolute inset-0 bg-indigo-500/5 pulse-subtle pointer-events-none" />
                 <div className="w-20 h-20 rounded-3xl bg-indigo-600/10 flex items-center justify-center border border-indigo-500/20 shadow-inner group-hover:scale-110 transition-transform duration-700">
@@ -183,7 +187,7 @@ export default function VerifyPage() {
             {tokensEarned > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-                className="glass-premium px-14 py-16 text-center shadow-3xl rounded-[4rem] border-indigo-500/20 shrink-0 min-w-[360px] relative overflow-hidden"
+                className="glass-premium px-10 md:px-14 py-12 md:py-16 text-center shadow-3xl rounded-[3rem] md:rounded-[4rem] border-indigo-500/20 shrink-0 min-w-full sm:min-w-[360px] relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-indigo-500/[0.02] pointer-events-none" />
                 <div className="text-[10px] font-display font-black text-slate-500 uppercase tracking-[0.5em] mb-6 italic">Session Payout Alpha</div>
@@ -205,7 +209,7 @@ export default function VerifyPage() {
             <button
               key={t} onClick={() => setTab(t)}
               className={cn(
-                "px-14 py-6 rounded-3xl text-[11px] font-display font-black uppercase tracking-[0.4em] transition-all relative overflow-hidden italic",
+                "px-8 md:px-14 py-4 md:py-6 rounded-2xl md:rounded-3xl text-[10px] md:text-[11px] font-display font-black uppercase tracking-[0.4em] transition-all relative overflow-hidden italic",
                 tab === t ? "text-white" : "text-slate-500 hover:text-slate-200"
               )}
             >
@@ -244,7 +248,7 @@ export default function VerifyPage() {
                 remaining.map((p, idx) => {
                   const total = p.voteReal + p.voteFake + p.voteNeedsProof
                   const realPct = total > 0 ? Math.round((p.voteReal / total) * 100) : 0
-                  const required = p.priceInr >= 20000 ? 50 : p.priceInr >= 5000 ? 10 : 0
+                  const required = p.priceInr >= 20000 ? 2 : p.priceInr >= 5000 ? 1 : 0
                   const disabled = tokenBalance < required
 
                   return (
@@ -333,7 +337,7 @@ export default function VerifyPage() {
                               key={vote.id} disabled={disabled}
                               onClick={() => castVote(p.id, vote.id as any)}
                               className={cn(
-                                "flex-1 md:flex-none flex items-center justify-center gap-4 rounded-[1.75rem] px-10 py-6 text-[10px] font-display font-black uppercase tracking-[0.3em] transition-all h-20 min-w-[200px] border shadow-2xl italic",
+                                "flex-1 md:flex-none flex items-center justify-center gap-4 rounded-[1.75rem] px-6 md:px-10 py-5 md:py-6 text-[10px] font-display font-black uppercase tracking-[0.3em] transition-all h-16 md:h-20 min-w-full sm:min-w-[200px] border shadow-2xl italic",
                                 disabled ? "opacity-20 cursor-not-allowed bg-white/5 border-white/10 text-slate-600" : vote.cls
                               )}
                             >
@@ -353,7 +357,7 @@ export default function VerifyPage() {
               key="history" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
               className="space-y-8 max-w-6xl mx-auto"
             >
-              {!user?.id ? (
+              {!(user?.id || wallet.isConnected) ? (
                 <div className="text-center py-48 glass-premium rounded-[4rem] border border-white/[0.06] shadow-3xl">
                   <div className="w-32 h-32 mx-auto mb-10 rounded-[3rem] bg-indigo-600/10 flex items-center justify-center border border-indigo-500/20">
                     <TrendingUp className="w-14 h-14 text-indigo-400" />

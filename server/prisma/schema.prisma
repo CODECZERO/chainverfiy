@@ -114,6 +114,7 @@ model User {
   solvedBounties  Bounty[]           @relation("SolverBounties")
   discussions     Discussion[]
   comments        Comment[]
+  communityMemberships CommunityMember[]
 
   @@map("users")
 }
@@ -138,7 +139,8 @@ model Supplier {
 
   products Product[]
   badges   SellerBadge[]
-  machineScanners MachineScanner[]
+  machineScanners  MachineScanner[]
+  communityMembers CommunityMember[]
 
   @@index([trustScore])
   @@index([location])
@@ -542,6 +544,7 @@ model Bounty {
   solver          User?        @relation("SolverBounties", fields: [solverId], references: [id])
   proofCid        String?
   proofUploadedAt DateTime?
+  expiresAt       DateTime?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -584,6 +587,18 @@ model Comment {
   @@index([authorWallet])
   @@index([discussionId])
   @@map("comments")
+}
+
+model CommunityMember {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  supplierId  String
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, supplierId])
+  @@map("community_members")
 }
 
 generator seed {

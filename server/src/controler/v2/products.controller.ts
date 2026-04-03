@@ -225,7 +225,29 @@ export const voteOnProduct = async (req: any, res: Response) => {
   }
 
   // Determine effective user
-  const effectiveUserId = voter?.id || (stellarWallet ? (await prisma.user.findFirst({ where: { stellarWallet } }))?.id : null);
+  let effectiveUserId = voter?.id || (stellarWallet ? (await prisma.user.findFirst({ where: { stellarWallet } }))?.id : null);
+  
+  if (!effectiveUserId && stellarWallet) {
+    // Auto-create user for new wallet connection to prevent 401
+    const newUser = await prisma.user.create({
+      data: {
+        stellarWallet: stellarWallet,
+        role: 'BUYER', // Default role
+        isVerified: false,
+      }
+    });
+    effectiveUserId = newUser.id;
+    
+    // Give a "Welcome Auditor" bonus of 5 tokens so they can start participating in consensus
+    await prisma.trustTokenLedger.create({
+      data: {
+        userId: effectiveUserId,
+        amount: 5,
+        reason: 'Welcome Audit Bonus',
+      }
+    });
+  }
+
   if (!effectiveUserId) return res.status(401).json(new ApiResponse(401, null, 'User account not found for this identifier.'));
 
   const existing = await prisma.vote.findUnique({
@@ -237,8 +259,8 @@ export const voteOnProduct = async (req: any, res: Response) => {
   // Waive stake for verified buyers of this specific product
   if (!isVerifiedBuyer) {
     const priceInr = Number(productCheck.priceInr);
-    if (priceInr >= 20000) requiredStake = 10;
-    else if (priceInr >= 5000) requiredStake = 2;
+    if (priceInr >= 20000) requiredStake = 2;
+    else if (priceInr >= 5000) requiredStake = 1;
   }
 
   if (requiredStake > 0) {

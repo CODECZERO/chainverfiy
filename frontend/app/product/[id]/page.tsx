@@ -193,7 +193,7 @@ export default function ProductPage() {
 
       {/* ── Breadcrumb & Global ID ── */}
       <div className="glass-premium border-y border-white/[0.04] sticky top-14 md:top-16 z-50">
-        <div className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-4 md:py-8 relative z-10 flex items-center justify-between">
           <Link href="/marketplace" className="inline-flex items-center text-[10px] font-display font-black uppercase tracking-[0.4em] text-slate-500 hover:text-indigo-400 transition-all italic">
             <ArrowLeft className="w-4 h-4 mr-3" /> Market Exit
           </Link>
@@ -212,7 +212,7 @@ export default function ProductPage() {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-16 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-12 md:py-20 relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
 
           {/* ── Left Column: Media & Data (8 columns) ── */}
@@ -224,7 +224,7 @@ export default function ProductPage() {
                 <div className="h-px w-10 bg-indigo-500/40" />
                 <span className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] italic">Cryptographic Asset</span>
               </div>
-              <h1 className="text-5xl md:text-8xl font-display font-black tracking-tighter leading-[0.9] mb-8 text-white uppercase italic">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-tighter leading-[0.9] mb-8 text-white uppercase italic">
                 {String(product.title || "")}
               </h1>
               <div className="bg-white/[0.02] border-l-4 border-indigo-500/30 rounded-r-3xl p-8 backdrop-blur-xl">
@@ -378,14 +378,16 @@ export default function ProductPage() {
                     <div className="h-px w-10 bg-indigo-500/40" />
                     <span className="text-[10px] font-display font-black text-indigo-400 uppercase tracking-[0.5em] italic">Origin Timeline</span>
                  </div>
-                <h3 className="text-4xl md:text-6xl font-display font-black mb-16 text-white uppercase italic">Audit Trail</h3>
+                <h3 className="text-3xl font-display font-black mb-12 text-white uppercase italic flex items-center gap-4">
+                  <Globe className="w-8 h-8 text-indigo-400" /> Traceability Ledger
+                </h3>
                 
-                <div className="pl-12 border-l-2 border-white/[0.08] space-y-16 relative">
+                <div className="pl-8 md:pl-12 border-l-2 border-white/[0.08] space-y-12 md:space-y-16 relative">
                   {product.stageUpdates.map((s: any, i: number) => (
                     <div key={s.id} className="relative">
                       {/* Timeline Hub */}
-                      <div className="absolute -left-[64px] top-4 w-12 h-12 rounded-[1.25rem] bg-[#030408] border border-indigo-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] z-10">
-                         <div className="w-3 h-3 rounded-full bg-indigo-500 animate-pulse" />
+                      <div className="absolute -left-[42px] md:-left-[64px] top-4 w-8 md:w-12 h-8 md:h-12 rounded-lg md:rounded-[1.25rem] bg-[#030408] border border-indigo-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] z-10">
+                         <div className="w-1.5 md:w-2 h-1.5 md:h-2 rounded-full bg-indigo-500 animate-pulse" />
                       </div>
                       
                       <motion.div 

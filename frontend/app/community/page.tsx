@@ -96,14 +96,14 @@ export default function CommunityPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] mb-8 italic shadow-2xl"
+                className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-4 md:px-5 py-2 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-6 md:mb-8 italic shadow-2xl"
               >
                 <Globe className="w-4 h-4 animate-spin-slow" /> Decentralized Truth Protocol
               </motion.div>
-              <h1 className={`${outfit.className} text-6xl md:text-8xl font-black tracking-tighter text-white mb-8 leading-[0.85] uppercase italic tracking-[-0.05em]`}>
+              <h1 className={`${outfit.className} text-4xl md:text-8xl font-black tracking-tighter text-white mb-6 md:mb-8 leading-[0.95] md:leading-[0.85] uppercase italic tracking-[-0.05em]`}>
                 Consensus <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Discourse.</span>
               </h1>
-              <p className="text-xl text-slate-500 leading-relaxed max-w-2xl font-black uppercase tracking-[0.1em] italic opacity-70">
+              <p className="text-base md:text-xl text-slate-500 leading-relaxed max-w-2xl font-black uppercase tracking-[0.1em] italic opacity-70">
                 The community-driven layer of truth. Audit proof, discuss performance, and earn verification rewards across the Stellar ledger.
               </p>
             </div>
@@ -112,7 +112,7 @@ export default function CommunityPage() {
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="w-full max-w-sm glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3rem] p-10 shadow-3xl relative overflow-hidden group"
+              className="w-full max-w-sm glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 shadow-3xl relative overflow-hidden group mt-12 lg:mt-0"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[60px] rounded-full group-hover:bg-blue-500/10 transition-all duration-1000" />
               
@@ -160,15 +160,15 @@ export default function CommunityPage() {
 
       <main className="max-w-7xl mx-auto px-8 py-24 relative z-10">
         {/* Search Matrix */}
-        <div className="relative mb-24 max-w-3xl mx-auto group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur opacity-10 group-focus-within:opacity-30 transition-opacity" />
+        <div className="relative mb-16 md:mb-24 max-w-3xl mx-auto group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[1.5rem] md:rounded-[2rem] blur opacity-10 group-focus-within:opacity-30 transition-opacity" />
           <div className="relative">
-             <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
+             <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
              <Input 
                value={q} 
                onChange={(e) => setQ(e.target.value)} 
-               placeholder="IDENTIFY DISCUSSION NODES, TAGS, OR TRUTH SIGNALS..." 
-               className={`${outfit.className} pl-20 h-20 rounded-[2rem] text-sm bg-[#0C121E] border-white/5 focus-visible:ring-blue-500/20 shadow-3xl text-white placeholder:text-slate-800 font-black uppercase tracking-[0.3em] italic selection:bg-blue-500/40`} 
+               placeholder="SEARCH NODES, TAGS, SIGNALS..." 
+               className={`${outfit.className} pl-16 md:pl-20 h-16 md:h-20 rounded-[1.5rem] md:rounded-[2rem] text-xs md:text-sm bg-[#0C121E] border-white/5 focus-visible:ring-blue-500/20 shadow-3xl text-white placeholder:text-slate-800 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] italic selection:bg-blue-500/40`} 
              />
           </div>
         </div>
@@ -202,27 +202,27 @@ export default function CommunityPage() {
                   >
                     <Link 
                       href={`/community/${p.id}`} 
-                      className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-10 flex flex-col xl:flex-row items-center gap-12 group hover:border-blue-500/40 transition-all duration-700 relative overflow-hidden shadow-3xl"
+                      className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-10 flex flex-col xl:flex-row items-center gap-8 md:gap-12 group hover:border-blue-500/40 transition-all duration-700 relative overflow-hidden shadow-3xl"
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                       
-                      <div className="flex items-center gap-10 flex-1 min-w-0">
-                        <div className="w-24 h-24 bg-white/[0.02] rounded-[2.5rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 relative shadow-2xl overflow-hidden">
+                      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-10 flex-1 min-w-0 w-full">
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-white/[0.02] rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 relative shadow-2xl overflow-hidden">
                            <div className="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10 animate-pulse" />
-                           {p.author?.supplierProfile ? <Award className="w-10 h-10 text-emerald-400" /> : <MessageCircle className="w-10 h-10 text-blue-400" />}
+                           {p.author?.supplierProfile ? <Award className="w-8 h-8 md:w-10 md:h-10 text-emerald-400" /> : <MessageCircle className="w-8 h-8 md:w-10 md:h-10 text-blue-400" />}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-5 mb-4">
-                            <div className="flex items-center gap-3 px-4 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
+                        <div className="flex-1 min-w-0 text-center sm:text-left w-full">
+                          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 md:gap-5 mb-3 md:mb-4">
+                            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
                                <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Auth_Node"}
                             </div>
-                            <span className="text-slate-800 font-black text-xs opacity-50">/</span>
-                            <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>
+                            <span className="text-slate-800 font-black text-xs opacity-50 hidden sm:inline">/</span>
+                            <span className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>
                           </div>
-                          <h3 className={`${outfit.className} text-4xl font-black text-white mb-4 group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em] leading-none`}>{p.title}</h3>
-                          <div className="flex flex-wrap gap-3">
+                          <h3 className={`${outfit.className} text-2xl md:text-4xl font-black text-white mb-4 group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em] leading-tight md:leading-none`}>{p.title}</h3>
+                          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 md:gap-3">
                             {p.tags?.map((tag: string) => (
-                              <span key={tag} className="px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-[9px] font-black text-slate-600 uppercase tracking-widest italic group-hover:text-slate-400 transition-colors">
+                              <span key={tag} className="px-2 md:px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-widest italic group-hover:text-slate-400 transition-colors">
                                 #{tag}
                               </span>
                             ))}
@@ -230,13 +230,13 @@ export default function CommunityPage() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-12 w-full xl:w-auto shrink-0 pt-10 xl:pt-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] xl:pl-12">
-                         <div className="text-right">
-                            <div className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-3">Discourse Vol</div>
-                            <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic tabular-nums`}>{p._count?.comments || 0}</div>
+                      <div className="flex items-center justify-between xl:justify-end gap-8 md:gap-12 w-full xl:w-auto shrink-0 pt-6 md:pt-10 xl:pt-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] xl:pl-12">
+                         <div className="text-left xl:text-right">
+                            <div className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-2 md:mb-3">Discourse Vol</div>
+                            <div className={`${outfit.className} text-3xl md:text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic tabular-nums`}>{p._count?.comments || 0}</div>
                          </div>
-                         <div className="w-18 h-18 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-blue-600/30 transition-all active:scale-95 shadow-2xl group-hover:scale-110 duration-500">
-                            <ArrowUpRight className="w-8 h-8 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                         <div className="w-14 h-14 md:w-18 md:h-18 rounded-[1.2rem] md:rounded-[2rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-blue-600/30 transition-all active:scale-95 shadow-2xl group-hover:scale-110 duration-500">
+                            <ArrowUpRight className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                          </div>
                       </div>
                     </Link>
@@ -271,18 +271,18 @@ export default function CommunityPage() {
               initial={{ opacity: 0, scale: 0.9, y: 30 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
               exit={{ opacity: 0, scale: 0.9, y: 30 }} 
-              className="relative w-full max-w-3xl glass-premium bg-[#0A0D14]/95 border border-white/[0.08] rounded-[4rem] p-16 shadow-3xl overflow-hidden"
+              className="relative w-full max-w-3xl glass-premium bg-[#0A0D14]/95 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-16 shadow-3xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none" />
               
-              <div className="relative z-10">
-                <div className="flex items-center gap-6 mb-12">
-                   <div className="w-20 h-20 bg-blue-600/10 rounded-[2rem] flex items-center justify-center border border-blue-500/20 shadow-2xl">
-                      <Zap className="w-10 h-10 text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]" />
+              <div className="relative z-10 w-full">
+                <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 md:mb-12">
+                   <div className="w-16 h-16 md:w-20 md:h-20 bg-blue-600/10 rounded-[1.2rem] md:rounded-[2rem] flex items-center justify-center border border-blue-500/20 shadow-2xl">
+                      <Zap className="w-8 h-8 md:w-10 md:h-10 text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]" />
                    </div>
-                   <div>
-                      <h2 className={`${outfit.className} text-5xl font-black text-white leading-[0.95] uppercase italic tracking-tighter`}>Anchor Signal</h2>
-                      <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-600 mt-2 italic">Synchronizing discourse with the truth layer</p>
+                   <div className="text-center sm:text-left">
+                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-black text-white leading-tight md:leading-[0.95] uppercase italic tracking-tighter`}>Anchor Signal</h2>
+                      <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] text-slate-600 mt-2 italic">Synchronizing discourse with the truth layer</p>
                    </div>
                 </div>
                 

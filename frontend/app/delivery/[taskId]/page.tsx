@@ -152,10 +152,10 @@ export default function DeliveryVerificationPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <WalletRequirement fallbackMessage="Please connect your wallet to view this order's details.">
-      <div className="max-w-2xl mx-auto px-4 py-10 pt-24">
-        <h1 className="text-3xl font-semibold mb-6">Delivery Verification</h1>
+      <div className="max-w-2xl mx-auto px-4 py-8 md:py-10 pt-20 md:pt-24">
+        <h1 className="text-2xl sm:text-3xl font-semibold mb-6">Delivery Verification</h1>
         
-        <Card className="p-6">
+        <Card className="p-4 md:p-6">
           <div className="mb-4">
             <p className="text-sm text-zinc-400">Order ID</p>
             <p className="font-mono break-all">{taskId}</p>
@@ -208,11 +208,11 @@ export default function DeliveryVerificationPage() {
               </div>
 
               {isBuyer && (escrow.status === "Locked" || escrow.status?.sym === "Locked") && (
-                <div className="flex gap-4 mt-4">
-                  <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleReleaseEscrow}>
+                <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                  <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white h-12" onClick={handleReleaseEscrow}>
                     Verify & Release Payment
                   </Button>
-                  <Button className="flex-1" variant="destructive" onClick={handleRequestReturn}>
+                  <Button className="flex-1 h-12" variant="destructive" onClick={handleRequestReturn}>
                     Request Return
                   </Button>
                 </div>

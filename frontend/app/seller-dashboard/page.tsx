@@ -340,9 +340,32 @@ export default function SellerDashboard() {
         </aside>
 
         {/* ── Intelligence Deck ── */}
-        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-12 relative">
+        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-6 md:p-12 relative">
+           {/* Mobile Navigation Matrix */}
+           <div className="lg:hidden flex overflow-x-auto gap-4 pb-8 mb-4 scrollbar-hide no-scrollbar -mx-2 px-2">
+             {NAV.map((n) => (
+               <button
+                 key={n.id}
+                 onClick={() => {
+                   if ((n as any).link) {
+                     router.push((n as any).link)
+                     return
+                   }
+                   setActive(n.id)
+                 }}
+                 className={`flex-none flex items-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest italic transition-all ${
+                   active === n.id 
+                     ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+                     : "bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300"
+                 }`}
+               >
+                 <n.icon className="w-4 h-4" />
+                 {n.label}
+               </button>
+             ))}
+           </div>
 
-          <AnimatePresence mode="wait">
+           <AnimatePresence mode="wait">
             <motion.div
               key={active}
               initial={{ opacity: 0, y: 10 }}
@@ -359,7 +382,7 @@ export default function SellerDashboard() {
                       <motion.h2 
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className={`${outfit.className} text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em] drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]`}
+                        className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em] drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]`}
                       >
                         Intelligence <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">Hub</span>
                       </motion.h2>
@@ -375,8 +398,8 @@ export default function SellerDashboard() {
                         <RefreshCw className={`w-6 h-6 ${loading ? "animate-spin text-blue-400" : "group-hover:rotate-180"} transition-transform duration-700`} />
                       </button>
                       <Link href="/seller-dashboard/new-product">
-                        <Button className={`${outfit.className} bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.25em] uppercase text-[11px] rounded-[1.5rem] h-16 px-12 shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all transform active:scale-95 border border-white/10 italic`}>
-                          <Plus className="w-5 h-5 mr-3" /> New Asset Entry
+                        <Button className={`${outfit.className} bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.25em] uppercase text-[10px] md:text-[11px] rounded-[1.25rem] md:rounded-[1.5rem] h-12 md:h-16 px-6 md:px-12 shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all transform active:scale-95 border border-white/10 italic`}>
+                          <Plus className="w-5 h-5 mr-2 md:mr-3" /> New Asset Entry
                         </Button>
                       </Link>
                     </div>
@@ -395,20 +418,20 @@ export default function SellerDashboard() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + i * 0.1 }}
-                        className={`glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3rem] p-8 relative overflow-hidden group shadow-3xl hover:border-white/20 transition-all duration-500 ${s.glow}`}
+                        className={`glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 relative overflow-hidden group shadow-3xl hover:border-white/20 transition-all duration-500 ${s.glow}`}
                       >
                          <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-700`} />
-                         <div className="flex items-center justify-between mb-10 relative z-10">
-                            <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-400 group-hover:text-white transition-all duration-500 shadow-inner">
-                               <s.icon className={`w-6 h-6 ${s.color} drop-shadow-[0_0_10px_currentColor]`} />
+                         <div className="flex items-center justify-between mb-8 md:mb-10 relative z-10">
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-400 group-hover:text-white transition-all duration-500 shadow-inner">
+                               <s.icon className={`w-5 h-5 md:w-6 md:h-6 ${s.color} drop-shadow-[0_0_10px_currentColor]`} />
                             </div>
-                            <span className={`text-[10px] font-black tracking-[0.15em] px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] ${s.trend.startsWith('+') ? 'text-emerald-400' : 'text-slate-600'}`}>
+                            <span className={`text-[8px] md:text-[10px] font-black tracking-[0.15em] px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-white/[0.04] border border-white/[0.08] ${s.trend.startsWith('+') ? 'text-emerald-400' : 'text-slate-600'}`}>
                               {s.trend}
                             </span>
                          </div>
                          <div className="space-y-2 relative z-10">
-                            <div className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">{s.label}</div>
-                            <div className={`${outfit.className} text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_25px_rgba(255,255,255,0.15)] italic`}>{s.value}</div>
+                            <div className="text-[9px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">{s.label}</div>
+                            <div className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_25px_rgba(255,255,255,0.15)] italic leading-none`}>{s.value}</div>
                          </div>
                       </motion.div>
                     ))}
@@ -424,10 +447,10 @@ export default function SellerDashboard() {
                         className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 shadow-3xl relative overflow-hidden group"
                      >
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 opacity-20 group-hover:opacity-100 transition-opacity duration-1000" />
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16">
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12 md:mb-16">
                            <div>
-                              <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 italic">Node Revenue Velocity</h3>
-                              <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter mt-2 italic uppercase tracking-[-0.03em] drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>Escrow Pipeline Traffic</div>
+                              <h3 className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 italic">Node Revenue Velocity</h3>
+                              <div className={`${outfit.className} text-2xl md:text-4xl font-black text-white tracking-tighter mt-2 italic uppercase tracking-[-0.03em] drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>Escrow Pipeline Traffic</div>
                            </div>
                            <div className="flex gap-2 p-2 bg-[#080B12] rounded-[1.25rem] border border-white/[0.06] shadow-inner">
                               <button className="px-8 py-3 text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-400/10 rounded-xl transition-all border border-blue-500/20 italic">Daily</button>
@@ -478,7 +501,7 @@ export default function SellerDashboard() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
-                        className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 shadow-3xl relative overflow-hidden flex flex-col group"
+                        className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group"
                      >
                         <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-12 flex items-center gap-3 italic">
                            <Globe className="w-4 h-4 text-blue-500 animate-spin-slow" /> Asset Pool Density
@@ -530,15 +553,15 @@ export default function SellerDashboard() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
-                        className="glass-premium bg-gradient-to-br from-[#0D1A10]/60 to-[#030408]/80 border border-[#25D366]/20 rounded-[3rem] p-12 flex items-center gap-12 group relative overflow-hidden shadow-3xl hover:border-[#25D366]/40 transition-all duration-700"
+                        className="glass-premium bg-gradient-to-br from-[#0D1A10]/60 to-[#030408]/80 border border-[#25D366]/20 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 flex flex-col sm:flex-row items-center gap-8 md:gap-12 group relative overflow-hidden shadow-3xl hover:border-[#25D366]/40 transition-all duration-700"
                      >
                         <div className="absolute inset-0 bg-[#25D366]/[0.02] pointer-events-none group-hover:bg-[#25D366]/[0.05] transition-colors" />
                         <div className="w-24 h-24 bg-[#25D366]/10 rounded-[2rem] flex items-center justify-center shrink-0 border border-[#25D366]/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-2xl relative overflow-hidden">
                            <div className="absolute inset-0 bg-[#25D366]/10 animate-pulse" />
                            <MessageCircle className="w-12 h-12 text-[#25D366] drop-shadow-[0_0_15px_rgba(37,211,102,0.6)] relative z-10" />
                         </div>
-                        <div className="flex-1 min-w-0 relative z-10">
-                           <h4 className={`${outfit.className} text-3xl font-black text-white tracking-tight uppercase italic tracking-[-0.03em]`}>Rapid Node <span className="text-[#25D366]">Entry</span></h4>
+                        <div className="flex-1 min-w-0 relative z-10 text-center sm:text-left">
+                           <h4 className={`${outfit.className} text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic tracking-[-0.03em]`}>Rapid Node <span className="text-[#25D366]">Entry</span></h4>
                            <p className="text-slate-400 text-[13px] font-medium mt-3 leading-relaxed opacity-70">Direct WhatsApp-to-Protocol bridge. Deploy physical assets to the global catalog in seconds via encrypted telemetry.</p>
                            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=NEW`} target="_blank" rel="noopener noreferrer" className="inline-block mt-8">
                               <Button variant="outline" className={`${outfit.className} bg-[#25D366]/10 text-[#25D366] border-[#25D366]/30 hover:bg-[#25D366]/20 rounded-2xl h-14 px-10 text-[10px] font-black uppercase tracking-[0.25em] shadow-2xl transition-all active:scale-95 italic`}>Open Merchant API</Button>
@@ -551,7 +574,7 @@ export default function SellerDashboard() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.8 }}
-                        className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3rem] p-12 shadow-3xl relative overflow-hidden group"
+                        className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 shadow-3xl relative overflow-hidden group"
                      >
                         <div className="flex items-center justify-between mb-12">
                            <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 px-3 border-l-2 border-blue-500 italic">Inventory Pulse</h3>
@@ -571,7 +594,7 @@ export default function SellerDashboard() {
                                        ) : <Package className="w-8 h-8 text-slate-700 group-hover/item:text-blue-400" />}
                                     </div>
                                     <div className="flex-1 min-w-0 relative z-10">
-                                       <div className={`${outfit.className} font-black text-lg text-white truncate group-hover/item:text-blue-400 transition-colors tracking-tight uppercase italic`}>{p.title}</div>
+                                       <div className={`${outfit.className} font-black text-base md:text-lg text-white truncate group-hover/item:text-blue-400 transition-colors tracking-tight uppercase italic`}>{p.title}</div>
                                        <div className="flex items-center gap-4 mt-2">
                                           <div className={`flex items-center gap-2 px-3 py-1 rounded-xl border text-[9px] font-black uppercase tracking-widest ${s.cls} shadow-lg backdrop-blur-md italic`}>
                                              <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse shadow-[0_0_10px_currentColor]`} /> {s.label}
@@ -581,7 +604,7 @@ export default function SellerDashboard() {
                                        </div>
                                     </div>
                                     <div className="text-right shrink-0 relative z-10">
-                                       <div className={`${outfit.className} text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] italic`}>₹{Number(p.priceInr).toLocaleString()}</div>
+                                       <div className={`${outfit.className} text-xl md:text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] italic`}>₹{Number(p.priceInr).toLocaleString()}</div>
                                        <div className="text-[9px] font-black text-slate-700 uppercase tracking-[0.25em] mt-1.5 italic opacity-60">Settlement</div>
                                     </div>
                                  </Link>
@@ -701,8 +724,8 @@ export default function SellerDashboard() {
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
                     <div>
-                      <h2 className={`${outfit.className} text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]`}>Transaction <span className="text-blue-500">Ledger</span></h2>
-                      <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.4em] mt-3 flex items-center gap-3 italic">
+                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]`}>Transaction <span className="text-blue-500">Ledger</span></h2>
+                      <p className="text-slate-500 text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] mt-3 flex items-center gap-3 italic">
                          <Activity className="w-4 h-4 text-blue-500 animate-pulse" /> Stellar Escrow Infrastructure Telemetry
                       </p>
                     </div>
@@ -713,8 +736,8 @@ export default function SellerDashboard() {
                      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/[0.05] rounded-full blur-[120px] pointer-events-none" />
                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16">
                         <div>
-                           <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 italic">Order Velocity Magnitude</h3>
-                           <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter mt-2 italic uppercase tracking-[-0.02em] drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>Global Fulfillment Traffic</div>
+                           <h3 className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 italic">Order Velocity Magnitude</h3>
+                           <div className={`${outfit.className} text-2xl md:text-4xl font-black text-white tracking-tighter mt-2 italic uppercase tracking-[-0.02em] drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>Global Fulfillment Traffic</div>
                         </div>
                         <div className="flex items-center gap-8">
                            <div className="flex items-center gap-4 bg-[#080B12] px-6 py-3 rounded-2xl border border-white/[0.06] shadow-inner">
@@ -773,7 +796,7 @@ export default function SellerDashboard() {
                                       <span className="text-slate-800 font-black text-xs opacity-50">/</span>
                                       <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic opacity-60">{new Date(o.createdAt).toLocaleDateString()}</span>
                                    </div>
-                                   <h4 className={`${outfit.className} text-3xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em]`}>{o.product?.title || 'Protocol Asset'}</h4>
+                                   <h4 className={`${outfit.className} text-xl md:text-3xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors uppercase italic tracking-[-0.03em] leading-none`}>{o.product?.title || 'Protocol Asset'}</h4>
                                    <div className="flex items-center gap-6 mt-5">
                                       <div className={`flex items-center gap-3 px-5 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-2xl ${s.cls} shadow-2xl italic`}>
                                          <div className={`w-2 h-2 rounded-full ${s.dot} shadow-[0_0_12px_currentColor]`} /> {s.label}
@@ -787,12 +810,12 @@ export default function SellerDashboard() {
                               </div>
 
                               <div className="flex items-center gap-12 w-full xl:w-auto shrink-0 pt-10 xl:pt-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] xl:pl-12">
-                                <div className="text-right">
-                                   <div className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-3">Escrow Value</div>
-                                   <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic`}>₹{Number(o.totalPriceInr).toLocaleString()}</div>
+                                <div className="text-center md:text-right">
+                                   <div className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-3">Escrow Value</div>
+                                   <div className={`${outfit.className} text-3xl md:text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic`}>₹{Number(o.totalPriceInr).toLocaleString()}</div>
                                 </div>
-                                <Link href={`/product/${o.product?.id}`} className="w-18 h-18 rounded-[1.5rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 hover:text-white hover:bg-blue-600/30 transition-all active:scale-90 shadow-2xl hover:scale-110 duration-500 group/btn">
-                                   <ArrowRight className="w-8 h-8 group-hover/btn:translate-x-1 transition-transform" />
+                                <Link href={`/product/${o.product?.id}`} className="w-14 h-14 md:w-18 md:h-18 rounded-[1.25rem] md:rounded-[1.5rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 hover:text-white hover:bg-blue-600/30 transition-all active:scale-90 shadow-2xl hover:scale-110 duration-500 group/btn">
+                                   <ArrowRight className="w-6 h-6 md:w-8 md:h-8 group-hover/btn:translate-x-1 transition-transform" />
                                 </Link>
                               </div>
                             </motion.div>
@@ -812,26 +835,26 @@ export default function SellerDashboard() {
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
                     <div>
-                      <h2 className={`${outfit.className} text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]`}>Yield <span className="text-blue-500">Vault</span></h2>
-                      <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.4em] mt-3 flex items-center gap-3 italic">
+                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic tracking-[-0.05em]`}>Yield <span className="text-blue-500">Vault</span></h2>
+                      <p className="text-slate-500 text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] mt-3 flex items-center gap-3 italic">
                          <Coins className="w-4 h-4 text-blue-500 animate-pulse" /> Protocol Liquidity & Net Equity
                       </p>
                     </div>
                     {/* Institutional Settle Action */}
-                    <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-6 pr-8 flex items-center gap-10 shadow-3xl">
-                       <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 rounded-[1.5rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 shadow-2xl">
-                             <Zap className="w-7 h-7 text-blue-400 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]" />
+                    <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-6 pr-8 flex flex-col sm:flex-row items-center gap-6 md:gap-10 shadow-3xl w-full md:w-auto">
+                       <div className="flex items-center gap-6 w-full sm:w-auto justify-center sm:justify-start border-b sm:border-b-0 sm:border-r border-white/[0.06] pb-6 sm:pb-0 sm:pr-10">
+                          <div className="w-14 h-14 md:w-16 md:h-16 rounded-[1.25rem] md:rounded-[1.5rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 shadow-2xl shrink-0">
+                             <Zap className="w-6 h-6 md:w-7 md:h-7 text-blue-400 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]" />
                           </div>
                           <div>
-                             <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] font-mono italic">Maturity Yield</div>
-                             <div className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>₹{Number(stats.withdrawableInr).toLocaleString()}</div>
+                             <div className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] font-mono italic">Maturity Yield</div>
+                             <div className={`${outfit.className} text-2xl md:text-3xl font-black text-white italic tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>₹{Number(stats.withdrawableInr).toLocaleString()}</div>
                           </div>
                        </div>
                        <Button 
                           onClick={handleWithdraw}
                           disabled={withdrawing || Number(stats.withdrawableInr) <= 0}
-                          className={`${outfit.className} bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.25em] uppercase text-[11px] rounded-[1.25rem] h-16 px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] transition-all transform active:scale-90 disabled:opacity-20 italic border border-white/10`}
+                          className={`${outfit.className} bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.25em] uppercase text-[10px] md:text-[11px] rounded-[1.25rem] h-14 md:h-16 px-8 md:px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] transition-all transform active:scale-90 disabled:opacity-20 italic border border-white/10 w-full sm:w-auto`}
                        >
                           {withdrawing ? "SYCHRONIZING..." : "Execute Settle"}
                        </Button>
@@ -843,14 +866,14 @@ export default function SellerDashboard() {
                      <motion.div 
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="lg:col-span-12 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[4rem] p-12 shadow-3xl relative overflow-hidden group"
+                        className="lg:col-span-12 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 shadow-3xl relative overflow-hidden group"
                      >
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none group-hover:bg-blue-600/[0.06] transition-colors duration-1000" />
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 relative z-10">
-                           <div className="space-y-4 border-r border-white/[0.06] pr-16">
-                              <div className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] italic mb-6">Total Net Protocol Equity</div>
-                              <div className={`${outfit.className} text-7xl font-black text-white tracking-tighter italic drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]`}>₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
-                              <div className="flex items-center gap-4 mt-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 md:gap-16 relative z-10">
+                           <div className="space-y-4 border-b lg:border-b-0 lg:border-r border-white/[0.06] pb-10 lg:pb-0 lg:pr-16 text-center lg:text-left">
+                              <div className="text-[9px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] italic mb-4 md:mb-6">Total Net Protocol Equity</div>
+                              <div className={`${outfit.className} text-5xl md:text-7xl font-black text-white tracking-tighter italic drop-shadow-[0_0_40px_rgba(255,255,255,0.15)] leading-none`}>₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
+                              <div className="flex items-center gap-4 mt-8 justify-center lg:justify-start">
                                  <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
                                     <ArrowUpRight className="w-4 h-4 text-emerald-500" />
                                     <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">+14.2%</span>
@@ -878,15 +901,15 @@ export default function SellerDashboard() {
                                  </div>
                               </div>
                            </div>
-                           <div className="bg-[#080B12]/80 rounded-[3rem] p-10 border border-white/[0.08] shadow-2xl flex flex-col items-center justify-center text-center relative group/inner shadow-inner">
+                           <div className="bg-[#080B12]/80 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 border border-white/[0.08] shadow-2xl flex flex-col items-center justify-center text-center relative group/inner shadow-inner">
                               <div className="absolute inset-0 bg-blue-600/[0.02] opacity-0 group-hover/inner:opacity-100 transition-opacity" />
-                              <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic mb-6">Aggregate Yield Score</div>
-                              <div className={`${outfit.className} text-6xl font-black text-blue-500 italic tracking-tighter drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]`}>99.42<span className="text-2xl text-blue-900">%</span></div>
+                              <div className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic mb-6">Aggregate Yield Score</div>
+                              <div className={`${outfit.className} text-4xl md:text-6xl font-black text-blue-500 italic tracking-tighter drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]`}>99.42<span className="text-xl md:text-2xl text-blue-900">%</span></div>
                               <div className="mt-8 flex items-center justify-center gap-3">
                                  <div className="flex -space-x-2">
-                                    {[1, 2, 3].map(i => <div key={i} className="w-6 h-6 rounded-full border-2 border-[#030408] bg-blue-600" />)}
+                                    {[1, 2, 3].map(i => <div key={i} className="w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-[#030408] bg-blue-600" />)}
                                  </div>
-                                 <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest italic">Tier-1 Protocol Audit</span>
+                                 <span className="text-[8px] md:text-[9px] font-black text-slate-700 uppercase tracking-widest italic">Tier-1 Protocol Audit</span>
                               </div>
                            </div>
                         </div>
@@ -900,34 +923,34 @@ export default function SellerDashboard() {
                         <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-blue-600/[0.03] to-transparent pointer-events-none" />
                         <div className="grid lg:grid-cols-2 gap-20 relative z-10">
                            <div className="space-y-12">
-                              <div className="flex items-center gap-6">
-                                 <div className="w-20 h-20 rounded-[2rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shadow-2xl">
-                                    <Wallet className="w-10 h-10 drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
+                              <div className="flex flex-col sm:flex-row items-center gap-6">
+                                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] bg-blue-600/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shadow-2xl shrink-0">
+                                    <Wallet className="w-8 h-8 md:w-10 md:h-10 drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
                                  </div>
-                                 <div>
-                                    <h3 className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter`}>Liquid Reserve <span className="text-blue-500">Node</span></h3>
-                                    <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic mt-1">Stellar Distributed Ledger Protocol</div>
+                                 <div className="text-center sm:text-left">
+                                    <h3 className={`${outfit.className} text-2xl md:text-3xl font-black text-white italic tracking-tighter`}>Liquid Reserve <span className="text-blue-500">Node</span></h3>
+                                    <div className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic mt-1">Stellar Distributed Ledger Protocol</div>
                                  </div>
                               </div>
                               
                               <div className="space-y-10">
-                                 <div className="bg-[#080B12] border border-white/[0.06] rounded-[2.5rem] p-10 shadow-inner group/wallet relative overflow-hidden">
+                                 <div className="bg-[#080B12] border border-white/[0.06] rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-inner group/wallet relative overflow-hidden">
                                     <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover/wallet:opacity-100 transition-opacity" />
-                                    <div className="flex items-center justify-between mb-6">
-                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic leading-none">Public Secure Identity</div>
+                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                                       <div className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] italic leading-none">Public Secure Identity</div>
                                        <div className="flex items-center gap-2">
                                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]" />
-                                          <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest font-mono">Synchronized</span>
+                                          <span className="text-[8px] md:text-[9px] font-black text-emerald-500 uppercase tracking-widest font-mono">Synchronized</span>
                                        </div>
                                     </div>
-                                    <div className="font-mono text-xl text-blue-300 break-all leading-relaxed tracking-[0.1em] border-b border-white/5 pb-8 mb-8">{user?.stellarWallet || 'RESOLUTION_FAILED'}</div>
-                                    <div className="flex items-center gap-6">
-                                       <Button onClick={copyWallet} variant="ghost" className="h-12 px-6 rounded-xl hover:bg-white/5 text-slate-500 hover:text-white transition-all flex items-center gap-3 font-black uppercase tracking-widest text-[9px]">
-                                          {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />} {copied ? 'CAPTURED' : 'COPY IDENTITY'}
+                                    <div className="font-mono text-sm md:text-xl text-blue-300 break-all leading-relaxed tracking-[0.1em] border-b border-white/5 pb-8 mb-8 text-center sm:text-left">{user?.stellarWallet || 'RESOLUTION_FAILED'}</div>
+                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 md:gap-6">
+                                       <Button onClick={copyWallet} variant="ghost" className="h-10 md:h-12 px-4 md:px-6 rounded-xl hover:bg-white/5 text-slate-500 hover:text-white transition-all flex items-center gap-2 md:gap-3 font-black uppercase tracking-widest text-[8px] md:text-[9px]">
+                                          {copied ? <CheckCircle2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 md:w-4 md:h-4" />} {copied ? 'CAPTURED' : 'COPY IDENTITY'}
                                        </Button>
                                        <a href={`https://stellar.expert/explorer/testnet/account/${user?.stellarWallet}`} target="_blank" rel="noopener noreferrer">
-                                          <Button variant="ghost" className="h-12 px-6 rounded-xl hover:bg-blue-600/10 text-slate-500 hover:text-blue-400 transition-all flex items-center gap-3 font-black uppercase tracking-widest text-[9px]">
-                                             <ExternalLink className="w-4 h-4" /> TRACE LEDGER
+                                          <Button variant="ghost" className="h-10 md:h-12 px-4 md:px-6 rounded-xl hover:bg-blue-600/10 text-slate-500 hover:text-blue-400 transition-all flex items-center gap-2 md:gap-3 font-black uppercase tracking-widest text-[8px] md:text-[9px]">
+                                             <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4" /> TRACE LEDGER
                                           </Button>
                                        </a>
                                     </div>
@@ -936,41 +959,41 @@ export default function SellerDashboard() {
                            </div>
 
                            <div className="flex flex-col justify-between">
-                              <div className="space-y-10">
-                                 <div className="grid grid-cols-2 gap-10">
-                                    <div className="space-y-3 bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/[0.04]">
-                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Current USDC Balance</div>
-                                       <div className={`${outfit.className} text-5xl font-black text-white italic tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]`}>{stats.usdcBalance}</div>
-                                       <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest font-mono italic opacity-60">Settlement Asset</div>
+                              <div className="space-y-10 mt-12 lg:mt-0">
+                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
+                                    <div className="space-y-3 bg-white/[0.02] p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-white/[0.04] text-center sm:text-left">
+                                       <div className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Current USDC Balance</div>
+                                       <div className={`${outfit.className} text-4xl md:text-5xl font-black text-white italic tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] leading-none`}>{stats.usdcBalance}</div>
+                                       <div className="text-[9px] md:text-[10px] font-black text-blue-500 uppercase tracking-widest font-mono italic opacity-60">Settlement Asset</div>
                                     </div>
-                                    <div className="space-y-3 bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/[0.04]">
-                                       <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Asset Pair Value</div>
-                                       <div className={`${outfit.className} text-5xl font-black text-slate-300 italic tracking-tighter tabular-nums`}>₹{Number(stats.usdcInr).toLocaleString()}</div>
-                                       <div className="text-[10px] font-black text-slate-700 uppercase tracking-widest font-mono italic opacity-60">FIAT MAGNITUDE</div>
+                                    <div className="space-y-3 bg-white/[0.02] p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-white/[0.04] text-center sm:text-left">
+                                       <div className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Asset Pair Value</div>
+                                       <div className={`${outfit.className} text-4xl md:text-5xl font-black text-slate-300 italic tracking-tighter tabular-nums leading-none`}>₹{Number(stats.usdcInr).toLocaleString()}</div>
+                                       <div className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-widest font-mono italic opacity-60">FIAT MAGNITUDE</div>
                                     </div>
                                  </div>
                                  
-                                 <div className="grid grid-cols-2 gap-8">
-                                    <div className="flex items-center gap-5 p-6 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-[2rem]">
-                                       <ShieldCheck className="w-6 h-6 text-emerald-500/40" />
+                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+                                    <div className="flex items-center gap-5 p-5 md:p-6 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-[1.5rem] md:rounded-[2rem]">
+                                       <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-emerald-500/40" />
                                        <div>
-                                          <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Escrow Status</div>
-                                          <div className="text-xs font-black text-slate-300 uppercase tracking-widest italic">ACTIVE_PROTECTED</div>
+                                          <div className="text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Escrow Status</div>
+                                          <div className="text-[10px] md:text-xs font-black text-slate-300 uppercase tracking-widest italic">ACTIVE_PROTECTED</div>
                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-5 p-6 bg-blue-500/[0.03] border border-white/5 rounded-[2rem]">
-                                       <RefreshCw className="w-6 h-6 text-blue-500/40 animate-spin-slow" />
+                                    <div className="flex items-center gap-5 p-5 md:p-6 bg-blue-500/[0.03] border border-white/5 rounded-[1.5rem] md:rounded-[2rem]">
+                                       <RefreshCw className="w-5 h-5 md:w-6 md:h-6 text-blue-500/40 animate-spin-slow" />
                                        <div>
-                                          <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Live Sync Rate</div>
-                                          <div className="text-xs font-black text-slate-300 uppercase tracking-widest italic">1.2ms_LATENCY</div>
+                                          <div className="text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-widest italic">Live Sync Rate</div>
+                                          <div className="text-[10px] md:text-xs font-black text-slate-300 uppercase tracking-widest italic">1.2ms_LATENCY</div>
                                        </div>
                                     </div>
                                  </div>
                               </div>
 
-                              <div className="grid grid-cols-2 gap-8 mt-12">
-                                 <Button className={`${outfit.className} bg-white text-black hover:bg-slate-200 h-20 rounded-[2rem] font-black uppercase tracking-[0.25em] text-[11px] shadow-[0_20px_50px_rgba(255,255,255,0.15)] transition-all active:scale-95 italic`}>Liquidate to Fiat</Button>
-                                 <Button variant="outline" className={`${outfit.className} h-20 rounded-[2rem] font-black uppercase tracking-[0.25em] text-[11px] border-white/[0.1] hover:bg-white/5 transition-all text-slate-400 hover:text-white italic`}>Node Settings</Button>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 mt-12">
+                                 <Button className={`${outfit.className} bg-white text-black hover:bg-slate-200 h-14 md:h-20 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase tracking-[0.25em] text-[10px] md:text-[11px] shadow-[0_20px_50px_rgba(255,255,255,0.15)] transition-all active:scale-95 italic`}>Liquidate to Fiat</Button>
+                                 <Button variant="outline" className={`${outfit.className} h-14 md:h-20 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase tracking-[0.25em] text-[10px] md:text-[11px] border-white/[0.1] hover:bg-white/5 transition-all text-slate-400 hover:text-white italic`}>Node Settings</Button>
                               </div>
                            </div>
                         </div>
@@ -1003,19 +1026,19 @@ export default function SellerDashboard() {
                     ))}
                   </div>
 
-                  <div className="premium-card bg-gradient-to-br from-[#121F14] to-[#0A0D14] border border-[#25D366]/20 rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center gap-12 group shadow-2xl">
-                    <div className="w-32 h-32 bg-[#25D366]/10 rounded-[2.5rem] flex items-center justify-center shrink-0 border border-[#25D366]/20 group-hover:rotate-6 transition-all duration-700">
-                      <MessageCircle className="w-16 h-16 text-[#25D366]" />
+                  <div className="premium-card bg-gradient-to-br from-[#121F14] to-[#0A0D14] border border-[#25D366]/20 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row items-center gap-8 md:gap-12 group shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-[#25D366]/10 rounded-2xl md:rounded-[2.5rem] flex items-center justify-center shrink-0 border border-[#25D366]/20 group-hover:rotate-6 transition-all duration-700 shadow-xl">
+                      <MessageCircle className="w-12 h-12 md:w-16 md:h-16 text-[#25D366]" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[10px] font-black text-[#25D366] uppercase tracking-[0.3em] mb-3">Merchant Communication Gateway</div>
-                      <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-4">WhatsApp Integration Hub</h3>
-                      <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">Connect your existing communication endpoint to ChainVerify API. List new inventory and broadcast stage updates directly through encrypted chat.</p>
-                      <div className="flex flex-wrap gap-4 mt-10">
-                        <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=NEW`} target="_blank" rel="noopener noreferrer">
-                          <Button className="bg-[#25D366] hover:bg-[#1db954] text-black h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-[0_15px_40px_rgba(37,211,102,0.2)] transform active:scale-95 transition-all">Connect Global Endpoint</Button>
+                    <div className="flex-1 min-w-0 text-center md:text-left">
+                      <div className="text-[9px] md:text-[10px] font-black text-[#25D366] uppercase tracking-[0.3em] mb-3">Merchant Communication Gateway</div>
+                      <h3 className={`${outfit.className} text-3xl md:text-4xl font-black text-white tracking-tighter uppercase mb-4`}>WhatsApp Integration Hub</h3>
+                      <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-2xl opacity-70">Connect your existing communication endpoint to ChainVerify API. List new inventory and broadcast stage updates directly through encrypted chat.</p>
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-8 md:mt-10">
+                        <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=NEW`} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                          <Button className="bg-[#25D366] hover:bg-[#1db954] text-black h-14 md:h-16 w-full px-10 rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs shadow-[0_15px_40px_rgba(37,211,102,0.2)] transform active:scale-95 transition-all">Connect Global Endpoint</Button>
                         </a>
-                        <Button variant="outline" className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-white/[0.1] text-white hover:bg-white/[0.05]">Documentation</Button>
+                        <Button variant="outline" className="h-14 md:h-16 w-full sm:w-auto px-10 rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs border-white/[0.1] text-white hover:bg-white/[0.05]">Documentation</Button>
                       </div>
                     </div>
                   </div>
@@ -1091,28 +1114,28 @@ export default function SellerDashboard() {
                       {bounties.map((b: any) => {
                         const s = STATUS[b.status] || STATUS.ACTIVE;
                         return (
-                          <div key={b.id} className="premium-card bg-[#0A0D14]/60 backdrop-blur-xl border border-white/[0.08] hover:border-amber-500/30 rounded-[2.5rem] p-10 transition-all group relative overflow-hidden">
-                            <div className="flex flex-col lg:flex-row items-center gap-10 relative z-10">
-                               <div className="flex-1 min-w-0 space-y-6">
-                                  <div className="flex flex-wrap items-center gap-4">
-                                     <span className="text-2xl font-black uppercase tracking-tighter text-white group-hover:text-amber-500 transition-colors">{b.product?.title || "Target Asset"}</span>
-                                     <span className={`px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${s.cls}`}>{s.label}</span>
+                          <div key={b.id} className="premium-card bg-[#0A0D14]/60 backdrop-blur-xl border border-white/[0.08] hover:border-amber-500/30 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 transition-all group relative overflow-hidden">
+                            <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-10 relative z-10">
+                               <div className="flex-1 min-w-0 space-y-4 md:space-y-6 w-full text-center lg:text-left">
+                                  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                                     <span className={`${outfit.className} text-xl md:text-2xl font-black uppercase tracking-tighter text-white group-hover:text-amber-500 transition-colors`}>{b.product?.title || "Target Asset"}</span>
+                                     <span className={`px-3 py-1 rounded-full border text-[9px] md:text-[10px] font-black uppercase tracking-widest ${s.cls} italic shadow-lg`}>{s.label}</span>
                                   </div>
-                                  <blockquote className="border-l-4 border-amber-500/20 bg-white/[0.02] p-6 rounded-r-2xl italic text-slate-400 text-lg leading-relaxed font-medium">
+                                  <blockquote className="border-l-4 border-amber-500/20 bg-white/[0.02] p-5 md:p-6 rounded-r-2xl italic text-slate-400 text-base md:text-lg leading-relaxed font-medium">
                                      "{b.description}"
                                   </blockquote>
-                                  <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-600">
-                                     <div className="flex items-center gap-2">BY <span className="text-slate-400">{b.issuer?.email}</span></div>
+                                  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-600 italic">
+                                     <div className="flex items-center gap-2">BY <span className="text-slate-400">{b.issuer?.email?.split('@')[0]}</span></div>
                                      <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {b.createdAt ? new Date(b.createdAt).toLocaleDateString() : 'N/A'}</div>
                                   </div>
                                </div>
-                               <div className="shrink-0 flex flex-col items-center border-l lg:border-l-0 lg:border-t border-white/[0.04] pt-8 lg:pt-0 pl-0 lg:pl-10">
-                                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-3xl p-8 text-center min-w-[200px] mb-6">
-                                     <div className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 mb-2">Reward Pool</div>
-                                     <div className="text-4xl font-black text-amber-500 font-mono tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]">₹{b.amount}</div>
+                               <div className="shrink-0 flex flex-col items-center border-t lg:border-t-0 lg:border-l border-white/[0.04] pt-8 lg:pt-0 pl-0 lg:pl-10 w-full lg:w-auto">
+                                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-[1.5rem] md:rounded-3xl p-6 md:p-8 text-center min-w-full sm:min-w-[200px] mb-6">
+                                     <div className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-amber-500/70 mb-2 italic">Reward Pool</div>
+                                     <div className={`${outfit.className} text-3xl md:text-4xl font-black text-amber-500 tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]`}>₹{b.amount}</div>
                                   </div>
                                   <Link href={`/product/${b.productId}`} className="w-full">
-                                     <Button className="w-full bg-amber-500 hover:bg-amber-400 text-black h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-[0_15px_40px_rgba(245,158,11,0.2)] active:scale-95 transition-all">
+                                     <Button className="w-full bg-amber-500 hover:bg-amber-400 text-black h-12 md:h-14 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-[0_15px_40px_rgba(245,158,11,0.2)] active:scale-95 transition-all italic">
                                         Submit Fulfill Proof
                                      </Button>
                                   </Link>
@@ -1152,8 +1175,8 @@ export default function SellerDashboard() {
             </div>
 
             <div className="space-y-2 mb-10">
-               <DialogTitle className="text-3xl font-black tracking-tighter uppercase">Physical Asset Link</DialogTitle>
-               <DialogDescription className="text-slate-500 font-bold text-[11px] uppercase tracking-widest">
+               <DialogTitle className={`${outfit.className} text-2xl md:text-3xl font-black tracking-tighter uppercase italic`}>Physical Asset Link</DialogTitle>
+               <DialogDescription className="text-slate-500 font-black text-[9px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-widest italic opacity-60">
                   Secure cryptographic anchor to product journey
                </DialogDescription>
             </div>
@@ -1179,12 +1202,12 @@ export default function SellerDashboard() {
             </div>
 
             <div className="w-full space-y-6">
-               <div className="bg-[#0C0F17] border border-white/[0.04] rounded-[2rem] p-6 text-left shadow-inner">
-                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2">Asset Metadata</p>
-                  <p className="text-lg font-black text-white tracking-tight uppercase truncate">{selectedQrProduct?.title}</p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                     <span className="text-[10px] font-mono text-blue-500 uppercase font-black bg-blue-500/5 px-2 py-0.5 rounded-lg border border-blue-500/20">Node ID</span>
-                     <span className="text-[10px] font-mono text-slate-500 font-black">{selectedQrProduct?.id}</span>
+               <div className="bg-[#0C0F17] border border-white/[0.04] rounded-[2rem] p-6 md:p-8 text-left shadow-inner group/meta">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-widest mb-3 italic">Asset Metadata Signature</p>
+                  <p className={`${outfit.className} text-xl md:text-2xl font-black text-white tracking-tight uppercase truncate italic leading-none`}>{selectedQrProduct?.title}</p>
+                  <div className="flex items-center gap-3 mt-4">
+                     <span className="text-[8px] md:text-[9px] font-mono text-blue-500 uppercase font-black bg-blue-500/5 px-2.5 py-1 rounded-lg border border-blue-500/20 italic">Node Hash</span>
+                     <span className="text-[8px] md:text-[9px] font-mono text-slate-600 font-black truncate max-w-[150px]">{selectedQrProduct?.id}</span>
                   </div>
                </div>
 
