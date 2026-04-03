@@ -19,7 +19,14 @@ export const getProducts = async (req: Request, res: Response) => {
   const where: any = {};
   if (category) where.category = category;
   if (status) where.status = status;
-  if (search) where.title = { contains: search as string, mode: 'insensitive' };
+  if (search) {
+    const searchQuery = (search as string).trim().split(/\s+/).join(' & ');
+    where.OR = [
+      { title: { search: searchQuery } },
+      { description: { search: searchQuery } },
+      { title: { contains: search as string, mode: 'insensitive' } }, // Fallback for partial matches
+    ];
+  }
   if (minPrice || maxPrice) {
     where.priceInr = {};
     if (minPrice) where.priceInr.gte = parseFloat(minPrice as string);
