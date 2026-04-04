@@ -5,6 +5,48 @@ import { generateWhatsAppReply, improveProductDescription } from '../nvidia/nim.
 import type { WhatsAppState } from '@prisma/client';
 import { getUSDCtoINRRate } from '../../util/exchangeRate.util.js';
 import { nanoid } from 'nanoid';
+import fs from 'fs';
+import path from 'path';
+import { uploadOnIpfsBill } from '../ipfs(pinata)/ipfs.services.js';
+
+async function transloadMediaToIpfs(twilioUrl: string): Promise<string> {
+  try {
+    const sid = process.env.TWILIO_ACCOUNT_SID || '';
+    const token = process.env.TWILIO_AUTH_TOKEN || '';
+    if (!sid || !token) return twilioUrl;
+    const auth = Buffer.from(`${sid}:${token}`).toString('base64');
+    
+    const res = await fetch(twilioUrl, {
+      headers: { Authorization: `Basic ${auth}` },
+    });
+    if (!res.ok) throw new Error("Twilio fetch failed");
+    
+    const buffer = await res.arrayBuffer();
+    const contentType = res.headers.get('content-type') || 'image/jpeg';
+    
+    const ext = contentType.split('/')[1] || 'jpg';
+    const tmpPath = path.join('/tmp', `wa_media_${Date.now()}.${ext}`);
+    fs.writeFileSync(tmpPath, Buffer.from(buffer));
+    
+    const fileObj: any = {
+      path: tmpPath,
+      originalname: `wa_media.${ext}`,
+      mimetype: contentType,
+    };
+    
+    const uploadRes = await uploadOnIpfsBill(fileObj);
+    if (!uploadRes.success || !uploadRes.cid) {
+       console.error("IPFS upload failed", uploadRes.error);
+       return twilioUrl;
+    }
+    
+    const gateway = process.env.PINATA_GATEWAY || 'gateway.pinata.cloud';
+    return `https://${gateway}/ipfs/${uploadRes.cid}`;
+  } catch (err) {
+    console.error("Transload error", err);
+    return twilioUrl;
+  }
+}
 
 const client = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN 
   ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
@@ -40,11 +82,14 @@ export async function handleIncoming(req: any, res: any) {
   const phone = (From as string).replace('whatsapp:', '');
   const message = (Body as string)?.trim() || '';
   const numMedia = Number(req.body?.NumMedia || 0);
-  const mediaUrls: string[] = [];
+  const rawMediaUrls: string[] = [];
   for (let i = 0; i < Math.min(numMedia, 10); i++) {
     const u = req.body?.[`MediaUrl${i}`];
-    if (u) mediaUrls.push(String(u));
+    if (u) rawMediaUrls.push(String(u));
   }
+
+  // Normalize media URLs to IPFS
+  const mediaUrls = await Promise.all(rawMediaUrls.map(u => transloadMediaToIpfs(u)));
 
   // Get or create session from PostgreSQL
   let session = await prisma.whatsAppSession.findUnique({ where: { phoneNumber: phone } });
@@ -81,6 +126,41 @@ export async function handleIncoming(req: any, res: any) {
       } else {
         reply = `Welcome to ChainVerify! Your WhatsApp is now connected. Please register at chainverify.app to link your account.`;
       }
+    } else if (upper.startsWith('REGISTER')) {
+      const name = message.substring(8).trim();
+      if (!name) {
+         reply = 'Please provide your full name to register. Example: REGISTER Aman Sharma';
+      } else {
+         const existingUser = await prisma.user.findUnique({ where: { whatsappNumber: phone } });
+         if (existingUser) {
+           reply = 'You are already registered! Use STATUS or HELP to get started.';
+         } else {
+           const newUser = await prisma.user.create({
+             data: {
+               whatsappNumber: phone,
+               role: 'SUPPLIER',
+               supplierProfile: {
+                 create: {
+                   name,
+                   whatsappNumber: phone
+                 }
+               }
+             }
+           });
+           
+           const newSupplier = await prisma.supplier.findUnique({ where: { whatsappNumber: phone } });
+           if (newSupplier) {
+             await updateSession(phone, 'IDLE', { ...((session.sessionData || {}) as any), joined: true });
+             await prisma.whatsAppSession.update({
+               where: { phoneNumber: phone },
+               data: { supplierId: newSupplier.id }
+             });
+             reply = `Registration successful! Welcome to ChainVerify, ${name}. You can now list products using the NEW command.`;
+           } else {
+             reply = 'Registration failed. Try via web.';
+           }
+         }
+      }
     } else if (upper === 'HELP') {
       reply = getHelpMenu();
       await updateSession(phone, 'IDLE', {});
@@ -103,10 +183,24 @@ export async function handleIncoming(req: any, res: any) {
       reply =
         'Location received.\nNow send a photo/video for the stage update and I will attach this location automatically.\n\nTip: Add a short caption like "Packed" / "Shipped" / "Out for delivery".';
     } else {
-      // NVIDIA NIM handles everything else
+      // NVIDIA NIM handles everything else (Acting as Advanced Dashboard Assistant)
       const supplier = await getSupplierByPhone(phone);
+      let richContext: any = null;
+      if (supplier) {
+         const products = await prisma.product.findMany({ where: { supplierId: supplier.id }, take: 5, orderBy: { createdAt: 'desc'} });
+         const orders = await prisma.order.findMany({ where: { product: { supplierId: supplier.id } }, take: 5, orderBy: { createdAt: 'desc'} });
+         richContext = {
+            id: supplier.id,
+            name: supplier.name,
+            trustScore: supplier.trustScore,
+            totalSales: supplier.totalSales,
+            recentProducts: products.map(p => ({ title: p.title, price: Number(p.priceInr), status: p.status })),
+            recentOrders: orders.map(o => ({ amountUsdc: Number(o.priceUsdc), status: o.status }))
+         };
+      }
+      
       const history = buildHistory(session.sessionData as any);
-      reply = await generateWhatsAppReply(message, history, supplier);
+      reply = await generateWhatsAppReply(message, history, richContext || null);
       await appendHistory(phone, message, reply, session.sessionData as any);
     }
   } catch (err) {

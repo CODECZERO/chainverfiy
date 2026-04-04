@@ -10,7 +10,7 @@ generator seed {
 
 datasource db {
   provider   = "postgresql"
-  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions"), vector]
 }
 
 model User {
@@ -77,6 +77,7 @@ model Product {
   quantity       String?
   status         ProductStatus @default(PENDING_VERIFICATION)
   proofMediaUrls String[]
+  embedding      Unsupported("vector")?
   qrCodeUrl      String?
   stellarTxId    String?
   voteReal       Int           @default(0)
