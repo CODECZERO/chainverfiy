@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import type { WalletType } from "@/lib/wallet-types"
-import { kit } from "@/lib/stellar-kit"
+import { getKit } from "@/lib/stellar-kit"
 
 interface WalletState {
   isConnected: boolean
@@ -28,6 +28,7 @@ export const connectWallet = createAsyncThunk<
   try {
 
     // Set the selected wallet in the kit
+    const kit = getKit();
     kit.setWallet(walletType);
 
     // Request public key (address in this kit version)
@@ -79,7 +80,7 @@ export const restoreWalletKit = createAsyncThunk<void, void>(
     const isConnected = localStorage.getItem("wallet_connected") === "true"
     const walletType = localStorage.getItem("wallet_type")
     if (!isConnected || !walletType) return
-    kit.setWallet(walletType as any)
+    try { getKit().setWallet(walletType as any) } catch {}
   }
 )
 
@@ -180,13 +181,14 @@ export const signTransaction = createAsyncThunk<
       // Ensure kit has a wallet set (essential after page refresh)
       if (walletType) {
         console.log("[WALLET] Ensuring kit wallet is set to:", walletType);
-        kit.setWallet(walletType);
+        getKit().setWallet(walletType);
       } else {
         throw new Error("No wallet connected. Please connect your wallet first.");
       }
 
-      const network = kit.getNetwork().then(res => res.networkPassphrase).catch(() => "Test SDF Network ; September 2015");
-      const { signedTxXdr } = await kit.signTransaction(transactionXDR, {
+      const walletKit = getKit();
+      const network = walletKit.getNetwork().then(res => res.networkPassphrase).catch(() => "Test SDF Network ; September 2015");
+      const { signedTxXdr } = await walletKit.signTransaction(transactionXDR, {
         networkPassphrase: await network,
         address: publicKey || undefined // Help wallet identify the signer
       });

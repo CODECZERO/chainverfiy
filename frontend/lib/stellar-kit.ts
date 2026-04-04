@@ -13,8 +13,14 @@ const getNetwork = () => {
 
 let kitInstance: StellarWalletsKit | null = null;
 
-export const getKit = () => {
-    if (typeof window === 'undefined') return null;
+/**
+ * Lazy singleton — creates the kit on first call so that browser
+ * extension globals (Freighter, Albedo, etc.) have time to inject.
+ */
+export const getKit = (): StellarWalletsKit => {
+    if (typeof window === 'undefined') {
+        throw new Error('StellarWalletsKit cannot be used on the server');
+    }
 
     if (!kitInstance) {
         kitInstance = new StellarWalletsKit({
@@ -25,8 +31,14 @@ export const getKit = () => {
     return kitInstance;
 };
 
-// For backward compatibility while we refactor usages
-export const kit = typeof window !== 'undefined' ? new StellarWalletsKit({
-    network: getNetwork(),
-    modules: allowAllModules(),
-}) : null as unknown as StellarWalletsKit;
+/**
+ * @deprecated Use getKit() instead. Kept for backward-compat during migration.
+ * This now proxies to the lazy getter so extensions are detected properly.
+ */
+export const kit = new Proxy({} as StellarWalletsKit, {
+    get(_target, prop) {
+        const instance = getKit();
+        const value = (instance as any)[prop];
+        return typeof value === 'function' ? value.bind(instance) : value;
+    },
+});

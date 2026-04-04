@@ -301,11 +301,19 @@ export function Header() {
                       <div className="h-px bg-white/[0.05] my-2" />
                       
                       {isConnected ? (
-                        <div className="px-4 py-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
-                          <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-bold uppercase mb-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Wallet Connected
+                        <div className="space-y-2">
+                          <div className="px-4 py-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+                            <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-bold uppercase mb-1">
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Wallet Connected
+                            </div>
+                            <div className="text-[11px] font-mono text-slate-400 truncate leading-none">{publicKey}</div>
                           </div>
-                          <div className="text-[11px] font-mono text-slate-400 truncate leading-none">{publicKey}</div>
+                          <DropdownMenuItem 
+                            onClick={() => dispatch(disconnectWallet())} 
+                            className="px-4 py-3 text-sm font-semibold text-red-400 hover:text-white hover:bg-red-500/20 rounded-xl cursor-pointer flex items-center gap-3"
+                          >
+                            <Wallet className="w-4 h-4" /> Disconnect Wallet
+                          </DropdownMenuItem>
                         </div>
                       ) : (
                         <DropdownMenuItem onClick={() => setWalletSelectorOpen(true)} className="px-4 py-3 text-sm font-semibold text-emerald-400 hover:text-white hover:bg-emerald-600 rounded-xl transition-all cursor-pointer flex items-center gap-3">

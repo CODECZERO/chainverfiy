@@ -16,7 +16,20 @@ async function apiFetch(path: string, options?: RequestInit) {
     },
     ...options,
   });
-  return res.json();
+  const json = await res.json();
+
+  // Unwrap ApiResponse envelope: { statusCode, data, message, success }
+  // Return the inner .data so callers get clean payloads
+  if (json && typeof json === 'object' && 'success' in json && 'data' in json && 'statusCode' in json) {
+    // Attach success/message to the data for callers that need it
+    const result = json.data;
+    if (result && typeof result === 'object' && !Array.isArray(result)) {
+      result._success = json.success;
+      result._message = json.message;
+    }
+    return result;
+  }
+  return json;
 }
 
 // ─── Products (Marketplace) ───

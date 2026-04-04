@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Outfit, Inter } from "next/font/google"
 
-const outfit = Outfit({ subsets: ["latin"] })
-const inter = Inter({ subsets: ["latin"] })
+const outfit = Outfit({ subsets: ["latin"] as const })
+const inter = Inter({ subsets: ["latin"] as const })
 
 const CATEGORIES = ["ALL", "Food & Spices", "Textiles", "Handicrafts", "Agriculture", "Electronics", "Other"]
 
@@ -36,12 +36,16 @@ export default function MarketplacePage() {
           getUsdcInrRate()
         ])
         
-        // Strict safe-guard against non-array payloads (e.g. 401 Unauthorized objects)
+        // After ApiResponse unwrap, items is { products: [...], total, page } or an array
         let validItems: any[] = [];
-        if (items && typeof items.map === 'function') {
-           validItems = items;
-        } else if (items && items.data && typeof items.data.map === 'function') {
-           validItems = items.data;
+        if (Array.isArray(items)) {
+          validItems = items;
+        } else if (Array.isArray(items?.products)) {
+          validItems = items.products;
+        } else if (Array.isArray(items?.data?.products)) {
+          validItems = items.data.products;
+        } else if (Array.isArray(items?.data)) {
+          validItems = items.data;
         }
         
         setTasks(validItems)

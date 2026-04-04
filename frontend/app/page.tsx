@@ -14,8 +14,8 @@ import { getStats } from "@/lib/api-service"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { Outfit, Inter } from "next/font/google"
 
-const outfit = Outfit({ subsets: ["latin"] })
-const inter = Inter({ subsets: ["latin"] })
+const outfit = Outfit({ subsets: ["latin"] as const })
+const inter = Inter({ subsets: ["latin"] as const })
 
 const TRUST_SIGNALS = [
   { icon: <Lock className="w-4 h-4 text-emerald-400" />, text: "Soroban Escrow" },
