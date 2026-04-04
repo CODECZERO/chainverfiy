@@ -35,7 +35,16 @@ export default function MarketplacePage() {
           getTasks(),
           getUsdcInrRate()
         ])
-        setTasks(items || [])
+        
+        // Strict safe-guard against non-array payloads (e.g. 401 Unauthorized objects)
+        let validItems = [];
+        if (Array.isArray(items)) {
+           validItems = items;
+        } else if (items && Array.isArray(items.data)) {
+           validItems = items.data;
+        }
+        
+        setTasks(validItems)
         setUsdcInr(rate)
       } catch (err) {
         console.error("Failed to fetch marketplace data:", err)
