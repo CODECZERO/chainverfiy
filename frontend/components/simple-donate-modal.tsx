@@ -95,10 +95,9 @@ export function SimpleDonateModal({ isOpen, onClose, task }: SimpleDonateModalPr
 
       // Verify donation with backend using payment API
       const verifyResponse = await verifyDonation({
-        transactionId: result.hash,
-        postId: taskId,
-        amount: Number.parseFloat(amount),
-        donorId: publicKey,
+        transactionHash: result.hash,
+        bountyId: taskId,
+        paymentMethod: "XLM",
       })
 
       if (!verifyResponse.success) {

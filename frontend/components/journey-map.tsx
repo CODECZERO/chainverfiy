@@ -25,6 +25,24 @@ interface JourneyMapProps {
   scans: Scan[]
 }
 
+function getMarkerColor(scan: Scan, index: number, total: number) {
+  if (index === 0) return '#3B82F6';
+  if (index === total - 1) return '#10B981';
+  return '#8B5CF6';
+}
+
+function getMarkerHtml(scan: Scan, color: string) {
+  return `<div style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px ${color}"></div>`;
+}
+
+function getPopupHtml(scan: Scan) {
+  return `<div style="color: #333; font-family: sans-serif;">
+    <strong style="font-size: 14px;">${scan.resolvedLocation || 'Unknown Location'}</strong><br/>
+    <span style="font-size: 12px; color: #666;">${new Date(scan.serverTimestamp).toLocaleString()}</span><br/>
+    <span style="font-size: 11px; background: #eee; padding: 2px 4px; border-radius: 4px; margin-top: 4px; display: inline-block;">${scan.scanSource}</span>
+  </div>`;
+}
+
 export default function JourneyMap({ scans }: JourneyMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<HTMLDivElement>(null)
