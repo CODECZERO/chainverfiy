@@ -229,13 +229,37 @@ export const confirmDelivery = async (req: any, res: Response) => {
 };
 
 export const disputeOrder = async (req: any, res: Response) => {
-  const { reason } = req.body;
+  const { reason, buyerProofCid } = req.body;
 
   const order = await prisma.order.update({
     where: { id: req.params.id },
-    data: { status: 'DISPUTED' },
-    include: { product: true },
+    data: { 
+      status: 'DISPUTED',
+      buyerDisputeReason: reason,
+      buyerProofCid
+    },
+    include: { product: true, buyer: true },
   });
+
+  // ─── Auto-Bounty for High-Value Disputes ───────────────────────────
+  try {
+    const minBountyThreshold = 5000; // INR
+    if (Number(order.priceInr) >= minBountyThreshold) {
+      await prisma.bounty.create({
+        data: {
+          productId: order.productId,
+          amount: 50.0, // Fixed 50 TRT reward for dispute audits
+          description: `DISPUTE AUDIT: Order #${order.id.slice(0, 8)} needs verification. Buyer claims: "${reason || 'No description'}". Verify product authenticity via provided IPFS proof.`,
+          status: 'ACTIVE',
+          issuerId: order.buyerId,
+          issuerWallet: (order.buyer as any)?.stellarWallet || null,
+        }
+      });
+      console.log(`[Bounty] Auto-created dispute audit for Order ${order.id}`);
+    }
+  } catch (e) {
+    console.error("[Bounty] Failed to auto-create dispute bounty", e);
+  }
 
   await notifySupplier(order.product.supplierId, 'DISPUTE_OPENED', {
     orderId: order.id,
@@ -243,7 +267,7 @@ export const disputeOrder = async (req: any, res: Response) => {
     productId: order.productId,
   });
 
-  res.json(new ApiResponse(200, order, 'Dispute opened'));
+  res.json(new ApiResponse(200, order, 'Dispute opened and governance bounty active'));
 };
 
 export const scanQrHandshake = async (req: Request, res: Response) => {

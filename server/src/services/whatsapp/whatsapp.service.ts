@@ -6,7 +6,9 @@ import type { WhatsAppState } from '@prisma/client';
 import { getUSDCtoINRRate } from '../../util/exchangeRate.util.js';
 import { nanoid } from 'nanoid';
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID!, process.env.TWILIO_AUTH_TOKEN!);
+const client = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN 
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  : null;
 const FROM = process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886';
 
 async function reverseGeocode(latNum: number, lngNum: number): Promise<string | null> {
@@ -33,6 +35,7 @@ async function reverseGeocode(latNum: number, lngNum: number): Promise<string | 
 // MAIN INCOMING HANDLER
 // ─────────────────────────────────────────────
 export async function handleIncoming(req: any, res: any) {
+  console.log(`[WHATSAPP] Incoming webhook from ${req.body.From}: ${req.body.Body || '[Media]'}`);
   const { Body, From, Latitude, Longitude } = req.body;
   const phone = (From as string).replace('whatsapp:', '');
   const message = (Body as string)?.trim() || '';
@@ -454,6 +457,10 @@ async function send(
   mediaUrl?: string,
   contentSid?: string
 ) {
+  if (!client) {
+    console.error('[WHATSAPP] Twilio client not initialized. Check TWILIO_ACCOUNT_SID/AUTH_TOKEN.');
+    return;
+  }
   const to = phone.startsWith('whatsapp:') ? phone : `whatsapp:${phone}`;
   
   if (contentSid) {

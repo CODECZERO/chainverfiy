@@ -352,7 +352,7 @@ export class EscrowService {
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
         const adminKeypair = this.getAdminKeypair();
-        const sourceAccount = await this.server.getAccount(adminKeypair.publicKey());
+        // Account loading handled internally by adminSequenceManager.buildTransaction
 
         // 3. Build and sign transaction with globally synchronized helper
         const tx = await adminSequenceManager.buildTransaction([
@@ -382,7 +382,7 @@ export class EscrowService {
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
         const adminKeypair = this.getAdminKeypair();
-        const sourceAccount = await this.server.getAccount(adminKeypair.publicKey());
+        // Account loading handled internally by adminSequenceManager.buildTransaction
 
         // 3. Build and sign transaction with globally synchronized helper
         const tx = await adminSequenceManager.buildTransaction([
@@ -410,7 +410,7 @@ export class EscrowService {
         if (!USDC_ISSUER) throw new Error('USDC_ISSUER not configured');
 
         const adminKeypair = this.getAdminKeypair();
-        const sourceAccount = await this.server.getAccount(adminKeypair.publicKey());
+        // Account loading handled internally by adminSequenceManager.buildTransaction
 
         const usdcAsset = new Asset('USDC', USDC_ISSUER);
 
@@ -477,7 +477,7 @@ export class EscrowService {
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
         const adminKeypair = this.getAdminKeypair();
-        const sourceAccount = await this.server.getAccount(adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(adminKeypair.publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",
@@ -507,7 +507,7 @@ export class EscrowService {
         if (!ESCROW_CONTRACT_ID) throw new Error('ESCROW_CONTRACT_ID not configured');
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
-        const sourceAccount = await this.server.getAccount(this.adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(this.getAdminKeypair().publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",
@@ -537,7 +537,7 @@ export class EscrowService {
         if (!ESCROW_CONTRACT_ID) throw new Error('ESCROW_CONTRACT_ID not configured');
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
-        const sourceAccount = await this.server.getAccount(this.adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(this.getAdminKeypair().publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",
@@ -567,7 +567,7 @@ export class EscrowService {
         if (!ESCROW_CONTRACT_ID) throw new Error('ESCROW_CONTRACT_ID not configured');
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
-        const sourceAccount = await this.server.getAccount(this.adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(this.getAdminKeypair().publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",
@@ -597,7 +597,7 @@ export class EscrowService {
         if (!ESCROW_CONTRACT_ID) throw new Error('ESCROW_CONTRACT_ID not configured');
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
-        const sourceAccount = await this.server.getAccount(this.adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(this.getAdminKeypair().publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",
@@ -627,7 +627,7 @@ export class EscrowService {
         if (!ESCROW_CONTRACT_ID) throw new Error('ESCROW_CONTRACT_ID not configured');
 
         const contract = new Contract(ESCROW_CONTRACT_ID);
-        const sourceAccount = await this.server.getAccount(this.adminKeypair.publicKey());
+        const sourceAccount = await horizonServer.loadAccount(this.getAdminKeypair().publicKey());
 
         const tx = new TransactionBuilder(sourceAccount, {
             fee: "100",

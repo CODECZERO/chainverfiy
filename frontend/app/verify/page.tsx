@@ -35,9 +35,9 @@ export default function VerifyPage() {
   const [tab, setTab] = useState<"queue" | "history">("queue")
   const [history, setHistory] = useState<any[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
-  const { user } = useSelector((s: RootState) => s.userAuth)
-
+  const { user, isAuthenticated } = useSelector((s: RootState) => s.userAuth)
   const wallet = useSelector((s: RootState) => s.wallet)
+  const isAuth = isAuthenticated || wallet.isConnected
   
   useEffect(() => {
     const init = async () => {
@@ -357,7 +357,7 @@ export default function VerifyPage() {
               key="history" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
               className="space-y-8 max-w-6xl mx-auto"
             >
-              {!(user?.id || wallet.isConnected) ? (
+              {!isAuth ? (
                 <div className="text-center py-48 glass-premium rounded-[4rem] border border-white/[0.06] shadow-3xl">
                   <div className="w-32 h-32 mx-auto mb-10 rounded-[3rem] bg-indigo-600/10 flex items-center justify-center border border-indigo-500/20">
                     <TrendingUp className="w-14 h-14 text-indigo-400" />

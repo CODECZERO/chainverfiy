@@ -136,7 +136,7 @@ export async function saveContractWithWallet(userData: UserDataWallet) {
     const contract = new StellarSdk.Contract(contractId);
     const sourceKeypair = StellarSdk.Keypair.fromSecret(userData.privateKey);
     const accountId = sourceKeypair.publicKey();
-    const account = await server.getAccount(accountId);
+    const account = await horizonServer.loadAccount(accountId);
     const fee = StellarSdk.BASE_FEE;
 
     const transaction = new StellarSdk.TransactionBuilder(account, {
@@ -192,7 +192,7 @@ export async function getLatestData(privateKey: string, contractId?: string) {
     const contract = new StellarSdk.Contract(activeContractId);
     const sourceKeypair = StellarSdk.Keypair.fromSecret(privateKey);
     const accountId = sourceKeypair.publicKey();
-    const account = await server.getAccount(accountId);
+    const account = await horizonServer.loadAccount(accountId);
     const fee = StellarSdk.BASE_FEE;
 
     const transaction = new StellarSdk.TransactionBuilder(account, {
@@ -286,7 +286,7 @@ export async function registerProduct(
     const contract = new StellarSdk.Contract(contractId);
     const sourceKeypair = StellarSdk.Keypair.fromSecret(supplierKey);
     const accountId = sourceKeypair.publicKey();
-    const account = await server.getAccount(accountId);
+    const account = await horizonServer.loadAccount(accountId);
 
     const transaction = new StellarSdk.TransactionBuilder(account, {
       fee: StellarSdk.BASE_FEE,
@@ -326,7 +326,7 @@ export async function verifyProductProof(validatorKey: string, sellerAddress: st
     const contract = new StellarSdk.Contract(contractId);
     const sourceKeypair = StellarSdk.Keypair.fromSecret(validatorKey);
     const accountId = sourceKeypair.publicKey();
-    const account = await server.getAccount(accountId);
+    const account = await horizonServer.loadAccount(accountId);
 
     const transaction = new StellarSdk.TransactionBuilder(account, {
       fee: StellarSdk.BASE_FEE,

@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { ConnectButton } from '@/components/connect-button'
 import { countryToFlag, truncateWallet, detectDeviceType, detectOS, detectBrowser } from '@/lib/qr-utils'
 import dynamic from 'next/dynamic'
-import { Loader2, CheckCircle2, AlertTriangle, Clock, Shield,
+import { Loader2, CheckCircle2, AlertTriangle, Clock, Shield, MessageSquare,
          Package, MapPin, Upload, ExternalLink, Activity, ShieldCheck } from 'lucide-react'
 import { DisputeFormModal } from '@/components/dispute-form-modal'
 import { JourneyTimelineRow } from '@/components/journey-timeline-row'
@@ -523,28 +523,59 @@ export default function DeliveryConfirmationPage() {
 
               {/* Disputed */}
               {(order.status === 'DISPUTED' || order.buyerProofCid) && (
-                <div className="premium-card rounded-[2.5rem] p-10 border-red-500/30 shadow-2xl relative overflow-hidden border">
-                  <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-red-500/10 blur-[100px] rounded-full pointer-events-none" />
+                <div className="premium-card rounded-[2.5rem] p-10 border-red-500/30 shadow-2xl relative overflow-hidden border bg-red-950/5">
+                  <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-red-500/10 blur-[120px] rounded-full pointer-events-none" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-8">
-                      <AlertTriangle className="w-8 h-8 text-red-500" />
-                      <h3 className="text-3xl font-extrabold text-white">Escrow Frozen</h3>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-8 mb-8">
-                      <div className="bg-[#0C0F17] rounded-2xl p-6 border border-white/[0.04] shadow-inner">
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Your Cryptographic Claim</div>
-                        <p className="text-slate-300 text-lg italic leading-relaxed">"{order.buyerDisputeReason}"</p>
+                    <div className="flex items-center gap-4 mb-10">
+                      <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                        <Shield className="w-8 h-8 text-red-500" />
                       </div>
-                      <div className="bg-[#0C0F17] rounded-2xl p-6 border border-white/[0.04] shadow-inner">
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">IPFS Proof Uploaded</div>
-                        <a href={`https://gateway.pinata.cloud/ipfs/${order.buyerProofCid}`} target="_blank" rel="noreferrer" className="text-slate-300 hover:text-white flex items-center gap-2 group p-3 bg-white/[0.02] rounded-xl border border-white/[0.04] hover:border-white/10 transition-colors cursor-pointer">
-                          <ExternalLink className="w-5 h-5 text-red-400" />
-                          <span className="font-mono text-sm break-all">{order.buyerProofCid}</span>
+                      <div>
+                        <h3 className="text-3xl font-extrabold text-white tracking-tight">Escrow Frozen</h3>
+                        <p className="text-red-400/80 text-sm font-medium uppercase tracking-widest">Dispute Investigation Active</p>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 mb-10">
+                      <div className="bg-[#0C0F17] rounded-3xl p-8 border border-white/[0.04] shadow-inner relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                          <MessageSquare className="w-8 h-8 text-white" />
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-4">Your Cryptographic Claim</div>
+                        <p className="text-white text-lg italic leading-relaxed font-medium">
+                          "{order.buyerDisputeReason || "No details provided"}"
+                        </p>
+                      </div>
+                      
+                      <div className="bg-[#0C0F17] rounded-3xl p-8 border border-white/[0.04] shadow-inner relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                          <ExternalLink className="w-8 h-8 text-white" />
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-4">IPFS Proof Ledger</div>
+                        <a 
+                          href={`https://gateway.pinata.cloud/ipfs/${order.buyerProofCid}`} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="flex items-center gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/10 transition-all group/link"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+                            <Activity className="w-5 h-5 text-red-400" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-bold text-white uppercase tracking-widest mb-0.5">View Evidence</div>
+                            <div className="text-[10px] font-mono text-slate-500 truncate">{order.buyerProofCid}</div>
+                          </div>
                         </a>
                       </div>
                     </div>
-                    <div className="inline-flex items-center gap-3 px-6 py-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold rounded-2xl text-sm">
-                      <ShieldCheck className="w-5 h-5" /> Smart contract holdings ({Number(order.priceUsdc).toFixed(2)} USDC) are securely locked pending decentralized DAO validation.
+
+                    <div className="flex flex-col sm:flex-row items-center gap-6 p-8 bg-emerald-500/5 border border-emerald-500/20 rounded-[2rem]">
+                      <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                        <ShieldCheck className="w-7 h-7 text-emerald-400" />
+                      </div>
+                      <p className="text-emerald-400/90 font-medium leading-relaxed text-center sm:text-left">
+                        Smart contract holdings <strong className="text-emerald-400 font-extrabold text-xl mx-1 font-mono">({Number(order.priceUsdc).toFixed(2)} USDC)</strong> are securely locked on the Stellar ledger pending decentralized DAO validation.
+                      </p>
                     </div>
                   </div>
                 </div>
