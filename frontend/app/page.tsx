@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import {
   ShieldCheck, MessageCircle, ArrowRight, ArrowUpRight,
-  Users, CheckCircle2, Globe, Lock, Sparkles, Eye, Activity, Zap
+  Users, CheckCircle2, Globe, Lock, Sparkles, Eye, Activity, Zap, ShoppingBag
 } from "lucide-react"
 import { getStats } from "@/lib/api-service"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"

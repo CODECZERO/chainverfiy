@@ -191,7 +191,7 @@ export default function MarketplacePage() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.4, delay: Math.min(idx * 0.05, 0.5) }}
                 >
-                  <ProductCard product={t} conversionRate={usdcInr} />
+                  <ProductCard task={t} usdcInr={usdcInr} />
                 </motion.div>
               ))}
             </AnimatePresence>
