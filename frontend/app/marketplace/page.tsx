@@ -5,7 +5,7 @@ import { getTasks } from "@/lib/api-service"
 import { getUsdcInrRate } from "@/lib/exchange-rates"
 import { Header } from "@/components/header"
 import { ProductCard } from "@/components/product-card"
-import { LayoutGrid, Search, Sparkles, Filter, ChevronDown, SlidersHorizontal } from "lucide-react"
+import { Search, Sparkles, Filter } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
@@ -37,10 +37,10 @@ export default function MarketplacePage() {
         ])
         
         // Strict safe-guard against non-array payloads (e.g. 401 Unauthorized objects)
-        let validItems = [];
-        if (Array.isArray(items)) {
+        let validItems: any[] = [];
+        if (items && typeof items.map === 'function') {
            validItems = items;
-        } else if (items && Array.isArray(items.data)) {
+        } else if (items && items.data && typeof items.data.map === 'function') {
            validItems = items.data;
         }
         
@@ -56,6 +56,8 @@ export default function MarketplacePage() {
   }, [])
 
   const filteredTasks = tasks.filter(t => {
+    if (!t) return false;
+    
     if (activeFilters.status !== "ALL") {
       if (activeFilters.status === "VERIFIED" && t.status !== "VERIFIED") return false
       if (activeFilters.status === "PENDING" && t.status !== "PENDING_VERIFICATION") return false
@@ -64,7 +66,9 @@ export default function MarketplacePage() {
     
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
-      return t.title.toLowerCase().includes(q) || t.supplierName.toLowerCase().includes(q)
+      const titleMatch = t.title ? t.title.toLowerCase().includes(q) : false;
+      const supplierMatch = t.supplierName ? t.supplierName.toLowerCase().includes(q) : false;
+      return titleMatch || supplierMatch;
     }
     return true
   })
@@ -146,7 +150,7 @@ export default function MarketplacePage() {
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto mt-2 lg:mt-0">
              <div className="flex items-center bg-white/5 rounded-xl p-1 border border-white/5">
                 <button
                   onClick={() => setActiveFilters(prev => ({ ...prev, status: "ALL" }))}
