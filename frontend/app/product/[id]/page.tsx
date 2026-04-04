@@ -68,9 +68,15 @@ export default function ProductPage() {
         if (prodData.userHasVoted) setHasVoted(true)
       }
 
-      // getBountiesByProduct now returns direct data array with .success prop attached
+      // getBountiesByProduct now returns direct data array or object from api-service
       if (bountyRes) {
-        setBounties(Array.isArray(bountyRes) ? bountyRes : []);
+        if (Array.isArray(bountyRes)) {
+          setBounties(bountyRes)
+        } else if (typeof bountyRes === 'object') {
+          // Fallback for cases where it's wrapped in { bounties: [...] } or { data: [...] }
+          const bouts = bountyRes.bounties || bountyRes.data || [];
+          if (Array.isArray(bouts)) setBounties(bouts);
+        }
       }
 
       // 2. Map verification status

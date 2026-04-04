@@ -14,6 +14,8 @@ import {
   Wheat, Palette, Shirt, Apple, Brush, Package, Loader2
 } from "lucide-react"
 import { ipfsImageUrl } from "@/lib/ipfs"
+import { uploadToIpfs, createProduct } from "@/lib/api-service"
+
 
 const CATEGORIES = [
   { id: 1, label: "Agriculture", icon: <Wheat className="w-5 h-5" /> },
@@ -43,18 +45,13 @@ export default function NewProductWizard() {
     getUSDCInrRate().then(setUsdcInr).catch(() => {})
   }, [])
 
-  const uploadToIpfs = async (file: File) => {
+  const uploadFile = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
     try {
-      const res = await fetch(`${api}/ipfs/upload`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      })
-      const data = await res.json()
-      if (data.data?.cid) {
-        return data.data.cid
+      const data = await uploadToIpfs(formData)
+      if (data?.cid) {
+        return data.cid
       }
       throw new Error("Upload failed")
     } catch (e) {
@@ -68,7 +65,8 @@ export default function NewProductWizard() {
       const file = e.target.files[0]
       // Show local preview immediately (optional, but better UX would be to show loading)
       setLoading(true)
-      const cid = await uploadToIpfs(file)
+      const cid = await uploadFile(file)
+
       if (cid) {
         setImages(prev => [...prev, cid])
       }
@@ -85,24 +83,17 @@ export default function NewProductWizard() {
     setLoading(true)
     try {
       const cat = CATEGORIES.find((c) => c.id === category)?.label || "Other"
-      const res = await fetch(`${api}/products`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          supplierId: sid,
-          title,
-          description: desc,
-          priceInr: Number(price),
-          category: cat,
-          quantity: quantity || null,
-          proofMediaUrls: images.length > 0 ? images : [],
-        })
+      const res = await createProduct({
+        supplierId: sid,
+        title,
+        description: desc,
+        priceInr: Number(price),
+        category: cat,
+        quantity: quantity || null,
+        proofMediaUrls: images.length > 0 ? images : [],
       })
-      if (res.ok) {
-        const json = await res.json()
-        const p = json?.data
-        setProduct(p)
+      if (res) {
+        setProduct(res)
         setStep(3)
       }
     } catch (e) {

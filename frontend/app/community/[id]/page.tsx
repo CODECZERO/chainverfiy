@@ -33,7 +33,7 @@ export default function DiscussionDetailPage() {
     setLoading(true)
     try {
       const res = await getDiscussion(id as string)
-      if (res.success) setDiscussion(res.data)
+      if (res) setDiscussion(res)
     } catch (error) {
       console.error(error)
     } finally {
@@ -57,7 +57,7 @@ export default function DiscussionDetailPage() {
         authorWallet: !isAuthenticated ? publicKey || undefined : undefined,
         content: commentContent
       })
-      if (res.success) {
+      if (res) {
         setCommentContent("")
         fetchData()
       }

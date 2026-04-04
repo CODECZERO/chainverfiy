@@ -20,6 +20,8 @@ import type { RootState } from "@/lib/redux/store"
 import Image from "next/image"
 import { getIPFSUrl } from "@/lib/image-utils"
 import { Outfit, Inter } from "next/font/google"
+import { getMyOrders } from "@/lib/api-service"
+
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -77,18 +79,9 @@ export default function BuyerDashboard() {
     if (!user?.id && !publicKey) return
     setLoading(true)
     try {
-      const query = user?.id ? `buyerId=${user.id}` : `stellarWallet=${publicKey}`
-      const tokensData = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-      const response = await fetch(`${api}/orders/my-orders?${query}`, {
-        credentials: 'include',
-        headers: { ...(tokensData ? { 'Authorization': `Bearer ${tokensData}` } : {}) }
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setOrders(data.data || [])
-      } else {
-        setOrders([])
-      }
+      const params: any = user?.id ? { buyerId: user.id } : { stellarWallet: publicKey }
+      const data = await getMyOrders(params)
+      setOrders(data || [])
     } catch (err) {
       console.error('[BuyerDashboard] Failed to load orders:', err)
       setOrders([])

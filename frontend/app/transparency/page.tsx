@@ -38,9 +38,9 @@ export default function TransparencyPage() {
     setLoading(true)
     try {
       const res = await getExchangeRates()
-      if (res.data) {
-          console.log("Transparency Rates:", res.data);
-          setRatesData(res.data);
+      if (res) {
+          console.log("Transparency Rates:", res);
+          setRatesData(res);
       }
       setLastRefreshed(new Date())
     } catch (err) {

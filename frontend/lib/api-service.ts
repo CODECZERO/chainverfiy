@@ -68,10 +68,18 @@ export const confirmDelivery = (orderId: string, data: any) =>
 export const disputeOrder = (orderId: string, data: any) =>
   apiFetch(`/orders/${orderId}/dispute`, { method: 'POST', body: JSON.stringify(data) });
 
+export const dispatchOrder = (orderId: string) =>
+  apiFetch(`/orders/${orderId}/dispatch`, { method: 'PATCH' });
+
+
 // ─── Suppliers ───
 export const getSupplier = (id: string) => apiFetch(`/suppliers/${id}`);
 
 export const getSupplierProducts = (id: string) => apiFetch(`/suppliers/${id}/products`);
+
+export const flagSupplier = (id: string) =>
+  apiFetch(`/suppliers/${id}/flag`, { method: 'POST' });
+
 
 // ─── Community ───
 export const getVerifyQueue = () => apiFetch('/community/queue');
@@ -81,6 +89,18 @@ export const castVote = (data: any) =>
 
 export const getLeaderboard = () => apiFetch('/community/leaderboard');
 export const getJoinedCommunities = () => apiFetch('/community/joined');
+
+export const getCommunityQueue = (userId?: string) => {
+  const q = userId ? `?userId=${userId}` : '';
+  return apiFetch(`/community/queue${q}`);
+};
+
+export const getCommunityHistory = (identifier: string) => 
+  apiFetch(`/community/history/${identifier}`);
+
+export const getTokenBalance = (identifier: string) =>
+  apiFetch(`/products/tokens/${identifier}`);
+
 
 // ─── Stats ───
 export const getStats = () => apiFetch('/stats');
@@ -131,6 +151,9 @@ export const markNotificationsRead = () => apiFetch('/notifications/read-all', {
 export const getPaymentQuote = (sourceCurrency: string, targetUsdcAmount: string) =>
   apiFetch('/payments/quote', { method: 'POST', body: JSON.stringify({ sourceCurrency, targetUsdcAmount }) });
 export const initiateUPI = (data: any) => apiFetch('/payments/upi/initiate', { method: 'POST', body: JSON.stringify(data) });
+export const uploadToIpfs = (formData: FormData) => 
+  apiFetch('/ipfs/upload', { method: 'POST', body: formData, headers: { 'Content-Type': 'undefined' } }); // Browser will set boundary
+
 
 // ─── Stellar / Wallet helpers (used by stellar-utils.ts) ───
 export const getWalletBalance = (publicKey: string) => apiFetch(`/wallet/balance/${publicKey}`);
@@ -169,7 +192,12 @@ export const getSubmitProofXdr = (data: { sequence?: string; [key: string]: any 
 export const submitEscrowTx = (data: { signedXdr: string }) =>
   apiFetch('/contracts/escrow/submit', { method: 'POST', body: JSON.stringify(data) });
 
-export const getSupplierOrders = () => apiFetch('/user/supplier/orders');
+export const getSupplierOrders = (supplierId?: string) => 
+  supplierId ? apiFetch(`/donations/supplier/${supplierId}`) : apiFetch('/user/supplier/orders');
+
+export const getSupplierAnalytics = (supplierId: string) => 
+  apiFetch(`/suppliers/${supplierId}/analytics`);
+
 
 export const getVerificationStatus = (productId?: string, wallet?: string) => {
   const params: any = {};
@@ -183,6 +211,13 @@ export const getVerificationStatus = (productId?: string, wallet?: string) => {
 export const getQRJourney = (shortCode: string) => apiFetch(`/qr/${shortCode}/journey`);
 export const getQRMapData = (shortCode: string) => apiFetch(`/qr/${shortCode}/map-data`);
 export const getQRCertificate = (shortCode: string) => apiFetch(`/qr/${shortCode}/certificate`);
+
+export const registerQRScan = (data: any) =>
+  apiFetch('/qr/scan', { method: 'POST', body: JSON.stringify(data) });
+
+export const updateQRLocation = (scanId: string, data: any) =>
+  apiFetch(`/qr/scan/${scanId}/location`, { method: 'PATCH', body: JSON.stringify(data) });
+
 
 // ─── Machines ───
 export const registerMachine = (data: any) =>
@@ -202,6 +237,12 @@ export const getBuyerProfile = (wallet?: string) => {
 export const updateBuyerProfile = (data: any) =>
   apiFetch('/buyer', { method: 'PUT', body: JSON.stringify(data) });
 
+export const getMyOrders = (params: Record<string, string>) => {
+  const q = '?' + new URLSearchParams(params).toString();
+  return apiFetch(`/orders/my-orders${q}`);
+};
+
+
 // ─── Discussions (Community Hub) ───
 export const getDiscussions = (params?: { tag?: string; search?: string }) => {
   const q = params ? '?' + new URLSearchParams(params as any).toString() : '';
@@ -215,4 +256,22 @@ export const createDiscussion = (data: { title: string; content: string; authorI
 
 export const addDiscussionComment = (data: { discussionId: string; authorId?: string; authorWallet?: string; content: string }) =>
   apiFetch('/discussions/comments', { method: 'POST', body: JSON.stringify(data) });
+
+// ─── Escrow & Delivery (Advanced) ───
+export const getEscrow = (taskId: string) => apiFetch(`/contracts/escrow/${taskId}`);
+
+export const releaseEscrow = (taskId: string) =>
+  apiFetch('/contracts/escrow/release', { method: 'POST', body: JSON.stringify({ taskId }) });
+
+export const disputeEscrow = (taskId: string) =>
+  apiFetch('/contracts/escrow/dispute', { method: 'POST', body: JSON.stringify({ taskId }) });
+
+export const refundEscrow = (taskId: string) =>
+  apiFetch('/contracts/escrow/refund', { method: 'POST', body: JSON.stringify({ taskId }) });
+
+export const buildRequestReturnTx = (data: { buyerPublicKey: string; taskId: string }) =>
+  apiFetch('/contracts/escrow/request-return/xdr', { method: 'POST', body: JSON.stringify(data) });
+
+export const buildConfirmReturnTx = (data: { supplierPublicKey: string; taskId: string }) =>
+  apiFetch('/contracts/escrow/confirm-return/xdr', { method: 'POST', body: JSON.stringify(data) });
 

@@ -85,12 +85,13 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
 
       const bountyRes = await createBounty(createData)
 
-      if (!bountyRes.success) {
-        throw new Error(bountyRes.message || "Failed to initialize bounty")
+      if (!bountyRes) {
+        throw new Error("Failed to initialize bounty")
       }
 
-      const newBountyId = bountyRes.data.id
+      const newBountyId = bountyRes.id
       setBountyId(newBountyId)
+
 
       // 2. Submit Stellar Transaction
       const receiverAddress = product.supplier?.stellarWallet || ""
@@ -150,8 +151,9 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
         paymentMethod: "INTERNAL" // Backend maps INTERNAL/MANAGED_WALLET to server-side signing
       })
 
-      if (!bountyRes.success) throw new Error(bountyRes.message || "Failed to initialize bounty")
-      const newBountyId = bountyRes.data.id
+      if (!bountyRes) throw new Error("Failed to initialize bounty")
+      const newBountyId = bountyRes.id
+
 
       // 2. Verify Payment (Backend handles the actual deduction/signing for INTERNAL)
       // @ts-ignore
@@ -161,9 +163,10 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
         paymentMethod: "INTERNAL"
       })
 
-      if (!res.success) throw new Error(res.message || "Managed wallet payment failed")
+      if (!res) throw new Error("Managed wallet payment failed")
 
-      setTxHash(res.data.transactionHash || "internal_ledger_settled")
+      setTxHash(res.transactionHash || "internal_ledger_settled")
+
       setStep("success")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Managed wallet process failed")
@@ -193,7 +196,8 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
         productId: product.id
       })
 
-      if (!initRes.success) throw new Error(initRes.message || "UPI initialization failed")
+      if (!initRes) throw new Error("UPI initialization failed")
+
 
       // 2. Create Bounty with UPI Payment Method
       const bountyRes = await createBounty({
@@ -205,8 +209,9 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
         paymentMethod: "UPI"
       })
 
-      if (!bountyRes.success) throw new Error(bountyRes.message || "Failed to initialize bounty")
-      const newBountyId = bountyRes.data.id
+      if (!bountyRes) throw new Error("Failed to initialize bounty")
+      const newBountyId = bountyRes.id
+
 
       // 3. Verify Payment
       const mockHash = `upi_bounty_${initRes.data?.razorpayOrderId || Math.random().toString(36).slice(2)}`

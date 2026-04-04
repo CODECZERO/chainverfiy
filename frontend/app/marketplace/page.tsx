@@ -37,17 +37,8 @@ export default function MarketplacePage() {
           getUsdcInrRate()
         ])
         
-        // After ApiResponse unwrap, items is { products: [...], total, page } or an array
-        let validItems: any[] = [];
-        if (Array.isArray(items)) {
-          validItems = items;
-        } else if (Array.isArray(items?.products)) {
-          validItems = items.products;
-        } else if (Array.isArray(items?.data?.products)) {
-          validItems = items.data.products;
-        } else if (Array.isArray(items?.data)) {
-          validItems = items.data;
-        }
+        // getTasks now returns the unwrapped array or object from api-service
+        const validItems = Array.isArray(items) ? items : (items?.products || items?.data || []);
         
         setTasks(validItems)
         setUsdcInr(rate)
@@ -57,6 +48,7 @@ export default function MarketplacePage() {
         setLoading(false)
       }
     }
+
     fetchData()
   }, [])
 
@@ -103,14 +95,15 @@ export default function MarketplacePage() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-10 bg-indigo-500/40" />
-                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.5em] italic">Verified Inventory</span>
+                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.5em]">Verified Inventory</span>
               </div>
-              <h1 className={`${outfit.className} text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 uppercase italic`}>
+              <h1 className={`${outfit.className} text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 uppercase`}>
                 Global <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Marketplace</span>
               </h1>
               <p className="text-xl text-slate-400 leading-relaxed font-light">
                 Browse authentic products anchored to the Stellar blockchain. Every item listed is verified by decentralized community nodes.
               </p>
+
             </motion.div>
             
             <motion.div 
@@ -124,8 +117,9 @@ export default function MarketplacePage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by product or supplier..." 
-                  className="pl-12 h-14 bg-white/[0.03] border-white/10 rounded-2xl focus:ring-indigo-500/20 text-sm italic"
+                  className="pl-12 h-14 bg-white/[0.03] border-white/10 rounded-2xl focus:ring-indigo-500/20 text-sm"
                 />
+
               </div>
               <div className="flex gap-3">
                  <div className="flex-1 px-6 py-3 rounded-xl bg-indigo-500/5 border border-indigo-500/10 flex items-center justify-between">
@@ -150,7 +144,7 @@ export default function MarketplacePage() {
                 transition={{ delay: idx * 0.05 }}
                 onClick={() => setActiveFilters(prev => ({ ...prev, category: cat }))}
                 className={cn(
-                  "px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border italic",
+                  "px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border",
                   activeFilters.category === cat 
                     ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.3)]" 
                     : "bg-white/[0.02] border-white/[0.05] text-slate-500 hover:text-slate-200 hover:bg-white/[0.05]"
@@ -158,6 +152,7 @@ export default function MarketplacePage() {
               >
                 {cat}
               </motion.button>
+
             ))}
           </div>
 
@@ -194,8 +189,9 @@ export default function MarketplacePage() {
                 <div className="w-24 h-24 rounded-[2rem] bg-white/[0.02] flex items-center justify-center mb-8 border border-white/5">
                   <Sparkles className="w-12 h-12 text-slate-700" />
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-4 italic uppercase tracking-tighter">Inventory Null</h3>
+                <h3 className="text-3xl font-bold text-white mb-4 uppercase tracking-tighter">Inventory Null</h3>
                 <p className="text-slate-500 max-w-sm mx-auto font-light text-lg">No authentic products found matching your active filter criteria.</p>
+
               </motion.div>
             )}
           </div>

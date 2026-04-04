@@ -10,6 +10,8 @@ import Image from "next/image"
 import { getIPFSUrl } from "@/lib/image-utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { getCommunityQueue, getCommunityHistory, getTokenBalance, voteProduct } from "@/lib/api-service"
+
 
 interface PendingProduct {
   id: string
@@ -52,28 +54,17 @@ export default function VerifyPage() {
 
   const loadTokens = async (identifier: string) => {
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/products/tokens/" + identifier, {
-        headers: {
-          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
-        },
-        credentials: "include"
-      });
-      const data = await res.json();
-      if (data.data?.balance !== undefined) setTokenBalance(data.data.balance);
+      const data = await getTokenBalance(identifier)
+      if (data?.balance !== undefined) setTokenBalance(data.balance);
     } catch { }
   }
+
 
   const loadHistory = async (identifier: string) => {
     setHistoryLoading(true);
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/community/history/" + identifier, {
-        headers: {
-          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
-        },
-        credentials: "include"
-      });
-      const data = await res.json();
-      setHistory(data.data || []);
+      const data = await getCommunityHistory(identifier)
+      setHistory(data || []);
     } catch {
       setHistory([]);
     } finally {
@@ -81,15 +72,11 @@ export default function VerifyPage() {
     }
   }
 
+
   const loadQueue = async () => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const url = new URL(baseUrl + "/community/queue");
-      if (user?.id) url.searchParams.append("userId", user.id);
-
-      const res = await fetch(url.toString())
-      const data = await res.json()
-      setQueue(data.data || [])
+      const data = await getCommunityQueue(user?.id)
+      setQueue(data || [])
     } catch {
       setQueue([])
     } finally {
@@ -97,28 +84,21 @@ export default function VerifyPage() {
     }
   }
 
-  const castVote = async (productId: string, voteType: "REAL" | "FAKE" | "NEEDS_MORE_PROOF") => {
+
+  const castVoteAction = async (productId: string, voteType: "REAL" | "FAKE" | "NEEDS_MORE_PROOF") => {
     try {
       const identifier = user?.id || wallet.publicKey;
       if (!identifier) return
 
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "") + "/products/" + productId + "/vote", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + (localStorage.getItem("accessToken") || "")
-        },
-        body: JSON.stringify({ 
-          userId: user?.id, 
-          stellarWallet: wallet.publicKey,
-          voteType, 
-          reason: "" 
-        }),
-        credentials: "include"
+      const res = await voteProduct(productId, { 
+        userId: user?.id, 
+        stellarWallet: wallet.publicKey,
+        voteType, 
+        reason: "" 
       })
-      if (!res.ok) {
-        const error = await res.json();
-        alert(error.message || "Protocol rejection: Insufficient authorization or stake.");
+      
+      if (!res) {
+        alert("Protocol rejection: Insufficient authorization or stake.");
         return;
       }
 
@@ -127,6 +107,7 @@ export default function VerifyPage() {
     setVotes(prev => ({ ...prev, [productId]: voteType }))
     setTokensEarned(t => t + 1)
   }
+
 
   const remaining = queue.filter(p => !votes[p.id])
 
@@ -335,7 +316,8 @@ export default function VerifyPage() {
                           ].map((vote) => (
                             <button
                               key={vote.id} disabled={disabled}
-                              onClick={() => castVote(p.id, vote.id as any)}
+                              onClick={() => castVoteAction(p.id, vote.id as any)}
+
                               className={cn(
                                 "flex-1 md:flex-none flex items-center justify-center gap-4 rounded-[1.75rem] px-6 md:px-10 py-5 md:py-6 text-[10px] font-display font-black uppercase tracking-[0.3em] transition-all h-16 md:h-20 min-w-full sm:min-w-[200px] border shadow-2xl italic",
                                 disabled ? "opacity-20 cursor-not-allowed bg-white/5 border-white/10 text-slate-600" : vote.cls

@@ -35,7 +35,7 @@ export default function CommunityPage() {
   const fetchDiscussions = async () => {
     try {
       const res = await getDiscussions()
-      if (res.success) setDiscussions(res.data)
+      if (res) setDiscussions(res)
     } catch (error) {
       console.error(error)
     }
@@ -46,7 +46,7 @@ export default function CommunityPage() {
     try {
       const { getJoinedCommunities } = await import("@/lib/api-service")
       const res = await getJoinedCommunities()
-      if (res.success) setJoinedNodes(res.data)
+      if (res) setJoinedNodes(res)
     } catch (error) {
       console.error(error)
     }
@@ -78,7 +78,7 @@ export default function CommunityPage() {
         authorWallet: !isAuthenticated ? publicKey || undefined : undefined,
         tags: newTopic.tags.split(",").map(t => t.trim()).filter(Boolean)
       })
-      if (res.success) {
+      if (res) {
         setNewTopic({ title: "", content: "", tags: "" })
         setShowCreateModal(false)
         fetchDiscussions()

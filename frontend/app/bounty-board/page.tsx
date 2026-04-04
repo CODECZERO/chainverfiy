@@ -58,10 +58,19 @@ export default function BountyBoardPage() {
 
   useEffect(() => {
     getAllBounties().then(res => {
-      // res is now the unwrapped data array
-      if (res && Array.isArray(res)) setRealBounties(res)
+      // res is now the unwrapped data array from api-service
+      if (res && Array.isArray(res)) {
+        setRealBounties(res)
+      } else if (res && typeof res === 'object') {
+        // Fallback for cases where it's wrapped in { bounties: [...] } or { data: [...] }
+        const bounties = res.bounties || res.data || [];
+        if (Array.isArray(bounties)) setRealBounties(bounties);
+      }
       setLoading(false)
-    }).catch(() => setLoading(false))
+    }).catch((err) => {
+      console.error("Failed to load bounties:", err)
+      setLoading(false)
+    })
   }, [])
 
   const filteredBounties = useMemo(() => {

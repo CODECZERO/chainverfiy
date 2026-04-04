@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Header } from "@/components/header"
 import { Trophy, Star, ShieldCheck, TrendingUp, Medal, Sparkles, ArrowRight, Activity, Zap } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { getLeaderboard, getStats } from "@/lib/api-service"
+
 
 const RANK_STYLES: Record<number, string> = {
   1: "bg-amber-500/10 border-amber-500/30 shadow-[0_0_40px_rgba(245,158,11,0.1)]",
@@ -39,14 +41,10 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/community/leaderboard`)
-      .then(r => {
-        if (!r.ok || r.status === 204) return { data: [] }
-        return r.json()
-      })
-      .then(res => {
-        if (res.data?.length) {
-          const mapped = res.data.map((l: any, i: number) => ({
+    getLeaderboard()
+      .then(data => {
+        if (data?.length) {
+          const mapped = data.map((l: any, i: number) => ({
             rank: i + 1,
             name: l.user?.name || `Verifier ${i+1}`,
             tokens: l.tokens,
@@ -62,22 +60,19 @@ export default function LeaderboardPage() {
       .catch(() => setLeaders([]))
       .finally(() => setLoading(false))
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/stats`)
-      .then(r => {
-        if (!r.ok || r.status === 204) return { data: null }
-        return r.json()
-      })
-      .then(res => {
-        if (res.data) {
+    getStats()
+      .then(data => {
+        if (data) {
           setStats({
-            verifiers: res.data.totalSuppliers || 0,
-            products: res.data.verifiedProducts || 0,
-            tokens: `${res.data.totalTrustTokens || 0}`
+            verifiers: data.totalSuppliers || 0,
+            products: data.verifiedProducts || 0,
+            tokens: `${data.totalTrustTokens || 0}`
           })
         }
       })
       .catch(() => {})
   }, [])
+
 
   return (
     <div className="min-h-screen bg-[#020408] text-foreground pb-32 selection:bg-blue-500/30 selection:text-blue-200">

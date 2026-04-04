@@ -16,6 +16,9 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog"
+import { Outfit } from "next/font/google"
+
+const outfit = Outfit({ subsets: ["latin"] })
 
 const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: ReactNode }> = {
   VERIFIED: {
@@ -90,12 +93,12 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         ) : (
           <div className="flex flex-col items-center justify-center h-full gap-3 opacity-20 group-hover:opacity-40 transition-opacity">
             <Package className="w-12 h-12 text-slate-400" />
-            <span className="text-[10px] font-display font-black uppercase tracking-widest text-slate-500 italic">No Media Protocol</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">No Media</span>
           </div>
         )}
         
         <div className="absolute top-4 right-4 z-20">
-          <Badge className="gap-1.5 h-7 px-3 text-[8px] font-display font-black uppercase tracking-widest italic rounded-lg bg-[#030408]/60 backdrop-blur-md border-white/10 text-white">
+          <Badge className="gap-1.5 h-7 px-3 text-[8px] font-bold uppercase tracking-wider rounded-lg bg-black/60 backdrop-blur-md border-white/10 text-white">
             <span className={status === "VERIFIED" ? "text-emerald-400" : status === "FLAGGED" ? "text-red-400" : "text-indigo-400"}>
                {config.icon}
             </span>
@@ -104,7 +107,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
 
         {task.category && (
-          <div className="absolute top-4 left-4 bg-indigo-600/10 backdrop-blur-md text-indigo-400 border border-indigo-500/20 rounded-lg px-3 py-1.5 text-[8px] font-display font-black uppercase tracking-widest italic z-20">
+          <div className="absolute top-4 left-4 bg-indigo-600/10 backdrop-blur-md text-indigo-400 border border-indigo-500/20 rounded-lg px-3 py-1.5 text-[8px] font-bold uppercase tracking-wider z-20">
             {String(task.category)}
           </div>
         )}
@@ -122,12 +125,12 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
       {/* ── Data Layer ── */}
       <div className="px-7 pb-8 pt-2 flex flex-col flex-1">
         <div className="flex justify-between items-start gap-4 mb-3">
-          <h3 className="text-xl font-display font-black text-white italic uppercase tracking-tighter leading-tight group-hover:text-indigo-400 transition-colors line-clamp-1">
-            {String(title || "UNALLOCATED ASSET")}
+          <h3 className={`${outfit.className} text-xl font-bold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors line-clamp-1`}>
+            {String(title || "Unallocated Asset")}
           </h3>
           <div className="flex flex-col items-end shrink-0">
-             <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Trust Score</span>
-             <span className="text-xs font-black text-emerald-400 italic font-mono font-bold">
+             <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Trust Score</span>
+             <span className="text-xs font-bold text-emerald-400 font-mono">
                {task.supplier?.trustScore || 85}%
              </span>
           </div>
@@ -135,7 +138,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         
         <div className="flex items-center gap-2 mb-6">
           <Globe className="w-3.5 h-3.5 text-indigo-500/60" />
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate">
+          <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider truncate">
             {task.supplier?.name || "Independent"} · {task.supplier?.location || "Global Network"}
           </span>
         </div>
@@ -144,16 +147,16 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         <div className="mt-auto relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 mb-8 group-hover:border-indigo-500/30 group-hover:bg-indigo-600/[0.02] transition-all overflow-hidden">
            <div className="relative z-10 flex items-center justify-between">
               <div className="flex flex-col">
-                 <span className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Asset Value (INR)</span>
-                 <span className="text-2xl font-display font-black text-white italic tracking-tighter">
+                 <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Asset Value (INR)</span>
+                 <span className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>
                    ₹{Number(priceInr).toLocaleString()}
                  </span>
               </div>
               <div className="h-10 w-px bg-white/5 mx-2" />
               <div className="flex flex-col items-end">
-                 <span className="text-[8px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-1">STABLE (USDC)</span>
-                 <span className="text-[13px] font-mono font-black text-indigo-400 italic">
-                   {Number(usdcPrice).toFixed(2)}
+                 <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-wider mb-1">Stable (USDC)</span>
+                 <span className="text-[13px] font-mono font-medium text-indigo-400">
+                    {Number(usdcPrice).toFixed(2)}
                  </span>
               </div>
            </div>
@@ -162,7 +165,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
 
         {/* Consensus Meter */}
         <div className="space-y-2 mb-8">
-           <div className="flex justify-between text-[8px] font-black uppercase tracking-widest italic font-display">
+           <div className="flex justify-between text-[8px] font-bold uppercase tracking-wider">
               <span className="text-emerald-500">{voteReal} VALIDATED</span>
               <span className="text-slate-600">{voteFake} DISPUTED</span>
            </div>
@@ -176,7 +179,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
 
         <Link href={`/product/${id}`} className="block">
-          <Button className="w-full h-12 rounded-xl bg-white text-black hover:bg-slate-200 font-display font-black uppercase tracking-widest italic text-[9px] shadow-2xl transition-all active:scale-[0.98] group/btn">
+          <Button className={`${outfit.className} w-full h-12 rounded-xl bg-white text-black hover:bg-slate-200 font-bold uppercase tracking-wider text-[10px] shadow-2xl transition-all active:scale-[0.98] group/btn`}>
             <Search className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" /> Access Data Stream
           </Button>
         </Link>
@@ -194,15 +197,15 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
       {/* ── Node Access Point ── */}
       <Dialog open={showQR} onOpenChange={setShowQR}>
         <DialogContent className="max-w-md bg-[#030408]/98 backdrop-blur-3xl border border-white/[0.1] rounded-[2.5rem] p-12 flex flex-col items-center">
-            <div className="text-[9px] font-display font-black text-slate-500 uppercase tracking-[0.6em] mb-10 italic">On-Chain Identifier</div>
+            <div className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.4em] mb-10">On-Chain Identifier</div>
             <div className="relative w-72 h-72 bg-white p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.4)] mb-10 group/qr overflow-hidden">
               {qrCodeUrl && <Image src={qrCodeUrl} alt="Node ID" fill className="object-contain p-6 group-hover/qr:scale-105 transition-transform duration-700" />}
             </div>
-            <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest leading-relaxed italic mb-12 px-6">
+            <p className="text-[10px] font-medium text-slate-400 text-center uppercase tracking-widest leading-relaxed mb-12 px-6">
               Cryptographic proof of authenticity secured on the <span className="text-indigo-400">Stellar Ledger Protocol</span>.
             </p>
             <Button 
-               className="w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-display font-black uppercase tracking-widest text-[10px] italic shadow-2xl transition-all hover:translate-y-[-2px] active:translate-y-0"
+               className={`${outfit.className} w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-[10px] shadow-2xl transition-all hover:translate-y-[-2px] active:translate-y-0`}
                onClick={() => {
                  if (qrCodeUrl) {
                    const link = document.createElement('a');

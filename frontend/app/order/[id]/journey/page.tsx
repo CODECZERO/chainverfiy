@@ -11,6 +11,8 @@ import type { RootState } from "@/lib/redux/store"
 import dynamic from 'next/dynamic'
 import { JourneyTimelineRow } from '@/components/journey-timeline-row'
 import { detectDeviceType, detectOS, detectBrowser } from '@/lib/qr-utils'
+import { getOrder, registerQRScan, updateQRLocation } from "@/lib/api-service"
+
 
 const JourneyMap = dynamic(() => import('@/components/journey-map'), {
   ssr: false,
@@ -42,10 +44,9 @@ export default function OrderJourneyPage() {
       if (lastFetchedRef.current === id) return
       lastFetchedRef.current = id as string
       try {
-        const res = await fetch(`${api}/orders/${id}`)
-        const data = await res.json()
-        if (data.success) {
-          setOrder(data.data)
+        const data = await getOrder(id as string)
+        if (data) {
+          setOrder(data)
         }
       } catch (e) {
         console.error("Failed to fetch order", e)
@@ -55,38 +56,32 @@ export default function OrderJourneyPage() {
     }
     fetchOrder()
 
+
     // Fire telemetry event on load (non-blocking, non-critical)
     if (scanFired.current) return
     scanFired.current = true
 
     ;(async () => {
       try {
-        const scanRes = await fetch(`${api}/qr/scan`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            shortCode: id,
-            clientTimestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            deviceType: detectDeviceType(navigator.userAgent),
-            os: detectOS(navigator.userAgent),
-            browser: detectBrowser(navigator.userAgent),
-            screenResolution: `${screen.width}x${screen.height}`,
-            language: navigator.language,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            connectionType: (navigator as any).connection?.effectiveType || 'unknown',
-            referrer: document.referrer || 'direct',
-            isOnline: navigator.onLine,
-            locationPermission: 'unavailable',
-            walletConnected: false,
-            viewType: 'public_journey',
-          }),
-          keepalive: true,
+        const result = await registerQRScan({
+          shortCode: id,
+          clientTimestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          deviceType: detectDeviceType(navigator.userAgent),
+          os: detectOS(navigator.userAgent),
+          browser: detectBrowser(navigator.userAgent),
+          screenResolution: `${screen.width}x${screen.height}`,
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          connectionType: (navigator as any).connection?.effectiveType || 'unknown',
+          referrer: document.referrer || 'direct',
+          isOnline: navigator.onLine,
+          locationPermission: 'unavailable',
+          walletConnected: false,
+          viewType: 'public_journey',
         })
-        if (!scanRes.ok) return
-        const result = await scanRes.json()
-        if (result.success && result.data?.scanId) {
-           const scanId = result.data.scanId
+        if (result?._success && result?.scanId) {
+           const scanId = result.scanId
            // Auto-trigger only if user previously consented in this session
            if (localStorage.getItem('qr_location_consent') === 'true') {
              performGeolocation(scanId)
@@ -94,6 +89,7 @@ export default function OrderJourneyPage() {
         }
       } catch { /* telemetry is non-critical */ }
     })()
+
   }, [id, api])
 
   // Verification Logic
@@ -109,21 +105,17 @@ export default function OrderJourneyPage() {
     setSharingLocation(true)
     navigator.geolocation.getCurrentPosition(
       pos => {
-        fetch(`${api}/qr/scan/${scanId}/location`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            gpsLat: pos.coords.latitude,
-            gpsLng: pos.coords.longitude,
-            gpsAccuracy: pos.coords.accuracy,
-            gpsAltitude: pos.coords.altitude,
-          }),
-          keepalive: true,
+        updateQRLocation(scanId, {
+          gpsLat: pos.coords.latitude,
+          gpsLng: pos.coords.longitude,
+          gpsAccuracy: pos.coords.accuracy,
+          gpsAltitude: pos.coords.altitude,
         }).then(() => {
           setLocationShared(true)
           setSharingLocation(false)
           localStorage.setItem('qr_location_consent', 'true')
         })
+
       },
       () => setSharingLocation(false),
       { timeout: 15000, maximumAge: 60000, enableHighAccuracy: true }

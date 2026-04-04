@@ -50,9 +50,10 @@ export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitP
         proofCid: proofMediaUrl // Mapping URL to CID for simplicity in dev
       })
 
-      if (!res.success) {
-        throw new Error(res.message || "Failed to submit proof")
+      if (!res) {
+        throw new Error("Failed to submit proof")
       }
+
 
       setStep("success")
       setTimeout(() => {

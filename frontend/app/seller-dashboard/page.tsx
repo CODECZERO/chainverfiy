@@ -27,7 +27,12 @@ import { WhatsappSetupView } from "@/components/dashboard/whatsapp-setup-view"
 import { 
   getWhatsappStatus, 
   registerMachine, 
-  getExchangeRates 
+  getExchangeRates,
+  getSupplierProducts,
+  getSupplierOrders,
+  getSupplierAnalytics,
+  getSupplierBounties,
+  dispatchOrder
 } from "@/lib/api-service"
 import { Outfit, Inter } from "next/font/google"
 
@@ -110,61 +115,55 @@ export default function SellerDashboard() {
   useEffect(() => { loadAll() }, [sid])
 
   const loadAll = async () => {
+    if (!sid) return
     setLoading(true)
     try {
-      if (sid) {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-        const headers: Record<string, string> = { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
-        const opts: RequestInit = { credentials: "include", headers }
-        const [prodRes, ordRes, anRes, bntRes] = await Promise.all([
-          fetch(`${api}/suppliers/${sid}/products`, opts),
-          fetch(`${api}/donations/supplier/${sid}`, opts),
-          fetch(`${api}/suppliers/${sid}/analytics`, opts),
-          fetch(`${api}/bounties/supplier/${sid}`, opts)
-        ])
-        const prods = (await prodRes.json()).data || []
-        const ords  = (await ordRes.json()).data  || []
-        const analyticsData = (await anRes.json()).data || null
-        const bnts  = (await bntRes.json()).data || []
-        setProducts(prods)
-        setOrders(ords)
-        setBounties(bnts)
-        const completed = ords.filter((o: any) => o.status === "COMPLETED")
-        const shippedHalf = ords.filter((o: any) => o.status === "SHIPPED" || o.status === "DELIVERED")
-        
-        const completedUsdc = completed.reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
-        const shippedHalfUsdc = shippedHalf.reduce((s: number, o: any) => s + (Number(o.priceUsdc || 0) / 2), 0)
-        const totalUsdc = completedUsdc + shippedHalfUsdc
-        const withdrawableUsdc = ords.filter((o: any) => o.status === "COMPLETED" || o.status === "DELIVERED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
-        const pendingUsdc = ords.filter((o: any) => o.status === "PAID" || o.status === "SHIPPED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+      const [prods, ords, analyticsData, bnts] = await Promise.all([
+        getSupplierProducts(sid),
+        getSupplierOrders(sid),
+        getSupplierAnalytics(sid),
+        getSupplierBounties(sid)
+      ])
 
-        setStats({
-          active:       prods.filter((p: any) => p.status === "VERIFIED").length,
-          pending:      prods.filter((p: any) => p.status === "PENDING_VERIFICATION").length,
-          flagged:      prods.filter((p: any) => p.status === "FLAGGED").length,
-          totalSales:   completed.length,
-          usdcBalance:  totalUsdc.toFixed(4),
-          usdtBalance:  "0.0000",
-          xlmBalance:   "0.00",
-          usdcInr:      (totalUsdc * 85).toFixed(0),
-          withdrawableInr: Number((withdrawableUsdc * 85).toFixed(0)),
-          totalEarningsInr: Number(((withdrawableUsdc + pendingUsdc) * 85).toFixed(0)),
-          pendingEarningsInr: Number((pendingUsdc * 85).toFixed(0)),
-          analytics:    analyticsData
-        })
-      }
-    } catch {}
-    setLoading(false)
+      setProducts(prods || [])
+      setOrders(ords || [])
+      setBounties(bnts || [])
+      
+      const ordersArray = ords || []
+      const completed = ordersArray.filter((o: any) => o.status === "COMPLETED")
+      const shippedHalf = ordersArray.filter((o: any) => o.status === "SHIPPED" || o.status === "DELIVERED")
+      
+      const completedUsdc = completed.reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+      const shippedHalfUsdc = shippedHalf.reduce((s: number, o: any) => s + (Number(o.priceUsdc || 0) / 2), 0)
+      const totalUsdc = completedUsdc + shippedHalfUsdc
+      const withdrawableUsdc = ordersArray.filter((o: any) => o.status === "COMPLETED" || o.status === "DELIVERED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+      const pendingUsdc = ordersArray.filter((o: any) => o.status === "PAID" || o.status === "SHIPPED").reduce((s: number, o: any) => s + Number(o.priceUsdc || 0), 0)
+
+      setStats({
+        active:       (prods || []).filter((p: any) => p.status === "VERIFIED").length,
+        pending:      (prods || []).filter((p: any) => p.status === "PENDING_VERIFICATION").length,
+        flagged:      (prods || []).filter((p: any) => p.status === "FLAGGED").length,
+        totalSales:   completed.length,
+        usdcBalance:  totalUsdc.toFixed(4),
+        usdtBalance:  "0.0000",
+        xlmBalance:   "0.00",
+        usdcInr:      (totalUsdc * 85).toFixed(0),
+        withdrawableInr: Number((withdrawableUsdc * 85).toFixed(0)),
+        totalEarningsInr: Number(((withdrawableUsdc + pendingUsdc) * 85).toFixed(0)),
+        pendingEarningsInr: Number((pendingUsdc * 85).toFixed(0)),
+        analytics:    analyticsData
+      })
+    } catch (err) {
+      console.error("[SellerDashboard] Failed to load data:", err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleDispatch = async (orderId: string) => {
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-      const res = await fetch(`${api}/orders/${orderId}/dispatch`, {
-        method: "PATCH",
-        headers: { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
-      });
-      if (res.ok) {
+      const res = await dispatchOrder(orderId);
+      if (res) {
         loadAll();
       }
     } catch (e) {

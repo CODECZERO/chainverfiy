@@ -6,6 +6,8 @@ import { ProductCard } from "@/components/product-card"
 import { MessageCircle, CheckCircle2, MapPin, Calendar, Package, AlertTriangle, ShieldCheck, Star, Activity, Globe, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { getSupplier, getSupplierProducts, flagSupplier } from "@/lib/api-service"
+
 
 export default function SupplierProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params)
@@ -19,14 +21,12 @@ export default function SupplierProfilePage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const [profRes, prodRes] = await Promise.all([
-          fetch(`${api}/suppliers/${id}`),
-          fetch(`${api}/suppliers/${id}/products`)
+        const [prof, prods] = await Promise.all([
+          getSupplier(id),
+          getSupplierProducts(id)
         ])
-        const prof = await profRes.json()
-        const prods = (await prodRes.json()).data || []
-        setProfile(prof.data || prof)
-        setProducts(prods)
+        setProfile(prof)
+        setProducts(prods || [])
       } catch (e) {
         console.error("Failed to load supplier", e)
       } finally {
@@ -34,7 +34,7 @@ export default function SupplierProfilePage({ params }: { params: Promise<{ id: 
       }
     }
     fetchProfile()
-  }, [id, api])
+  }, [id])
 
   const handleFlagSupplier = async () => {
     if (!profile || flagging) return;
@@ -42,11 +42,9 @@ export default function SupplierProfilePage({ params }: { params: Promise<{ id: 
     
     setFlagging(true);
     try {
-      const res = await fetch(`${api}/suppliers/${id}/flag`, {
-        method: 'POST'
-      });
+      const res = await flagSupplier(id);
       
-      if (res.ok) {
+      if (res) {
         alert("Violation reported successfully.");
         setProfile((prev: any) => ({ ...prev, flagCount: (prev.flagCount || 0) + 1 }));
       } else {

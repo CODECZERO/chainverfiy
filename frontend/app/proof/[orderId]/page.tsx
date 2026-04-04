@@ -6,6 +6,8 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/lib/redux/store"
 import { detectDeviceType, detectOS, detectBrowser, countryToFlag, truncateWallet } from "@/lib/qr-utils"
 import { ExternalLink, Shield, MapPin, Clock, Wifi, WifiOff, AlertTriangle, Package, CheckCircle2, Activity, Eye } from "lucide-react"
+import { registerQRScan, getQRJourney, updateQRLocation } from "@/lib/api-service"
+
 
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon }: { label: string; value: string | number; icon?: string }) {
@@ -103,27 +105,21 @@ export default function ProofPage() {
       viewType,
     }
 
-    fetch(`${api}/qr/scan`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(scanData),
-      keepalive: true,
-    })
-      .then(r => r.json())
+    registerQRScan(scanData)
       .then(result => {
-        if (result.success && result.data?.scanId) {
+        if (result?._success && result?.scanId) {
            // Auto-trigger only if user previously consented in this session
            if (localStorage.getItem('qr_location_consent') === 'true') {
-             performGeolocation(result.data.scanId)
+             performGeolocation(result.scanId)
            }
         }
       })
       .catch(() => {})
 
-    fetch(`${api}/qr/${shortCode}/journey`)
-      .then(r => r.json())
-      .then(d => { setJourney(d.data); setLoading(false) })
+    getQRJourney(shortCode as string)
+      .then(d => { setJourney(d); setLoading(false) })
       .catch(() => setLoading(false))
+
   }, [searchParams])
 
   // Effect 2: Fetch journey by orderId when no ?qr= param (Event Logs / Dashboard links)
@@ -133,15 +129,15 @@ export default function ProofPage() {
     if (!orderId) return
 
     setLoading(true)
-    fetch(`${api}/qr/${orderId}/journey`)
-      .then(r => r.json())
+    getQRJourney(orderId)
       .then(d => {
-        if (d.success && d.data) {
-          setJourney(d.data)
+        if (d) {
+          setJourney(d)
         }
         setLoading(false)
       })
       .catch(() => setLoading(false))
+
   }, [orderId, searchParams])
 
   const qr = journey?.qrCode
@@ -158,21 +154,17 @@ export default function ProofPage() {
     setSharingLocation(true)
     navigator.geolocation.getCurrentPosition(
       pos => {
-        fetch(`${api}/qr/scan/${scanId}/location`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            gpsLat: pos.coords.latitude,
-            gpsLng: pos.coords.longitude,
-            gpsAccuracy: pos.coords.accuracy,
-            gpsAltitude: pos.coords.altitude,
-          }),
-          keepalive: true,
+        updateQRLocation(scanId, {
+          gpsLat: pos.coords.latitude,
+          gpsLng: pos.coords.longitude,
+          gpsAccuracy: pos.coords.accuracy,
+          gpsAltitude: pos.coords.altitude,
         }).then(() => {
           setLocationShared(true)
           setSharingLocation(false)
           localStorage.setItem('qr_location_consent', 'true')
         })
+
       },
       () => setSharingLocation(false),
       { timeout: 15000, maximumAge: 60000, enableHighAccuracy: true }

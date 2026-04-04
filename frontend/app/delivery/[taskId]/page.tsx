@@ -6,10 +6,10 @@ import { Header } from "@/components/header"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useWallet } from "@/lib/wallet-context"
-import { escrowContractService } from "@/lib/services/contracts/escrow.service"
-import { submitProofTransaction } from "@/lib/stellar-utils"
 import { WalletRequirement } from "@/components/wallet-requirement"
 import { Loader2, Camera, MapPin, UploadCloud } from "lucide-react"
+import { getEscrow, releaseEscrow, disputeEscrow, refundEscrow, buildRequestReturnTx, buildConfirmReturnTx, uploadToIpfs } from "@/lib/api-service"
+import { submitProofTransaction } from "@/lib/stellar-utils"
 
 export default function DeliveryVerificationPage() {
   const params = useParams()
@@ -28,9 +28,9 @@ export default function DeliveryVerificationPage() {
     async function fetchEscrow() {
       if (!taskId) return
       try {
-        const response = await escrowContractService.getEscrow(taskId)
-        if (response.success) {
-          setEscrow(response.data)
+        const data = await getEscrow(taskId)
+        if (data) {
+          setEscrow(data)
         }
       } catch (err) {
         console.error("Failed to load escrow:", err)
@@ -40,6 +40,7 @@ export default function DeliveryVerificationPage() {
     }
     fetchEscrow()
   }, [taskId])
+
 
   const handleCaptureLocation = () => {
     if ("geolocation" in navigator) {
@@ -64,13 +65,11 @@ export default function DeliveryVerificationPage() {
       // 1. Upload to IPFS. In production, this uses Pinata API.
       const formData = new FormData()
       formData.append('file', deliveryFile)
-      const ipfsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ipfs/upload`, {
-        method: 'POST',
-        body: formData
-      }).then(res => res.json())
       
-      if (!ipfsRes?.data?.cid) throw new Error("Failed to pin media to IPFS. Check Pinata credentials.")
-      const mockCid = ipfsRes.data.cid
+      const ipfsData = await uploadToIpfs(formData)
+      if (!ipfsData?.cid) throw new Error("Failed to pin media to IPFS. Check Pinata credentials.")
+      const mockCid = ipfsData.cid
+
       
       const payloadObj = {
         mediaCid: mockCid,
@@ -98,7 +97,7 @@ export default function DeliveryVerificationPage() {
   const handleReleaseEscrow = async () => {
     try {
       setLoading(true)
-      await escrowContractService.releaseEscrow(taskId)
+      await releaseEscrow(taskId)
       alert("Escrow released successfully!")
       window.location.reload()
     } catch (err: any) {
@@ -112,9 +111,9 @@ export default function DeliveryVerificationPage() {
     if (!publicKey) return
     try {
       setLoading(true)
-      const res = await escrowContractService.buildRequestReturnTx({ buyerPublicKey: publicKey, taskId })
-      if (res.data?.xdr) {
-        await signTransaction(res.data.xdr)
+      const res = await buildRequestReturnTx({ buyerPublicKey: publicKey, taskId })
+      if (res?.xdr) {
+        await signTransaction(res.xdr)
         alert("Return requested successfully!")
         window.location.reload()
       }
@@ -129,9 +128,9 @@ export default function DeliveryVerificationPage() {
     if (!publicKey) return
     try {
       setLoading(true)
-      const res = await escrowContractService.buildConfirmReturnTx({ supplierPublicKey: publicKey, taskId })
-      if (res.data?.xdr) {
-        await signTransaction(res.data.xdr)
+      const res = await buildConfirmReturnTx({ supplierPublicKey: publicKey, taskId })
+      if (res?.xdr) {
+        await signTransaction(res.xdr)
         alert("Return confirmed successfully! Refund issued.")
         window.location.reload()
       }
