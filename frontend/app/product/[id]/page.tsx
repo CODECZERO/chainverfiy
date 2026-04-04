@@ -15,7 +15,7 @@ import { BountyModal } from "@/components/bounty-modal"
 import { SubmitProofModal } from "@/components/submit-proof-modal"
 import { BuyerProfileModal } from "@/components/buyer-profile-modal"
 import { convertInrToUsdc, getUsdcInrRate } from "@/lib/exchange-rates"
-import { getBountiesByProduct } from "@/lib/api-service"
+import { getBountiesByProduct, getProduct, getVerificationStatus, getBuyerProfile, updateBuyerProfile, voteProduct } from "@/lib/api-service"
 import { useToast } from "@/components/ui/use-toast"
 import { getIPFSUrl } from "@/lib/image-utils"
 import { cn } from "@/lib/utils"
@@ -56,29 +56,29 @@ export default function ProductPage() {
 
   const loadProduct = async () => {
     try {
-      const productWalletQuery = publicKey ? `?wallet=${publicKey}` : ''
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}${productWalletQuery}`)
-      const data = await res.json()
-      setProduct(data.data)
+      // 1. Load basic product and bounties using standardized helpers
+      const [prodData, bountyRes, vRes] = await Promise.all([
+        getProduct(id as string),
+        getBountiesByProduct(id as string),
+        getVerificationStatus(id as string, publicKey || undefined)
+      ])
 
-      const bountyRes = await getBountiesByProduct(id as string)
-      if (bountyRes.success) setBounties(bountyRes.data)
-
-      const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-      const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {}
-      const statusWalletQuery = publicKey ? `&wallet=${publicKey}` : ''
-
-      const vRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/verification/status?productId=${id}${statusWalletQuery}`, {
-        headers: authHeader
-      })
-      const vData = await vRes.json()
-      if (vData.success) {
-        setIsVerifiedUserForThisProduct(vData.data.isVerified)
+      if (prodData) {
+        setProduct(prodData)
+        if (prodData.userHasVoted) setHasVoted(true)
       }
 
-      if (data.data.userHasVoted) setHasVoted(true)
+      // getBountiesByProduct now returns direct data array with .success prop attached
+      if (bountyRes) {
+        setBounties(Array.isArray(bountyRes) ? bountyRes : []);
+      }
+
+      // 2. Map verification status
+      if (vRes && vRes.isVerified) {
+        setIsVerifiedUserForThisProduct(true)
+      }
     } catch (e) {
-      console.error(e)
+      console.error("[ProductPage] Sync error:", e)
     } finally {
       setLoading(false)
     }
@@ -90,14 +90,9 @@ export default function ProductPage() {
       return
     }
     try {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/buyer`)
-      if (publicKey) url.searchParams.append('stellarWallet', publicKey)
-      const res = await fetch(url.toString(), {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
-      })
-      const data = await res.json()
-      if (data.success && data.data) {
-        setBuyerProfile(data.data)
+      const data = await getBuyerProfile(publicKey || undefined)
+      if (data && (data.id || data._id)) {
+        setBuyerProfile(data)
         setShowModal(true)
       } else {
         setShowProfileModal(true)
@@ -107,22 +102,15 @@ export default function ProductPage() {
     }
   }
 
-  const handleProfileSave = async (data: any) => {
+  const handleProfileSave = async (profileData: any) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/buyer`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken') || ''}` 
-        },
-        body: JSON.stringify({ ...data, stellarWallet: publicKey })
-      })
-      const json = await res.json()
-      if (json.success) {
-        setBuyerProfile(json.data)
+      const data = await updateBuyerProfile({ ...profileData, stellarWallet: publicKey })
+      if (data) {
+        setBuyerProfile(data)
         setShowProfileModal(false)
         setShowModal(true)
-      } else throw new Error(json.message)
+        toast({ title: "Profile Ready", description: "Your shipping details have been secured." })
+      }
     } catch (e: any) {
       toast({ title: "Save Failed", description: e.message || "Failed to save profile", variant: "destructive" })
     }
@@ -132,24 +120,14 @@ export default function ProductPage() {
     if (isVoting) return
     setIsVoting(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}/vote`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken') || ''}` 
-        },
-        body: JSON.stringify({ userId: user?.id, stellarWallet: publicKey, voteType })
-      })
-      const data = await res.json()
-      if (data.success) {
+      const data = await voteProduct(id as string, { userId: user?.id, stellarWallet: publicKey, voteType })
+      if (data) {
         setHasVoted(true)
         toast({ title: "Vote Cast Successfully", description: "Your contribution has been recorded on-chain." })
         loadProduct()
-      } else {
-        toast({ title: "Voting Failed", description: data.message, variant: "destructive" })
       }
     } catch (e: any) {
-      toast({ title: "Error", description: "Network error occurred while voting.", variant: "destructive" })
+      toast({ title: "Voting Error", description: e.message || "Network error occurred while voting.", variant: "destructive" })
     } finally {
       setIsVoting(false)
     }

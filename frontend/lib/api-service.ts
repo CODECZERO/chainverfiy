@@ -21,11 +21,17 @@ async function apiFetch(path: string, options?: RequestInit) {
   // Unwrap ApiResponse envelope: { statusCode, data, message, success }
   // Return the inner .data so callers get clean payloads
   if (json && typeof json === 'object' && 'success' in json && 'data' in json && 'statusCode' in json) {
-    // Attach success/message to the data for callers that need it
     const result = json.data;
-    if (result && typeof result === 'object' && !Array.isArray(result)) {
-      result._success = json.success;
-      result._message = json.message;
+    // Attach success/message to the data even for arrays (as hidden/extra props)
+    if (result && (typeof result === 'object' || Array.isArray(result))) {
+       try {
+         Object.defineProperty(result, '_success', { value: json.success, enumerable: false });
+         Object.defineProperty(result, '_message', { value: json.message, enumerable: false });
+         // For backward compatibility with existing code that checks .success
+         Object.defineProperty(result, 'success', { value: json.success, enumerable: false });
+       } catch (e) {
+         // Silently fail if object is frozen (e.g. some library objects)
+       }
     }
     return result;
   }
@@ -165,8 +171,11 @@ export const submitEscrowTx = (data: { signedXdr: string }) =>
 
 export const getSupplierOrders = () => apiFetch('/user/supplier/orders');
 
-export const getVerificationStatus = (productId?: string) => {
-  const q = productId ? `?productId=${productId}` : '';
+export const getVerificationStatus = (productId?: string, wallet?: string) => {
+  const params: any = {};
+  if (productId) params.productId = productId;
+  if (wallet) params.wallet = wallet;
+  const q = Object.keys(params).length ? '?' + new URLSearchParams(params).toString() : '';
   return apiFetch(`/verification/status${q}`);
 };
 
@@ -186,7 +195,10 @@ export const getWhatsappStatus = () => apiFetch('/whatsapp/status');
 export const getExchangeRates = () => apiFetch('/rates/all');
 
 // ─── Buyer Profile ───
-export const getBuyerProfile = () => apiFetch('/buyer');
+export const getBuyerProfile = (wallet?: string) => {
+  const q = wallet ? `?stellarWallet=${wallet}` : '';
+  return apiFetch(`/buyer${q}`);
+};
 export const updateBuyerProfile = (data: any) =>
   apiFetch('/buyer', { method: 'PUT', body: JSON.stringify(data) });
 

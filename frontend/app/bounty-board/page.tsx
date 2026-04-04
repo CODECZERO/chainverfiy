@@ -58,7 +58,8 @@ export default function BountyBoardPage() {
 
   useEffect(() => {
     getAllBounties().then(res => {
-      if (res.success) setRealBounties(res.data)
+      // res is now the unwrapped data array
+      if (res && Array.isArray(res)) setRealBounties(res)
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
