@@ -7,10 +7,8 @@ import { Header } from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import {
-  ShieldCheck, MessageCircle, Wallet, ArrowRight, ArrowUpRight,
-  Star, Users, Package, Zap, CheckCircle2, XCircle,
-  Globe, Lock, TrendingUp, Sparkles, Eye, Award,
-  MessageSquare, LayoutGrid, Activity, Clock
+  ShieldCheck, MessageCircle, ArrowRight, ArrowUpRight,
+  Users, CheckCircle2, Globe, Lock, Sparkles, Eye, Activity, Zap
 } from "lucide-react"
 import { getStats } from "@/lib/api-service"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
@@ -20,16 +18,16 @@ const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
 
 const TRUST_SIGNALS = [
-  { icon: <Lock className="w-4 h-4 text-blue-500" />, text: "Soroban Escrow" },
-  { icon: <Eye className="w-4 h-4 text-emerald-500" />, text: "Community Truth" },
-  { icon: <Globe className="w-4 h-4 text-purple-500" />, text: "Stellar Ledger" },
+  { icon: <Lock className="w-4 h-4 text-emerald-400" />, text: "Soroban Escrow" },
+  { icon: <Eye className="w-4 h-4 text-cyan-400" />, text: "Community Truth" },
+  { icon: <Globe className="w-4 h-4 text-indigo-400" />, text: "Stellar Ledger" },
 ]
 
 const STATS_CONFIG = [
   { key: "verifiedProducts", label: "Verified Assets", defaultValue: 0, suffix: "+", icon: <CheckCircle2 className="w-5 h-5 text-emerald-400" /> },
   { key: "totalSuppliers", label: "Global Suppliers", defaultValue: 0, suffix: "+", icon: <Users className="w-5 h-5 text-blue-400" /> },
   { key: "totalUsdcTransacted", label: "USDC Volume", defaultValue: 0, prefix: "$", suffix: "+", icon: <Activity className="w-5 h-5 text-purple-400" /> },
-  { key: "avgVerifyTime", label: "Verification Latency", defaultValue: 0, suffix: "h", icon: <Zap className="w-5 h-5 text-amber-400" /> },
+  { key: "avgVerifyTime", label: "Network Latency", defaultValue: 0, suffix: "h", icon: <Zap className="w-5 h-5 text-amber-400" /> },
 ]
 
 const FEATURES = [
@@ -81,214 +79,212 @@ function AnimatedCounter({ end, prefix = "", suffix = "" }: { end: number, prefi
       }
     }, 16)
     return () => clearInterval(timer)
-  }, [started, end])
+  }, [end, started])
 
   return (
     <span ref={ref} className="tabular-nums">
-      {prefix}{count.toLocaleString()}{suffix}
+      {prefix}{count.toLocaleString(undefined, { maximumFractionDigits: 1 })}{suffix}
     </span>
   )
 }
 
-export default function Home() {
-  const [stats, setStats] = useState<any>({})
-  const { scrollY } = useScroll()
-  const y1 = useTransform(scrollY, [0, 500], [0, -100])
-  const opacity = useTransform(scrollY, [0, 300], [1, 0])
+export default function LandingPage() {
+  const [stats, setStats] = useState<Record<string, number>>({})
+  const { scrollYProgress } = useScroll()
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
 
   useEffect(() => {
-    getStats().then(res => res.success && setStats(res.data)).catch(console.error)
+    getStats().then(setStats).catch(console.error)
   }, [])
 
   return (
-    <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden relative`}>
-      {/* ── Deep Space Atmospheric Effects ── */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
-      
+    <div className={`min-h-screen bg-[#05060A] text-slate-200 overflow-hidden selection:bg-indigo-500/30 ${inter.className}`}>
+      {/* ── Abstract Dynamic Background ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.div 
+          className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]"
+          animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div 
+          className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]"
+          animate={{ x: [0, -70, 0], y: [0, -40, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div 
+          className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px]"
+          animate={{ x: [0, 40, 0], y: [0, -50, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </div>
+
       <Header />
 
-      {/* ─── Hero Section ─── */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 px-8 overflow-hidden">
-        {/* Institutional Background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
-          <motion.div style={{ opacity }} className="absolute inset-0 bg-gradient-to-b from-blue-600/[0.02] to-transparent" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto text-center z-10">
+      <main className="relative z-10 pt-32 pb-24">
+        
+        {/* ── HERO SECTION ── */}
+        <section className="relative px-6 pt-16 pb-24 md:pt-32 md:pb-32 overflow-hidden max-w-7xl mx-auto flex flex-col items-center text-center">
+          
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center gap-4 mb-12"
-          >
-            {TRUST_SIGNALS.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-5 py-2.5 bg-[#0A0D14]/60 border border-white/5 rounded-2xl text-[10px] font-bold text-slate-500 backdrop-blur-3xl shadow-2xl">
-                {s.icon} {s.text}
-              </div>
-            ))}
-          </motion.div>
-
-          <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${outfit.className} text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-8 leading-tight`}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center"
           >
-            The Standard for <br/>
-            <span className="text-blue-500">Verified Commerce.</span>
-          </motion.h1>
+            {/* Live Data Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-8 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+              </span>
+              Stellar Mainnet Active
+            </div>
 
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
-          >
-            ChainVerify brings transparency to global trade using the Stellar blockchain. Secure verification and instant settlement for a modern economy.
-          </motion.p>
+            <h1 className={`${outfit.className} text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 leading-[1.1] mb-8`}>
+              The Architecture of<br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+                Absolute Trust.
+              </span>
+            </h1>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
-          >
-            <Link href="/marketplace" className="w-full sm:w-auto">
-              <Button className={`${outfit.className} w-full px-10 h-16 rounded-2xl text-[13px] font-semibold bg-white text-black hover:bg-slate-200 transition-all shadow-xl active:scale-95`}>
-                Browse Marketplace <ArrowRight className="w-4 h-4 ml-3" />
-              </Button>
-            </Link>
-            <Link href="/seller-dashboard" className="w-full sm:w-auto">
-              <Button variant="outline" className={`${outfit.className} w-full px-10 h-16 rounded-2xl text-[13px] font-semibold border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:text-white transition-all active:scale-95`}>
-                Supplier Dashboard
-              </Button>
-            </Link>
+            <p className="max-w-2xl text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-12">
+              ChainVerify anchors physical assets to the Stellar blockchain. Decentralized communities verify authenticity, while smart contracts hold payments securely in escrow.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 w-full max-w-md sm:max-w-none justify-center items-center">
+              <Link href="/marketplace" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-lg shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] transition-all hover:scale-105 active:scale-95 border border-indigo-400/20">
+                  <ShoppingBag className="w-5 h-5 mr-2" />
+                  Enter Marketplace
+                </Button>
+              </Link>
+              <Link href="/verify" className="w-full sm:w-auto mt-4 sm:mt-0">
+                <Button variant="outline" className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-md border-white/[0.1] text-white font-semibold text-lg transition-all hover:scale-105 active:scale-95">
+                  <ShieldCheck className="w-5 h-5 mr-2 text-emerald-400" />
+                  Verify & Earn
+                </Button>
+              </Link>
+            </div>
+
+            {/* Micro Trust Signals */}
+            <div className="mt-16 flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
+              {TRUST_SIGNALS.map((signal, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 + (i * 0.1) }}
+                  className="flex items-center gap-2 text-sm font-medium text-slate-400 bg-white/5 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/5"
+                >
+                  {signal.icon}
+                  {signal.text}
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── Institutional Stats Ledger ─── */}
-      <section className="relative border-y border-white/[0.04] bg-[#0A0D14]/40 backdrop-blur-xl z-20">
-        <div className="max-w-7xl mx-auto px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-20">
-            {STATS_CONFIG.map((s, i) => (
-              <div key={i} className="text-center group">
-                <div className="flex items-center justify-center gap-3 text-slate-500 text-xs font-semibold mb-3 group-hover:text-blue-400 transition-colors">
-                  {s.icon} {s.label}
-                </div>
-                <div className={`${outfit.className} text-3xl md:text-4xl font-bold text-white tabular-nums tracking-tight`}>
-                  <AnimatedCounter end={stats[s.key] || s.defaultValue} prefix={s.prefix} suffix={s.suffix} />
-                </div>
-              </div>
-            ))}
+        {/* ── METRICS GRID ── */}
+        <section className="relative px-6 py-20 border-y border-white/[0.05] bg-gradient-to-b from-transparent to-[#0A0C14]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8">
+              {STATS_CONFIG.map((config, index) => (
+                <motion.div
+                  key={config.key}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="relative group p-6 rounded-3xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-all overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-xl group-hover:scale-110 transition-transform">
+                      {config.icon}
+                    </div>
+                  </div>
+                  <div className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-1">
+                    <AnimatedCounter 
+                      end={stats[config.key] || config.defaultValue} 
+                      prefix={config.prefix} 
+                      suffix={config.suffix} 
+                    />
+                  </div>
+                  <p className="text-sm font-medium text-slate-500">{config.label}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── Protocol Features ─── */}
-      <section className="py-40 px-8 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-32">
-             <div className="inline-block px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold rounded-lg mb-6 shadow-2xl">
-                System Architecture
-             </div>
-            <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight`}>Built for <span className="text-blue-500">Certainty.</span></h2>
-            <p className="text-lg text-slate-500 max-w-xl mx-auto font-medium opacity-80">
-              We empower trade with digital proof and community verification.
+        {/* ── FEATURES GRID ── */}
+        <section className="relative px-6 py-32 max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className={`${outfit.className} text-4xl md:text-5xl font-bold tracking-tight text-white mb-6`}>
+              Verified Quality. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Trustless Settlement.</span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
+              By distributing verification across independent community nodes, ChainVerify eliminates single points of failure in the supply chain ecosystem.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
-            {FEATURES.map((f, i) => (
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {FEATURES.map((feature, index) => (
               <motion.div
-                key={i}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-700 shadow-3xl"
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative p-8 rounded-[2rem] bg-white/[0.02] border border-white/[0.05] overflow-hidden group hover:bg-white/[0.04] transition-all"
               >
-                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${f.color} opacity-0 group-hover:opacity-100 transition-opacity duration-1000`} />
-                <div className="mb-10 p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] w-fit group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-2xl">
-                  {f.icon}
+                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${feature.color} opacity-50 group-hover:opacity-100 transition-opacity`} />
+                
+                <div className="mb-6 inline-block p-4 rounded-2xl bg-white/5 backdrop-blur-md shadow-xl group-hover:scale-110 transition-transform">
+                  {feature.icon}
                 </div>
-                <h3 className={`${outfit.className} text-2xl font-bold text-white mb-4 tracking-tight`}>{f.title}</h3>
-                <p className="text-slate-500 leading-relaxed font-medium text-sm opacity-80">{f.desc}</p>
+                
+                <h3 className="text-xl font-bold text-white mb-4 tracking-tight">{feature.title}</h3>
+                <p className="text-slate-400 font-light leading-relaxed">{feature.desc}</p>
+                
+                <div className="mt-8 flex items-center text-sm font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors cursor-pointer">
+                  Learn more <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ─── Truth Layer Preview ─── */}
-      <section className="py-40 px-8 relative overflow-hidden bg-[#0A0D14]/20 border-t border-white/[0.04]">
-        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-blue-600/[0.02] to-transparent pointer-events-none" />
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-end justify-between gap-16 mb-24">
-            <div className="max-w-2xl text-center lg:text-left">
-              <div className="flex items-center justify-center lg:justify-start gap-4 mb-8">
-                 <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
-                    <Globe className="w-6 h-6 text-blue-500" />
-                 </div>
-                 <span className="text-[10px] font-bold text-blue-500">Truth Protocol</span>
-              </div>
-              <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight leading-tight`}>Where Trust is <br/> <span className="text-blue-500">Verified.</span></h2>
-              <p className="text-xl text-slate-500 font-bold opacity-60 leading-relaxed">
-                Join the community of verifiers. Help audit products, track origins, and earn rewards for your contributions.
+        </section>
+        
+        {/* ── FOOTER CTA ── */}
+        <section className="relative px-6 pb-20">
+          <div className="max-w-5xl mx-auto">
+            <div className="relative rounded-[3rem] overflow-hidden bg-gradient-to-br from-indigo-900/40 to-blue-900/20 border border-white/10 p-12 md:p-20 text-center flex flex-col items-center">
+              <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl h-full bg-blue-500/20 blur-[100px] pointer-events-none" />
+              
+              <Sparkles className="w-12 h-12 text-blue-400 mb-6" />
+              <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white mb-6 relative z-10`}>Ready to embrace transparency?</h2>
+              <p className="text-indigo-200/70 text-lg mb-10 max-w-xl relative z-10 font-light">
+                Join thousands of suppliers and verifiers building the future of authenticated commerce.
               </p>
-            </div>
-            <Link href="/community">
-              <Button className={`${outfit.className} h-16 px-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[13px] shadow-xl transition-all active:scale-95`}>
-                Join Community <MessageSquare className="ml-3 w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-10">
-            {[
-              { author: "Protocol_Verifier", trust: "9.8 Trust", msg: "Analyzing geospatial drift on organic matcha batch #402. Origin verified.", icon: <ShieldCheck className="w-5 h-5 text-emerald-400" /> },
-              { author: "Verified_Supplier", trust: "8.2 Trust", msg: "Updating status for cold-chain transit of organic dairy batch.", icon: <Activity className="w-5 h-5 text-blue-400" /> }
-            ].map((d, i) => (
-              <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-10 flex gap-10 items-start group hover:border-blue-500/30 transition-all duration-700 shadow-3xl cursor-default">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex-shrink-0 shadow-lg border border-white/20 group-hover:rotate-6 transition-transform" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-4 mb-3">
-                    <span className="text-[10px] font-bold text-white tracking-widest">{d.author}</span>
-                    <span className="text-[9px] font-bold text-slate-400 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2 py-1">{d.trust}</span>
-                  </div>
-                  <h4 className={`${outfit.className} text-2xl font-bold text-slate-200 mb-6 group-hover:text-blue-400 transition-colors tracking-tight leading-snug`}>
-                    {d.msg}
-                  </h4>
-                  <div className="flex items-center gap-6 text-[10px] font-semibold text-slate-500 tracking-wide">
-                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><MessageCircle className="w-3.5 h-3.5" /> Community Discussions</span>
-                    <span className="flex items-center gap-2 px-3 py-1 bg-white/[0.02] rounded-lg"><Clock className="w-3.5 h-3.5" /> Active now</span>
-                  </div>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full sm:w-auto">
+                <Link href="/seller-dashboard">
+                  <Button className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-white text-indigo-900 hover:bg-slate-100 font-bold text-lg shadow-xl hover:scale-105 transition-all">
+                    Register as Supplier
+                  </Button>
+                </Link>
+                <Link href="/community">
+                  <Button variant="outline" className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-transparent hover:bg-white/10 border-white/20 text-white font-semibold text-lg transition-all hover:scale-105 hover:border-white/40">
+                    Join the Community
+                  </Button>
+                </Link>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Institutional Footer ─── */}
-      <footer className="py-32 border-t border-white/[0.04] bg-[#030408] relative z-30">
-        <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-20">
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-[1.25rem] bg-gradient-to-br from-blue-600 to-emerald-600 flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.3)] border border-white/20">
-              <ShieldCheck className="w-8 h-8 text-white" />
             </div>
-            <span className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>ChainVerify</span>
           </div>
-          <div className="flex flex-wrap justify-center gap-10 text-xs font-semibold text-slate-600">
-            <Link href="/marketplace" className="hover:text-blue-500 transition-colors">Marketplace</Link>
-            <Link href="/verify" className="hover:text-blue-500 transition-colors">Verification</Link>
-            <Link href="/transparency" className="hover:text-blue-500 transition-colors">Transparency</Link>
-            <Link href="/community" className="hover:text-blue-500 transition-colors">Community</Link>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-2">
-             <div className="text-[10px] font-black text-slate-800 uppercase tracking-[0.3em] font-mono italic">Protocol Latency: 1.2ms</div>
-             <div className="text-[9px] text-slate-800 font-mono tracking-widest uppercase italic">STR_NETWORK_LINK_ACTIVE • © 2024</div>
-          </div>
-        </div>
-      </footer>
+        </section>
+
+      </main>
     </div>
   )
 }

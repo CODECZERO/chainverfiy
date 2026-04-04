@@ -184,24 +184,47 @@ export async function handleIncoming(req: any, res: any) {
         'Location received.\nNow send a photo/video for the stage update and I will attach this location automatically.\n\nTip: Add a short caption like "Packed" / "Shipped" / "Out for delivery".';
     } else {
       // NVIDIA NIM handles everything else (Acting as Advanced Dashboard Assistant)
-      const supplier = await getSupplierByPhone(phone);
+      const user = await prisma.user.findUnique({ 
+         where: { whatsappNumber: phone },
+         include: { supplierProfile: true }
+      });
+      
       let richContext: any = null;
-      if (supplier) {
-         const products = await prisma.product.findMany({ where: { supplierId: supplier.id }, take: 5, orderBy: { createdAt: 'desc'} });
-         const orders = await prisma.order.findMany({ where: { product: { supplierId: supplier.id } }, take: 5, orderBy: { createdAt: 'desc'} });
-         richContext = {
-            id: supplier.id,
-            name: supplier.name,
-            trustScore: supplier.trustScore,
-            totalSales: supplier.totalSales,
-            recentProducts: products.map(p => ({ title: p.title, price: Number(p.priceInr), status: p.status })),
-            recentOrders: orders.map(o => ({ amountUsdc: Number(o.priceUsdc), status: o.status }))
-         };
+      if (user) {
+         if (user.role === 'SUPPLIER' && user.supplierProfile) {
+            const supplier = user.supplierProfile;
+            const products = await prisma.product.findMany({ where: { supplierId: supplier.id }, take: 5, orderBy: { createdAt: 'desc'} });
+            const orders = await prisma.order.findMany({ where: { product: { supplierId: supplier.id } }, take: 5, orderBy: { createdAt: 'desc'} });
+            richContext = {
+               userRole: 'SUPPLIER',
+               id: supplier.id,
+               name: supplier.name,
+               trustScore: supplier.trustScore,
+               totalSales: supplier.totalSales,
+               recentProducts: products.map(p => ({ title: p.title, price: Number(p.priceInr), status: p.status })),
+               recentOrders: orders.map(o => ({ amountUsdc: Number(o.priceUsdc), status: o.status }))
+            };
+         } else {
+            // Buyer Context
+            const orders = await prisma.order.findMany({ where: { buyerId: user.id }, take: 5, orderBy: { createdAt: 'desc'}, include: { product: true } });
+            richContext = {
+               userRole: 'BUYER',
+               email: user.email,
+               recentOrders: orders.map(o => ({ product: o.product.title, priceInr: Number(o.priceInr), status: o.status }))
+            };
+         }
       }
       
       const history = buildHistory(session.sessionData as any);
       reply = await generateWhatsAppReply(message, history, richContext || null);
-      await appendHistory(phone, message, reply, session.sessionData as any);
+      
+      // LLM Action Routing
+      if (reply.includes("[ACTION: TRIGGER_LISTING_FLOW]")) {
+           reply = "I can help with that!\n\nLet's list your product.\nWhat is your product name?";
+           await updateSession(phone, 'AWAITING_PRODUCT_NAME', {});
+      } else {
+           await appendHistory(phone, message, reply, session.sessionData as any);
+      }
     }
   } catch (err) {
     console.error('WhatsApp handler error:', err);

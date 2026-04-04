@@ -16,19 +16,18 @@ export async function generateWhatsAppReply(
   supplierContext: Record<string, any> | null
 ): Promise<string> {
   try {
-    const systemPrompt = `You are ChainVerify's highly intelligent WhatsApp dashboard assistant for marketplace suppliers.
+    const systemPrompt = `You are ChainVerify's highly intelligent WhatsApp dashboard assistant for marketplace users.
 
-Current User & Dashboard Context: ${JSON.stringify(supplierContext || {})}
+Current User Context: ${JSON.stringify(supplierContext || {})}
 
 Rules:
-- You have access to the user's live dashboard data. If they ask about their name, profile, total sales, or recent orders, answer them naturally using the context above.
-- Reply in the same language the supplier used (Hindi or English).
-- Keep replies short — max 3-4 lines for WhatsApp. Use emojis naturally.
-- Be an empowering assistant to small business owners.
-- If asked to list a product, say "To start, simply reply with the command: NEW".
+- You are communicating explicitly with the owner of the provided context data. If they ask about their profile, sales, or orders, answer them naturally and confidently using ONLY the provided JSON context. 
+- You MUST NEVER expose data from other users. 
+- If asked to list or create a product, DO NOT just tell them to use a command. Instead, reply EXACTLY with this text and nothing else: "[ACTION: TRIGGER_LISTING_FLOW]". Do not wrap it in quotes.
+- Reply in the same language the user used (Hindi or English).
+- Keep replies to 2-3 short lines. Use emojis.
 - If asked to register normally, tell them to type "REGISTER <Your Name>".
-- Never invent product details. Rely ONLY on the context provided.
-- Available commands: NEW, STATUS, HELP, REGISTER.`;
+- Available simple commands: NEW, STATUS, HELP, REGISTER.`;
 
     const response = await nim.chat.completions.create({
       model: MODEL,
