@@ -73,7 +73,7 @@ export async function submitBountyTransaction(
         hash: transactionHash,
         ledger: result.ledger,
         stellarResult: result,
-        data: response.data
+        data: response
       }
     } else {
       throw new Error(response.message || "Bounty verification failed")
@@ -100,7 +100,7 @@ export async function getAccountBalance(publicKey: string) {
     const response = await getWalletBalance(publicKey);
 
 
-    const balances = response.data || [];
+    const balances = response || [];
     const xlmBalance = balances.find((b: any) => b.asset === "XLM");
     const balance = xlmBalance ? Number.parseFloat(xlmBalance.balance) : 0;
 
@@ -198,13 +198,13 @@ export async function submitEscrowTransaction(
     const account = await horizon.loadAccount(data.buyerPublicKey);
     
     const response = await getEscrowXdr({ ...data, sequence: account.sequence });
-    console.log("[STELLAR] Raw Escrow API Response Data:", JSON.stringify(response.data, null, 2));
+    console.log("[STELLAR] Raw Escrow API Response Data:", JSON.stringify(response, null, 2));
 
-    if (!response.success || !response.data?.xdr) {
+    if (!response.success || !response.xdr) {
       console.error("[STELLAR] XDR Generation Failed:", response);
       throw new Error(response.message || "Failed to generate Escrow XDRs");
     }
-    const { xdr, classicFallback } = response.data;
+    const { xdr, classicFallback } = response;
     console.log(`[STELLAR] Unified XDR received. Soroban Status: ${classicFallback ? '⚠️ skipped (contract unavailable)' : '✅ Active'}`);
 
     // 2. Sign Unified TX (payments + escrow logging in one popup)
@@ -223,12 +223,12 @@ export async function submitEscrowTransaction(
       throw new Error(submitResponse.message || "Backend submission failed");
     }
 
-    console.log("[STELLAR] Backend confirmed transaction(s):", submitResponse.data.hash);
+    console.log("[STELLAR] Backend confirmed transaction(s):", submitResponse.hash);
 
     return {
       success: true,
-      hash: submitResponse.data.hash,
-      stellarResult: submitResponse.data,
+      hash: submitResponse.hash,
+      stellarResult: submitResponse,
     };
 
   } catch (error: any) {
@@ -254,10 +254,10 @@ export async function submitVoteTransaction(
     const account = await horizon.loadAccount(data.voterWallet);
     
     const response = await getVoteXdr({ ...data, sequence: account.sequence });
-    if (!response.success || !response.data?.xdr) {
+    if (!response.success || !response.xdr) {
       throw new Error(response.message || "Failed to generate Vote XDR");
     }
-    const xdr = response.data.xdr;
+    const xdr = response.xdr;
 
     // 2. Sign
     const signedResult = await signTransaction(xdr);
@@ -267,7 +267,7 @@ export async function submitVoteTransaction(
 
     // 3. Submit to backend (consistent with escrow flow)
     const submitResult = await submitEscrowTx({ signedXdr });
-    return { success: true, hash: submitResult.data?.hash };
+    return { success: true, hash: submitResult?.hash };
 
   } catch (error: any) {
     console.error("[STELLAR] Vote failed:", error);
@@ -292,10 +292,10 @@ export async function submitProofTransaction(
     const account = await horizon.loadAccount(data.supplierPublicKey);
     
     const response = await getSubmitProofXdr({ ...data, sequence: account.sequence });
-    if (!response.success || !response.data?.xdr) {
+    if (!response.success || !response.xdr) {
       throw new Error(response.message || "Failed to generate Proof XDR");
     }
-    const xdr = response.data.xdr;
+    const xdr = response.xdr;
 
     // 2. Sign
     const signedResult = await signTransaction(xdr);
@@ -305,7 +305,7 @@ export async function submitProofTransaction(
 
     // 3. Submit to backend
     const submitResult = await submitEscrowTx({ signedXdr });
-    return { success: true, hash: submitResult.data?.hash };
+    return { success: true, hash: submitResult?.hash };
 
   } catch (error: any) {
     console.error("[STELLAR] Proof submission failed:", error);
