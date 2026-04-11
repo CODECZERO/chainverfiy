@@ -37,10 +37,6 @@ const nextConfig = {
         source: '/horizon/:path*',
         destination: 'https://horizon-testnet.stellar.org/:path*',
       },
-      {
-        source: '/noise.svg',
-        destination: 'https://grainy-gradients.vercel.app/noise.svg',
-      },
     ]
   },
 }
