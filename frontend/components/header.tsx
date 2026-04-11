@@ -14,10 +14,6 @@ import {
   LayoutGrid, LogOut, Shield, Wallet, Menu, X, ShieldCheck, 
   LogIn, UserPlus, LayoutDashboard, Settings, Search, Users
 } from "lucide-react"
-import { 
-  NavigationMenu, NavigationMenuContent, NavigationMenuItem, 
-  NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger 
-} from "@/components/ui/navigation-menu"
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, 
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -31,6 +27,15 @@ const AuthModal = dynamic(() => import("./auth-modal").then(m => m.AuthModal), {
 const NotificationBell = dynamic(() => import("./notification-bell").then(m => m.NotificationBell), { ssr: false })
 const USDCPriceTicker = dynamic(() => import("./usdc-price-ticker").then(m => m.USDCPriceTicker), { ssr: false })
 
+const FLAT_NAV = [
+  { href: "/marketplace", label: "Shop", icon: ShoppingBag },
+  { href: "/transparency", label: "Network", icon: Activity },
+  { href: "/bounty-board", label: "Rewards", icon: Lock },
+  { href: "/verify", label: "Verify", icon: ShieldCheck },
+  { href: "/leaderboard", label: "Leaders", icon: Zap },
+  { href: "/community", label: "Hub", icon: Globe },
+]
+
 const NAV_SECTIONS = [
   {
     label: "Marketplace",
@@ -42,7 +47,7 @@ const NAV_SECTIONS = [
   {
     label: "Verification",
     items: [
-      { href: "/bounty-board", label: "Bounty Board", icon: Lock, description: "Earn rewards by auditing origins and providing verification data.", subLabel: "Bounty Board" },
+      { href: "/bounty-board", label: "Rewards Board", icon: Lock, description: "Earn rewards by auditing origins and providing verification data.", subLabel: "Rewards Board" },
       { href: "/verify", label: "Verify & Earn", icon: ShieldCheck, description: "Securely verify product authenticity and earn community points.", subLabel: "Verify & Earn" },
       { href: "/leaderboard", label: "Top Contributors", icon: Zap, description: "View the ranking of our most active and trusted community members.", subLabel: "Top Contributors" },
     ]
@@ -107,45 +112,52 @@ export function Header() {
             <span className="text-lg font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors hidden sm:block">ChainVerify</span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Single Line Structure */}
           <nav className="hidden lg:flex items-center flex-1 justify-center px-4">
-            <NavigationMenu>
-              <NavigationMenuList className="gap-1">
-                {NAV_SECTIONS.map((section) => (
-                  <NavigationMenuItem key={section.label}>
-                    <NavigationMenuTrigger className="bg-transparent text-slate-400 hover:text-white text-sm font-medium h-9 px-4 rounded-xl transition-all">
-                      {section.label}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="grid w-[400px] gap-2 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-[#0A0C14]/98 backdrop-blur-3xl border border-white/[0.08] shadow-2xl rounded-2xl ring-1 ring-white/10">
-                        {section.items.map((item) => (
-                          <NavigationMenuLink key={item.href} asChild>
-                            <Link href={item.href} className="block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all hover:bg-white/[0.04] group/item">
-                              <div className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1 flex items-center gap-2 group-hover/item:text-indigo-300 transition-colors">
-                                <item.icon className="w-3.5 h-3.5" /> {item.subLabel}
-                              </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-slate-500 group-hover/item:text-slate-400 transition-colors whitespace-normal">
-                                {item.description}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        ))}
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                ))}
+            <div className="flex items-center gap-1 xl:gap-2">
+              {FLAT_NAV.map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <Link 
+                    key={item.href} 
+                    href={item.href}
+                    className={cn(
+                      "group relative px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
+                      isActive 
+                        ? "text-indigo-400 bg-indigo-500/5 shadow-[0_0_20px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/20" 
+                        : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
+                    )}
+                  >
+                    <item.icon className={cn(
+                       "w-3.5 h-3.5 transition-transform duration-500 group-hover:scale-110",
+                       isActive ? "text-indigo-400" : "text-slate-600 group-hover:text-indigo-400"
+                    )} />
+                    {item.label}
+                    {isActive && (
+                      <motion.div 
+                        layoutId="nav-active-glow"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-indigo-500 rounded-full blur-[2px] opacity-80"
+                      />
+                    )}
+                  </Link>
+                )
+              })}
 
-                {isUserActive && (
-                  <NavigationMenuItem>
-                    <Link href={dashboardUrl} legacyBehavior passHref>
-                      <NavigationMenuLink className="bg-transparent text-indigo-400 hover:text-indigo-300 text-sm font-bold h-9 px-4 flex items-center gap-2 cursor-pointer transition-all hover:scale-105">
-                        <LayoutGrid className="w-4 h-4" /> Dashboard
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                )}
-              </NavigationMenuList>
-            </NavigationMenu>
+              {(isAuthenticated || isConnected) && (
+                <Link 
+                  href={dashboardUrl}
+                  className={cn(
+                    "group relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
+                    pathname.includes("dashboard")
+                      ? "text-indigo-400 bg-indigo-500/5 ring-1 ring-indigo-500/20"
+                      : "text-indigo-500/80 hover:text-white hover:bg-white/[0.04]"
+                  )}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  Dashboard
+                </Link>
+              )}
+            </div>
           </nav>
 
           {/* Actions Hub */}
