@@ -29,7 +29,10 @@ export async function submitBountyTransaction(
     }
 
     const StellarSdk = await import('@stellar/stellar-sdk')
-    const server = new StellarSdk.Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org')
+    const server = new StellarSdk.Horizon.Server(
+      process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+      { allowHttp: true }
+    )
     const account = await server.loadAccount(publicKey)
 
     const transaction = new StellarSdk.TransactionBuilder(account, {
@@ -194,7 +197,10 @@ export async function submitEscrowTransaction(
     
     // Fetch latest sequence from Horizon for perfect synchronization
     const { Horizon } = await import('@stellar/stellar-sdk');
-    const horizon = new Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org');
+    const horizon = new Horizon.Server(
+      process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+      { allowHttp: true }
+    );
     const account = await horizon.loadAccount(data.buyerPublicKey);
     
     const response = await getEscrowXdr({ ...data, sequence: account.sequence });
@@ -250,7 +256,10 @@ export async function submitVoteTransaction(
 
     // 1. Get XDR
     const { Horizon } = await import('@stellar/stellar-sdk');
-    const horizon = new Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org');
+    const horizon = new Horizon.Server(
+      process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+      { allowHttp: true }
+    );
     const account = await horizon.loadAccount(data.voterWallet);
     
     const response = await getVoteXdr({ ...data, sequence: account.sequence });
@@ -288,7 +297,10 @@ export async function submitProofTransaction(
 
     // 1. Get XDR
     const { Horizon } = await import('@stellar/stellar-sdk');
-    const horizon = new Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org');
+    const horizon = new Horizon.Server(
+      process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+      { allowHttp: true }
+    );
     const account = await horizon.loadAccount(data.supplierPublicKey);
     
     const response = await getSubmitProofXdr({ ...data, sequence: account.sequence });
@@ -324,7 +336,10 @@ export async function addTrustline(
     const StellarSdk = await import('@stellar/stellar-sdk');
     const issuer = process.env.NEXT_PUBLIC_REI_ISSUER || "GB5CLXT47BNHNXLR67QSNB5FBM5NTSFSO6IUJCMSO6BY6ZYBTYJGY566";
 
-    const server = new StellarSdk.Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org');
+    const server = new StellarSdk.Horizon.Server(
+      process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+      { allowHttp: true }
+    );
     const account = await server.loadAccount(publicKey);
     const asset = new StellarSdk.Asset('REI', issuer);
 
