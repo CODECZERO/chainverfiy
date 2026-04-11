@@ -30,9 +30,16 @@ const nextConfig = {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
     return [
       {
-        // GS1 Digital Link: /01/{gtin}/21/{serial}?qr=CHV-XXXX
         source: '/01/:gtin/21/:serial',
         destination: `${apiUrl}/qr/resolve/:serial`,
+      },
+      {
+        source: '/horizon/:path*',
+        destination: 'https://horizon-testnet.stellar.org/:path*',
+      },
+      {
+        source: '/noise.svg',
+        destination: 'https://grainy-gradients.vercel.app/noise.svg',
       },
     ]
   },

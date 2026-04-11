@@ -90,7 +90,7 @@ export default function SupplierProfilePage({ params }: { params: Promise<{ id: 
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="glow-orb w-[800px] h-[800px] bg-indigo-600/5 top-[-20%] left-[-10%] animate-float-slow" />
         <div className="glow-orb w-[600px] h-[600px] bg-blue-600/5 bottom-[-10%] right-[-10%] animate-float-fast" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02]" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.02]" />
       </div>
 
       {/* ── Terminal Cover ── */}

@@ -41,7 +41,7 @@ export function DonationModal({ isOpen, onClose, task, onSuccess }: DonationModa
       setError(null)
 
       // Initialize the Stellar SDK
-      const server = new StellarSdk.Horizon.Server("https://horizon-testnet.stellar.org")
+      const server = new StellarSdk.Horizon.Server(process.env.NEXT_PUBLIC_HORIZON_URL || "https://horizon-testnet.stellar.org")
       const sourceKeypair = StellarSdk.Keypair.fromSecret(secretKey)
       const sourcePublicKey = sourceKeypair.publicKey()
 
