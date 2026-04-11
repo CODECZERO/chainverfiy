@@ -22,17 +22,17 @@ const outfit = Outfit({ subsets: ["latin"] })
 
 const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: ReactNode }> = {
   VERIFIED: {
-    label: "Protocol Verified",
+    label: "Verified Authentic",
     variant: "default",
     icon: <CheckCircle2 className="w-3 h-3" />,
   },
   PENDING_VERIFICATION: {
-    label: "Trace Pending",
+    label: "Checking Quality",
     variant: "secondary",
     icon: <Clock className="w-3 h-3" />,
   },
   FLAGGED: {
-    label: "Security Alert",
+    label: "Warning Issued",
     variant: "destructive",
     icon: <XCircle className="w-3 h-3" />,
   },
@@ -66,39 +66,39 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
       whileHover={{ y: -8 }}
-      className="group flex flex-col glass-card rounded-[2rem] overflow-hidden transition-all duration-500 shadow-2xl relative"
+      className="group flex flex-col glass-card rounded-[2.5rem] overflow-hidden transition-all duration-500 shadow-2xl relative border border-white/[0.05]"
     >
-      {/* ── Asset Visual ── */}
-      <div className="relative aspect-video rounded-2xl m-4 overflow-hidden bg-black/60 border border-white/[0.04]">
+      {/* Product Image Section */}
+      <div className="relative aspect-[4/3] rounded-[2rem] m-3 overflow-hidden bg-black/40 border border-white/[0.05]">
         {image && !imgError ? (
           <>
             <Image 
               src={getIPFSUrl(image)} 
               alt={String(title)} 
               fill 
-              className="object-cover group-hover:scale-110 transition-transform duration-1000"
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
               onError={() => setImgError(true)}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
             
             <button 
               onClick={(e) => { e.preventDefault(); setShowFullImg(true); }}
-              className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-[2px]"
+              className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-[1px]"
             >
-              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-2xl">
+              <div className="bg-white/10 p-3 rounded-full border border-white/20 shadow-2xl">
                 <Maximize2 className="w-4 h-4 text-white" />
               </div>
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full gap-3 opacity-20 group-hover:opacity-40 transition-opacity">
+          <div className="flex flex-col items-center justify-center h-full gap-3 opacity-30 group-hover:opacity-50 transition-opacity">
             <Package className="w-12 h-12 text-slate-400" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">No Media</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">No Photo</span>
           </div>
         )}
         
         <div className="absolute top-4 right-4 z-20">
-          <Badge className="gap-1.5 h-7 px-3 text-[8px] font-bold uppercase tracking-wider rounded-lg bg-black/60 backdrop-blur-md border-white/10 text-white">
+          <Badge className="gap-1.5 h-7 px-3 text-[9px] font-semibold rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white">
             <span className={status === "VERIFIED" ? "text-emerald-400" : status === "FLAGGED" ? "text-red-400" : "text-indigo-400"}>
                {config.icon}
             </span>
@@ -107,7 +107,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
 
         {task.category && (
-          <div className="absolute top-4 left-4 bg-indigo-600/10 backdrop-blur-md text-indigo-400 border border-indigo-500/20 rounded-lg px-3 py-1.5 text-[8px] font-bold uppercase tracking-wider z-20">
+          <div className="absolute top-4 left-4 bg-indigo-600/10 backdrop-blur-md text-indigo-300 border border-indigo-500/20 rounded-full px-3 py-1 text-[9px] font-bold z-20">
             {String(task.category)}
           </div>
         )}
@@ -115,107 +115,106 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         {qrCodeUrl && (
           <button 
             onClick={(e) => { e.preventDefault(); setShowQR(true); }}
-            className="absolute bottom-4 right-4 p-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 text-white hover:bg-indigo-600 hover:scale-110 transition-all z-20 shadow-2xl opacity-0 group-hover:opacity-100"
+            className="absolute bottom-4 right-4 p-2 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-indigo-600 hover:scale-110 transition-all z-20 shadow-2xl opacity-0 group-hover:opacity-100"
           >
             <QrCode className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* ── Data Layer ── */}
-      <div className="px-7 pb-8 pt-2 flex flex-col flex-1">
-        <div className="flex justify-between items-start gap-4 mb-3">
-          <h3 className={`${outfit.className} text-xl font-bold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors line-clamp-1`}>
-            {String(title || "Unallocated Asset")}
+      {/* Content Section */}
+      <div className="px-7 pb-8 pt-3 flex flex-col flex-1">
+        <div className="flex justify-between items-start gap-4 mb-4">
+          <h3 className={`${outfit.className} text-xl font-bold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-all line-clamp-1`}>
+            {String(title || "Generic Product")}
           </h3>
           <div className="flex flex-col items-end shrink-0">
-             <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Trust Score</span>
-             <span className="text-xs font-bold text-emerald-400 font-mono">
+             <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Trust Score</span>
+             <span className="text-sm font-bold text-emerald-400">
                {task.supplier?.trustScore || 85}%
              </span>
           </div>
         </div>
         
         <div className="flex items-center gap-2 mb-6">
-          <Globe className="w-3.5 h-3.5 text-indigo-500/60" />
-          <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider truncate">
+          <Globe className="w-3.5 h-3.5 text-indigo-500" />
+          <span className="text-xs font-medium text-slate-400 truncate">
             {task.supplier?.name || "Independent"} · {task.supplier?.location || "Global Network"}
           </span>
         </div>
 
-        {/* Financial Valuation Overlay */}
-        <div className="mt-auto relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 mb-8 group-hover:border-indigo-500/30 group-hover:bg-indigo-600/[0.02] transition-all overflow-hidden">
+        {/* Price/Digital Dollar Section */}
+        <div className="mt-auto relative bg-white/[0.03] border border-white/[0.08] rounded-3xl p-5 mb-8 group-hover:bg-indigo-600/[0.04] transition-all duration-300">
            <div className="relative z-10 flex items-center justify-between">
               <div className="flex flex-col">
-                 <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Asset Value (INR)</span>
-                 <span className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>
+                 <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Local Price</span>
+                 <span className={`${outfit.className} text-2xl font-bold text-white`}>
                    ₹{Number(priceInr).toLocaleString()}
                  </span>
               </div>
               <div className="h-10 w-px bg-white/5 mx-2" />
               <div className="flex flex-col items-end">
-                 <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-wider mb-1">Stable (USDC)</span>
-                 <span className="text-[13px] font-mono font-medium text-indigo-400">
-                    {Number(usdcPrice).toFixed(2)}
+                 <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Digital (USDC)</span>
+                 <span className="text-[14px] font-mono font-bold text-indigo-400">
+                    ${Number(usdcPrice).toFixed(2)}
                  </span>
               </div>
            </div>
-           <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-600/5 blur-2xl rounded-full translate-x-12 -translate-y-12" />
         </div>
 
-        {/* Consensus Meter */}
+        {/* Community Trust Section */}
         <div className="space-y-2 mb-8">
-           <div className="flex justify-between text-[8px] font-bold uppercase tracking-wider">
-              <span className="text-emerald-500">{voteReal} VALIDATED</span>
-              <span className="text-slate-600">{voteFake} DISPUTED</span>
+           <div className="flex justify-between text-[9px] font-bold tracking-wider">
+              <span className="text-emerald-500 uppercase">{voteReal} COMMUNITY OK</span>
+              <span className="text-slate-600 uppercase">{voteFake} DISPUTED</span>
            </div>
-           <div className="relative h-1.5 bg-white/[0.03] rounded-full overflow-hidden">
+           <div className="relative h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${realPct}%` }}
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-full"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(79,70,229,0.5)]"
               />
            </div>
         </div>
 
         <Link href={`/product/${id}`} className="block">
-          <Button className={`${outfit.className} w-full h-12 rounded-xl bg-white text-black hover:bg-slate-200 font-bold uppercase tracking-wider text-[10px] shadow-2xl transition-all active:scale-[0.98] group/btn`}>
-            <Search className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" /> Access Data Stream
+          <Button className={`${outfit.className} w-full h-12 rounded-2xl bg-white text-black hover:bg-slate-200 font-bold text-xs shadow-xl transition-all active:scale-[0.98] group/btn`}>
+             View Product Details
           </Button>
         </Link>
       </div>
 
-      {/* ── Asset Visualizer ── */}
+      {/* Full Image Modal */}
       <Dialog open={showFullImg} onOpenChange={setShowFullImg}>
-        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black/95 backdrop-blur-3xl border-white/10 rounded-3xl border-none shadow-[0_0_100px_rgba(0,0,0,0.9)]">
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black/95 backdrop-blur-3xl border-none rounded-3xl shadow-2xl">
           <div className="relative aspect-video w-full">
-            {image && <Image src={getIPFSUrl(image)} alt={String(title)} fill className="object-contain p-12" />}
+            {image && <Image src={getIPFSUrl(image)} alt={String(title)} fill className="object-contain p-8" />}
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* ── Node Access Point ── */}
+      {/* QR Code Modal */}
       <Dialog open={showQR} onOpenChange={setShowQR}>
-        <DialogContent className="max-w-md bg-[#030408]/98 backdrop-blur-3xl border border-white/[0.1] rounded-[2.5rem] p-12 flex flex-col items-center">
-            <div className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.4em] mb-10">On-Chain Identifier</div>
-            <div className="relative w-72 h-72 bg-white p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.4)] mb-10 group/qr overflow-hidden">
-              {qrCodeUrl && <Image src={qrCodeUrl} alt="Node ID" fill className="object-contain p-6 group-hover/qr:scale-105 transition-transform duration-700" />}
+        <DialogContent className="max-w-md bg-[#05060A] border border-white/10 rounded-[3rem] p-12 flex flex-col items-center">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-10">Authenticity ID</div>
+            <div className="relative w-64 h-64 bg-white p-6 rounded-[2rem] shadow-2xl mb-10 overflow-hidden">
+              {qrCodeUrl && <Image src={qrCodeUrl} alt="Product QR" fill className="object-contain p-4" />}
             </div>
-            <p className="text-[10px] font-medium text-slate-400 text-center uppercase tracking-widest leading-relaxed mb-12 px-6">
-              Cryptographic proof of authenticity secured on the <span className="text-indigo-400">Stellar Ledger Protocol</span>.
+            <p className="text-xs text-slate-400 text-center leading-relaxed mb-12">
+              This cryptographic proof confirms the product origin and is secured on the <span className="text-indigo-400 font-bold">Stellar Network</span>.
             </p>
             <Button 
-               className={`${outfit.className} w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-[10px] shadow-2xl transition-all hover:translate-y-[-2px] active:translate-y-0`}
+               className={`${outfit.className} w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-xl transition-all`}
                onClick={() => {
                  if (qrCodeUrl) {
                    const link = document.createElement('a');
                    link.href = qrCodeUrl;
-                   link.download = `chv-node-${id}.png`;
+                   link.download = `verified-product-${id}.png`;
                    link.click();
                  }
                }}
             >
-              Export Crypto-Certificate
+              Download Certificate
             </Button>
         </DialogContent>
       </Dialog>

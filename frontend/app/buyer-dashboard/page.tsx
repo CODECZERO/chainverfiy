@@ -40,19 +40,19 @@ const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid
 const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b'];
 
 const NAV = [
-  { id: "orders",       label: "Asset Ledger",        icon: ShoppingCart },
-  { id: "tracking",     label: "Live Logistics",      icon: ScanLine },
-  { id: "completed",    label: "Order History",       icon: CheckCircle2 },
-  { id: "bounties",     label: "Bounty Board",         icon: Coins },
+  { id: "orders",       label: "My Orders",        icon: ShoppingCart },
+  { id: "tracking",     label: "Track Shipments",   icon: ScanLine },
+  { id: "completed",    label: "Order History",    icon: CheckCircle2 },
+  { id: "bounties",     label: "Earn Rewards",      icon: Coins },
 ]
 
 const STATUS: Record<string, { label: string; cls: string; dot: string }> = {
-  PENDING:              { label: "Awaiting Settlement", cls: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",       dot: "bg-zinc-400" },
-  PAID:                 { label: "Settled",             cls: "bg-blue-500/10 text-blue-400 border-blue-500/20",       dot: "bg-blue-400" },
-  SHIPPED:              { label: "In Propagation",      cls: "bg-purple-500/10 text-purple-400 border-purple-500/20", dot: "bg-purple-400" },
-  DELIVERED:            { label: "Final Hop",           cls: "bg-amber-500/10 text-amber-400 border-amber-500/20",    dot: "bg-amber-400" },
-  COMPLETED:            { label: "Verified Node",       cls: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", dot: "bg-emerald-400" },
-  DISPUTED:             { label: "Collision Detected",  cls: "bg-red-500/10 text-red-400 border-red-500/20",          dot: "bg-red-400" },
+  PENDING:              { label: "Processing Payment", cls: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",       dot: "bg-zinc-400" },
+  PAID:                 { label: "Payment Confirmed",  cls: "bg-blue-500/10 text-blue-400 border-blue-500/20",       dot: "bg-blue-400" },
+  SHIPPED:              { label: "In Transit",         cls: "bg-purple-500/10 text-purple-400 border-purple-500/20", dot: "bg-purple-400" },
+  DELIVERED:            { label: "Arriving Soon",      cls: "bg-amber-500/10 text-amber-400 border-amber-500/20",    dot: "bg-amber-400" },
+  COMPLETED:            { label: "Delivered & Verified", cls: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", dot: "bg-emerald-400" },
+  DISPUTED:             { label: "Issue Found",        cls: "bg-red-500/10 text-red-400 border-red-500/20",          dot: "bg-red-400" },
 }
 
 export default function BuyerDashboard() {
@@ -139,7 +139,7 @@ export default function BuyerDashboard() {
             <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
             <Activity className="w-6 h-6 text-blue-400 absolute inset-0 m-auto animate-pulse" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 animate-pulse">Syncing Operation Deck...</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 animate-pulse">Syncing Dashboard...</span>
         </div>
       </div>
     )
@@ -153,9 +153,9 @@ export default function BuyerDashboard() {
           <div className="w-24 h-24 rounded-[2rem] bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-10 shadow-2xl">
             <Lock className="w-10 h-10 text-red-400" />
           </div>
-          <h1 className={`${outfit.className} text-4xl font-black text-white uppercase italic tracking-tighter mb-4`}>Access Restricted</h1>
-          <p className="text-slate-500 font-medium uppercase tracking-tight text-xs mb-10 leading-relaxed italic">This command center is reserved for verified principal buyers. Merchants and Oracles must use their respective interfaces.</p>
-          <Link href="/"><button className="h-14 px-10 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-[11px] hover:bg-slate-200 transition-all shadow-xl italic">Return to Port</button></Link>
+          <h1 className={`${outfit.className} text-4xl font-bold text-white mb-4`}>Access Restricted</h1>
+          <p className="text-slate-500 font-medium text-sm mb-10 leading-relaxed max-w-sm mx-auto">This dashboard is reserved for shoppers. Sellers should use the merchant dashboard to manage their store.</p>
+          <Link href="/"><button className="h-14 px-10 rounded-2xl bg-white text-black font-bold text-[13px] hover:bg-slate-200 transition-all shadow-xl">Back to Home</button></Link>
         </div>
       </div>
     )
@@ -166,7 +166,7 @@ export default function BuyerDashboard() {
       <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className}`}>
         <Header />
         <div className="max-w-4xl mx-auto px-6 py-32">
-          <WalletRequirement fallbackMessage="Please authenticate your session to synchronize purchase history and active logistics." />
+          <WalletRequirement fallbackMessage="Please sign in or connect your wallet to view your purchase history." />
         </div>
       </div>
     )
@@ -174,41 +174,41 @@ export default function BuyerDashboard() {
 
   return (
     <div className={`h-screen flex flex-col bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative`}>
-      {/* ── Deep Space Atmospheric Effects ── */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+      {/* ── Space Atmospheric Effects ── */}
+      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
       
       <Header />
 
       <div className="flex flex-1 overflow-hidden relative z-10">
-        {/* ── Institutional Sidebar ── */}
-        <aside className="hidden lg:flex flex-col w-80 shrink-0 gap-6 p-8 h-full border-r border-white/[0.04] bg-[#0A0D14]/40 backdrop-blur-xl">
-          {/* Principal Identity Node */}
+        {/* ── Dashboard Sidebar ── */}
+        <aside className="hidden lg:flex flex-col w-80 shrink-0 gap-6 p-8 h-full border-r border-white/[0.04] bg-[#07090F]/40 backdrop-blur-xl">
+          {/* User Profile */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-7 shadow-3xl relative overflow-hidden group"
+            className="glass-premium bg-white/[0.02] border border-white/[0.08] rounded-[2.5rem] p-7 shadow-3xl relative overflow-hidden group"
           >
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-1000" />
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/15 transition-all duration-1000" />
             <div className="flex items-center gap-5 relative z-10">
-              <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-[0_10px_40px_rgba(37,99,235,0.35)] border border-white/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-2xl border border-white/20 group-hover:scale-105 transition-all duration-500">
                 {String(user?.email || publicKey || "B")[0].toUpperCase()}
               </div>
               <div className="min-w-0">
-                <div className={`${outfit.className} font-black text-white text-xl truncate tracking-tighter uppercase italic`}>{String(user?.email?.split("@")[0] || "Buyer Node")}</div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-blue-400 font-black text-[8px] uppercase tracking-[0.25em] italic">
-                   <Shield className="w-3 h-3" /> Principal Authority
+                <div className={`${outfit.className} font-bold text-white text-xl truncate tracking-tight`}>{String(user?.email?.split("@")[0] || "Buyer Account")}</div>
+                <div className="flex items-center gap-1.5 mt-1 text-blue-400 font-bold text-[9px] uppercase tracking-widest">
+                   <Shield className="w-3 h-3" /> Verified Buyer
                 </div>
               </div>
             </div>
 
-            {/* Encrypted Key Metadata */}
+            {/* Wallet Info */}
             {(user?.stellarWallet || publicKey) && (
               <div className="mt-8 bg-black/40 border border-white/[0.03] rounded-2xl p-4 flex items-center gap-4 group/wallet hover:border-blue-500/20 transition-all shadow-inner">
                 <div className="w-9 h-9 rounded-xl bg-white/[0.02] flex items-center justify-center border border-white/[0.05] shadow-inner">
                   <Wallet className="w-3.5 h-3.5 text-slate-500 group-hover/wallet:text-blue-400 transition-colors" />
                 </div>
-                <span className="text-[9px] font-mono text-slate-500 truncate flex-1 uppercase tracking-[0.1em]">
+                <span className="text-[9px] font-mono text-slate-500 truncate flex-1 uppercase tracking-widest">
                   {String(user?.stellarWallet || publicKey || "").slice(0, 8)}...{String(user?.stellarWallet || publicKey || "").slice(-8)}
                 </span>
                 <button onClick={copyWallet} className="text-slate-600 hover:text-white transition-all bg-white/[0.03] p-2.5 rounded-lg border border-white/[0.05] active:scale-90">
@@ -218,9 +218,9 @@ export default function BuyerDashboard() {
             )}
           </motion.div>
 
-          {/* Mission Control Deck Navigation */}
+          {/* Navigation Menu */}
           <nav className="flex-1 overflow-y-auto pr-2 space-y-3 mt-4 scrollbar-hide">
-            <div className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em] mb-4 ml-4 italic opacity-80">Command Matrix</div>
+            <div className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mb-4 ml-4 opacity-80">Dashboard Menu</div>
             {NAV.map((n, i) => (
               <motion.button 
                 key={n.id} 
@@ -228,9 +228,9 @@ export default function BuyerDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 + i * 0.05 }}
                 onClick={() => setActive(n.id)}
-                className={`w-full group flex items-center gap-5 px-7 py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all relative overflow-hidden italic ${
+                className={`w-full group flex items-center gap-5 px-7 py-5 rounded-[2rem] text-[11px] font-bold uppercase tracking-widest transition-all relative overflow-hidden ${
                   active === n.id
-                    ? "text-white bg-blue-600/10 border border-blue-500/20 shadow-[0_0_50px_rgba(37,99,235,0.08)]"
+                    ? "text-white bg-blue-600/10 border border-blue-500/20 shadow-xl"
                     : "text-slate-600 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
@@ -240,105 +240,104 @@ export default function BuyerDashboard() {
                     <div className="absolute left-0 top-1/4 bottom-1/4 w-1.5 bg-blue-500 rounded-r-full shadow-[0_0_20px_rgba(37,99,235,0.8)]" />
                   </>
                 )}
-                <n.icon className={`w-5 h-5 transition-all duration-700 group-hover:scale-125 ${active === n.id ? "text-blue-400 drop-shadow-[0_0_12px_rgba(96,165,250,0.6)]" : "text-slate-800"}`} />
+                <n.icon className={`w-5 h-5 transition-all duration-700 ${active === n.id ? "text-blue-400 drop-shadow-[0_0_12px_rgba(37,99,235,0.6)] scale-110" : "text-slate-800 group-hover:scale-110"}`} />
                 <span className="relative z-10">{n.label}</span>
                 {n.id === "tracking" && activeOrders.length > 0 && (
-                   <span className="ml-auto bg-amber-500/10 text-amber-500 text-[10px] font-black px-3 py-1.5 rounded-xl border border-amber-500/20 animate-pulse shadow-lg">{activeOrders.length}</span>
+                   <span className="ml-auto bg-blue-500/10 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-xl border border-blue-500/20 shadow-lg">{activeOrders.length}</span>
                 )}
               </motion.button>
             ))}
           </nav>
 
-          {/* Assets Under Command */}
+          {/* Total Spending */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] p-8 shadow-3xl relative overflow-hidden group"
+            className="glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 shadow-3xl relative overflow-hidden group"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-               <Activity className="w-16 h-16 text-emerald-400 rotate-12" />
+            <div className="absolute top-0 right-0 p-4 opacity-5">
+               <Activity className="w-16 h-16 text-blue-400" />
             </div>
-            <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4 italic">Settled Liquidity</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Total Spent</div>
             <div className="flex items-baseline gap-2">
-               <div className={`${outfit.className} text-4xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]`}>
+               <div className={`${outfit.className} text-4xl font-bold text-white tracking-tight tabular-nums`}>
                  ${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                </div>
-               <div className="text-[11px] font-black text-blue-500 uppercase tracking-widest italic opacity-80">USDC</div>
+               <div className="text-[11px] font-bold text-blue-500 uppercase tracking-widest opacity-80">USDC</div>
             </div>
             <div className="mt-6 pt-6 border-t border-white/[0.04] flex items-center gap-3">
-               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-               <span className="text-[9px] font-black text-slate-700 uppercase tracking-[0.25em] italic">Consensus Verified</span>
+               <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_12px_rgba(37,99,235,0.8)]" />
+               <span className="text-[9px] font-bold text-slate-700 uppercase tracking-widest">Secure Payments</span>
             </div>
           </motion.div>
         </aside>
 
-        {/* ── Command Interface ── */}
+        {/* ── Main Dashboard ── */}
         <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-6 md:p-12 relative">
-           {/* Mobile Navigation Matrix */}
+           {/* Mobile Navigation */}
            <div className="lg:hidden flex overflow-x-auto gap-4 pb-8 mb-4 scrollbar-hide no-scrollbar -mx-2 px-2">
              {NAV.map((n) => (
-               <button
-                 key={n.id}
-                 onClick={() => setActive(n.id)}
-                 className={`flex-none flex items-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest italic transition-all ${
-                   active === n.id 
-                     ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
-                     : "bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300"
-                 }`}
-               >
-                 <n.icon className="w-4 h-4" />
-                 {n.label}
-               </button>
+                <button
+                  key={n.id}
+                  onClick={() => setActive(n.id)}
+                  className={`flex-none flex items-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    active === n.id 
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+                      : "bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300"
+                  }`}
+                >
+                  <n.icon className="w-4 h-4" />
+                  {n.label}
+                </button>
              ))}
            </div>
 
            <AnimatePresence mode="wait">
              <motion.div
                key={active}
-               initial={{ opacity: 0, y: 40, filter: "blur(15px)" }}
-               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-               exit={{ opacity: 0, y: -40, filter: "blur(15px)" }}
-               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+               initial={{ opacity: 0, y: 40 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -40 }}
+               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                className="space-y-16"
              >
-               {/* Module Header */}
+               {/* Dashboard Title */}
                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                   <div>
-                    <h2 className={`${outfit.className} text-3xl md:text-6xl font-black text-white tracking-tighter uppercase italic leading-[0.95] md:leading-[0.85]`}>
-                      {active === "orders" ? <span className="text-white">Principal <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">Ledger</span></span> : 
-                       active === "tracking" ? <span className="text-white">Active <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">Logistics</span></span> : 
-                       active === "completed" ? <span className="text-white">Verified <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">History</span></span> : 
-                       <span className="text-white">Incentive <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.3)]">Node</span></span>}
+                    <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.1]`}>
+                      {active === "orders" ? <span>My <span className="text-blue-500">Orders</span></span> : 
+                       active === "tracking" ? <span>Track <span className="text-blue-500">Shipments</span></span> : 
+                       active === "completed" ? <span>Order <span className="text-blue-500">History</span></span> : 
+                       <span>Earn <span className="text-blue-500">Rewards</span></span>}
                     </h2>
                     <div className="flex items-center gap-4 mt-8">
                        <div className="h-[2px] w-14 bg-gradient-to-r from-blue-500 to-transparent" />
-                       <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic flex items-center gap-3">
-                         <Zap className="w-3.5 h-3.5 text-blue-500" /> Real-time Settlement Layer Synchronized
+                       <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
+                         <Zap className="w-3.5 h-3.5 text-blue-500" /> Secure Order Tracking Synchronized
                        </p>
                     </div>
                   </div>
                   <button 
                     onClick={loadOrders} 
-                    className="group relative p-6 bg-[#0A0D14]/80 border border-white/[0.08] rounded-3xl transition-all active:scale-90 hover:border-blue-500/40 shadow-3xl overflow-hidden backdrop-blur-xl"
+                    className="group relative p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl transition-all active:scale-90 hover:border-blue-500/40 shadow-xl overflow-hidden backdrop-blur-xl"
                   >
                     <div className="absolute inset-0 bg-blue-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
                     <RefreshCw className={`w-7 h-7 text-slate-500 group-hover:text-blue-400 transition-all relative z-10 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-1000"}`} />
                   </button>
                </div>
 
-               {/* Intelligence Overview */}
+               {/* Activity Insights */}
                {active === "orders" && (
                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                    {/* Settlement Velocity Chart */}
-                    <div className="xl:col-span-8 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl hover:border-white/[0.12] transition-colors duration-500">
+                    <div className="xl:col-span-8 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl">
                        <div className="flex items-center justify-between mb-16">
                           <div>
-                             <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 italic">Financial Telemetry</h3>
-                             <div className={`${outfit.className} text-2xl md:text-4xl font-black text-white tracking-tighter mt-3 uppercase italic leading-none`}>Settlement Velocity</div>
+                             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Spending Insights</h3>
+                             <div className={`${outfit.className} text-2xl md:text-4xl font-bold text-white tracking-tight mt-3 leading-none`}>Purchase Activity</div>
                           </div>
-                          <div className="bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-3.5 flex items-center gap-4 shadow-inner">
+                          <div className="hidden sm:flex bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-3.5 items-center gap-4 shadow-inner">
                              <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
-                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">Market Propagation</span>
+                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Updates</span>
                           </div>
                        </div>
                        <div className="h-[350px] w-full mt-4">
@@ -346,53 +345,52 @@ export default function BuyerDashboard() {
                              <AreaChart data={spendingData}>
                                 <defs>
                                    <linearGradient id="buyerSpendGrad" x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="0%" stopColor="#2563eb" stopOpacity={0.5}/>
-                                      <stop offset="100%" stopColor="#2563eb" stopOpacity={0}/>
+                                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5}/>
+                                      <stop offset="100%" stopColor="#3b82f6" stopOpacity={0}/>
                                    </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                                <XAxis dataKey="date" stroke="#475569" fontSize={9} fontWeight="900" tickLine={false} axisLine={false} dy={20} className="uppercase italic tracking-widest" />
-                                <YAxis stroke="#475569" fontSize={9} fontWeight="900" tickLine={false} axisLine={false} dx={-20} className="font-mono" />
+                                <XAxis dataKey="date" stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dy={20} />
+                                <YAxis stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dx={-20} />
                                 <RechartsTooltip 
                                    cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 2 }}
                                    contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px', boxShadow: '0 30px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)'}}
-                                   itemStyle={{color: '#fff', fontWeight: '900', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.1em'}}
+                                   itemStyle={{color: '#fff', fontWeight: 'bold', fontSize: '13px'}}
                                 />
-                                <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2500} />
+                                <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2000} />
                              </AreaChart>
                           </ResponsiveContainer>
                        </div>
                     </div>
 
-                    {/* Capital Composition Pie */}
-                    <div className="xl:col-span-4 glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group hover:border-white/[0.12] transition-colors duration-500">
-                       <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-12 italic">Capital Composition</h3>
+                    <div className="xl:col-span-4 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
+                       <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-12">Payment Breakdown</h3>
                        <div className="flex-1 relative min-h-[250px]">
                           <ResponsiveContainer width="100%" height="100%">
                              <PieChart>
                                 <Pie 
                                   data={currencyDistribution.length > 0 ? currencyDistribution : [{name: 'Empty', value: 1}]}
                                   innerRadius={90} outerRadius={125} paddingAngle={12} dataKey="value" stroke="none"
-                                  animationBegin={700} animationDuration={1800}
+                                  animationBegin={500} animationDuration={1500}
                                 >
-                                   {currencyDistribution.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} className="hover:opacity-80 transition-opacity cursor-pointer shadow-2xl" />)}
+                                   {currencyDistribution.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} className="hover:opacity-80 transition-opacity cursor-pointer" />)}
                                    {currencyDistribution.length === 0 && <Cell fill="#1F2937" />}
                                 </Pie>
                                 <RechartsTooltip 
-                                   contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', textTransform: 'uppercase', fontSize: '11px', fontWeight: '900', letterSpacing: '0.1em'}} 
+                                   contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold'}} 
                                 />
                              </PieChart>
                           </ResponsiveContainer>
                           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                               <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] italic leading-none mb-2">Aggregate Equity</span>
-                               <span className={`${outfit.className} text-4xl font-black text-white tracking-tighter`}>${totalSpent.toFixed(0)}</span>
+                               <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest leading-none mb-2">Total Amount</span>
+                               <span className={`${outfit.className} text-4xl font-bold text-white tracking-tight`}>${totalSpent.toFixed(0)}</span>
                           </div>
                        </div>
                        <div className="grid grid-cols-2 gap-5 mt-16">
                            {currencyDistribution.map((c, i) => (
-                             <div key={c.name} className="flex items-center gap-4 bg-white/[0.02] p-5 rounded-2xl border border-white/[0.04] hover:bg-white/[0.06] transition-all group/cell shadow-inner">
+                             <div key={c.name} className="flex items-center gap-4 bg-white/[0.02] p-5 rounded-2xl border border-white/[0.04]">
                                 <div className="w-3.5 h-3.5 rounded-lg shadow-xl shrink-0" style={{backgroundColor: COLORS[i % COLORS.length]}} />
-                                <div className="text-[10px] font-black uppercase text-slate-500 tracking-widest italic group-hover/cell:text-slate-200 transition-colors">{c.name}</div>
+                                <div className="text-[10px] font-bold uppercase text-slate-500 tracking-widest group-hover/cell:text-slate-200 transition-colors">{c.name}</div>
                              </div>
                            ))}
                        </div>
@@ -400,31 +398,31 @@ export default function BuyerDashboard() {
                  </div>
                )}
 
-               {/* Operations Log / Transactions */}
+               {/* Orders Grid */}
                {active === "bounties" ? (
-                 <div className="glass-premium bg-[#0A0D14]/40 border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group shadow-inner">
-                    <div className="absolute inset-0 bg-blue-600/[0.01] group-hover:bg-blue-600/[0.03] transition-colors" />
-                    <div className="w-32 h-32 rounded-[2.5rem] bg-blue-500/5 flex items-center justify-center mx-auto mb-10 shadow-2xl border border-white/[0.03] group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 opacity-20">
-                       <Coins className="w-16 h-16 text-blue-500" />
+                 <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group shadow-inner">
+                    <div className="absolute inset-0 bg-blue-600/[0.01] transition-colors" />
+                    <div className="w-24 h-24 rounded-[2rem] bg-blue-500/5 flex items-center justify-center mx-auto mb-10 shadow-2xl border border-white/[0.03] group-hover:scale-110 transition-transform duration-1000 opacity-20">
+                       <Coins className="w-12 h-12 text-blue-500" />
                     </div>
-                    <h3 className={`${outfit.className} text-5xl font-black text-white tracking-widest uppercase italic leading-none mb-6`}>Protocol v2.1 Activated</h3>
-                    <p className="text-slate-600 max-w-lg mx-auto text-[11px] font-black uppercase tracking-[0.5em] leading-relaxed opacity-60 italic">Issuance of authentication bounties is temporarily locked during Stage-R node propagation. Principal accounts will regain command in the next consensus cycle.</p>
+                    <h3 className={`${outfit.className} text-4xl font-bold text-white tracking-tight mb-6`}>Community Rewards Coming Soon</h3>
+                    <p className="text-slate-600 max-w-sm mx-auto text-sm leading-relaxed opacity-80">We are finalizing our community reward system. Soon you will be able to earn digital assets by helping verify product authenticity.</p>
                  </div>
                ) : (
                  <div className="space-y-10 pb-40">
                     <div className="flex items-center justify-between px-8">
                        <div className="flex items-center gap-5">
-                          <div className="w-3 h-3 rounded-full bg-blue-500 animate-ping shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
-                          <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] italic">Asset Signal Matrix</span>
+                          <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
+                          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Recent Activity</span>
                        </div>
-                       <span className="text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic bg-white/5 px-6 py-2.5 rounded-2xl border border-white/5">{filteredOrders.length} Endpoints Synchronized</span>
+                       <span className="text-[10px] font-bold text-slate-700 uppercase tracking-widest bg-white/5 px-6 py-2.5 rounded-2xl border border-white/5">{filteredOrders.length} Entries Found</span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-10">
                        {filteredOrders.length === 0 ? (
                          <div className="py-48 text-center border-2 border-dashed border-white/[0.03] rounded-[4rem] bg-white/[0.01] shadow-inner">
-                            <Package className="w-24 h-24 text-slate-900 mx-auto mb-10 opacity-30" />
-                            <p className="text-slate-700 font-black uppercase tracking-[0.6em] text-[11px] italic">Telemetry Matrix Empty / Pending Payload</p>
+                            <Package className="w-20 h-20 text-slate-900 mx-auto mb-10 opacity-30" />
+                            <p className="text-slate-700 font-bold uppercase tracking-widest text-[11px]">No orders found in this section</p>
                          </div>
                        ) : (
                          <AnimatePresence mode="popLayout" initial={false}>
@@ -434,120 +432,114 @@ export default function BuyerDashboard() {
                                <motion.div 
                                  key={o.id}
                                  layout
-                                 initial={{ opacity: 0, x: -40, filter: "blur(10px)" }}
-                                 animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                 transition={{ delay: idx * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                                 className="glass-premium bg-[#0A0D14]/70 border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 transition-all group relative overflow-hidden shadow-3xl hover:shadow-blue-500/10"
+                                 initial={{ opacity: 0, x: -20 }}
+                                 animate={{ opacity: 1, x: 0 }}
+                                 transition={{ delay: idx * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                                 className="glass-premium bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 transition-all group relative overflow-hidden shadow-3xl"
                                >
-                                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+                                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/[0.01] rounded-full blur-[80px] pointer-events-none" />
                                   
                                   <div className="flex flex-col xl:flex-row items-center gap-8 md:gap-16 relative z-10">
-                                     {/* Asset Signature */}
+                                     {/* Product Image */}
                                      <div className="flex flex-col sm:flex-row items-center gap-8 md:gap-12 flex-1 min-w-0 w-full">
-                                        <div className="w-24 h-24 md:w-36 md:h-36 bg-black/80 rounded-[1.5rem] md:rounded-[3rem] border border-white/[0.06] relative overflow-hidden group-hover:scale-105 group-hover:rotate-2 transition-all duration-1000 shadow-inner group-hover:shadow-blue-500/20">
+                                        <div className="w-24 h-24 md:w-36 md:h-36 bg-black/80 rounded-[1.5rem] md:rounded-[2.5rem] border border-white/[0.06] relative overflow-hidden group-hover:scale-105 transition-transform duration-1000 shadow-inner">
                                            {o.product?.proofMediaUrls?.[0] ? (
                                              <Image 
                                                src={getIPFSUrl(o.product.proofMediaUrls[0])} 
                                                alt="" 
                                                fill 
-                                               className="object-cover opacity-50 group-hover:opacity-100 transition-all duration-1000 grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100" 
+                                               className="object-cover opacity-50 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100" 
                                                unoptimized
                                              />
                                            ) : (
                                              <Package className="w-16 h-16 text-slate-800 absolute inset-0 m-auto opacity-30" />
                                            )}
-                                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
-                                           <div className="absolute bottom-4 left-0 w-full text-center text-[8px] font-black text-white/50 uppercase tracking-[0.2em] italic">Media Node</div>
+                                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
                                         </div>
                                         <div className="min-w-0 flex-1 text-center sm:text-left w-full">
                                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 md:gap-8 mb-4 md:mb-6">
-                                              <h4 className={`${outfit.className} text-xl md:text-4xl font-black text-white tracking-tighter uppercase italic group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Protocol Asset"}</h4>
-                                              <span className={`px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl border text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] italic backdrop-blur-2xl shadow-3xl ${s.cls} group-hover:scale-105 transition-transform duration-500`}>
+                                              <h4 className={`${outfit.className} text-xl md:text-3xl font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Product Purchase"}</h4>
+                                              <span className={`px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl border text-[9px] font-bold uppercase tracking-widest backdrop-blur-2xl shadow-xl ${s.cls} group-hover:scale-105 transition-transform duration-500`}>
                                                  <div className={`w-2 h-2 rounded-full ${s.dot} inline-block mr-3 md:mr-4 animate-pulse shadow-[0_0_15px_currentColor]`} /> {s.label}
                                               </span>
                                            </div>
-                                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 md:gap-x-10 gap-y-3 md:gap-y-4 text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 italic">
-                                              <span className="text-slate-400 flex items-center gap-2 md:gap-3 bg-white/[0.03] px-3 md:px-5 py-2 md:py-2.5 rounded-[1rem] md:rounded-2xl border border-white/[0.05] shadow-inner group-hover:text-blue-300 transition-colors">
-                                                <BarChart2 className="w-4 h-4 text-blue-500" /> NODE-{o.id.slice(0, 12)}
+                                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 md:gap-x-10 gap-y-3 md:gap-y-4 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                                              <span className="text-slate-400 flex items-center gap-2 md:gap-3 bg-white/[0.03] px-3 md:px-5 py-2 md:py-2.5 rounded-2xl border border-white/[0.05] shadow-inner group-hover:text-blue-300 transition-colors">
+                                                <BarChart2 className="w-4 h-4 text-blue-500" /> ID: {o.id.slice(0, 12)}
                                               </span>
-                                              <span className="flex items-center gap-2 md:gap-3 hover:text-white transition-all cursor-pointer group-hover:translate-x-1 duration-500">
-                                                <Shield className="w-4 h-4 text-emerald-500/80" /> {o.product?.supplier?.name || "Verified Counterparty"}
+                                              <span className="flex items-center gap-2 md:gap-3 hover:text-white transition-all cursor-pointer">
+                                                <Shield className="w-4 h-4 text-emerald-500/80" /> {o.product?.supplier?.name || "Verified Seller"}
                                               </span>
-                                              <span className="flex items-center gap-2 md:gap-3 group-hover:text-slate-400 transition-colors">
-                                                <Clock className="w-4 h-4 text-slate-800" /> {new Date(o.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                                              <span className="flex items-center gap-2 md:gap-3">
+                                                <Clock className="w-4 h-4 text-slate-800" /> {new Date(o.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                               </span>
                                            </div>
                                         </div>
                                      </div>
 
-                                     {/* Settlement Magnitude */}
-                                     <div className="xl:flex flex-col items-center border-y xl:border-x border-white/[0.04] py-8 md:py-10 xl:px-20 shrink-0 group/price relative w-full xl:w-auto">
+                                     {/* Order Amount */}
+                                     <div className="xl:flex flex-col items-center border-y xl:border-x border-white/[0.04] py-8 md:py-10 xl:px-20 shrink-0 relative w-full xl:w-auto">
                                         <div className="absolute inset-0 bg-blue-500/5 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className={`${outfit.className} text-3xl md:text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10 text-center`}>
-                                           {o.priceUsdc} <span className="text-base md:text-lg text-blue-500 font-black italic opacity-60">USDC</span>
+                                        <div className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight tabular-nums drop-shadow-2xl group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10 text-center`}>
+                                           {o.priceUsdc} <span className="text-base md:text-lg text-blue-500 font-bold opacity-60">USDC</span>
                                         </div>
-                                        <div className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] mt-3 md:mt-4 italic group-hover:text-slate-400 transition-colors relative z-10 text-center">Escrow Magnitude</div>
+                                        <div className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-3 md:mt-4 group-hover:text-slate-400 transition-colors relative z-10 text-center">Secure Payment</div>
                                      </div>
 
-                                     {/* Operation Cluster */}
+                                     {/* Actions */}
                                      <div className="flex flex-col gap-4 shrink-0 w-full xl:w-auto">
                                         {(o.status === "PAID" || o.status === "SHIPPED" || o.status === "DELIVERED") && (
                                           <Button 
                                             onClick={() => window.open(`/delivery/confirm/${o.id}`, "_blank")}
-                                            className="bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] rounded-[1.5rem] md:rounded-[2rem] h-14 md:h-18 px-8 md:px-12 shadow-[0_20px_50px_rgba(37,99,235,0.35)] active:scale-95 transition-all italic border border-white/10"
+                                            className="bg-blue-600 hover:bg-blue-500 text-white font-bold uppercase tracking-widest text-[11px] rounded-[1.5rem] h-14 md:h-18 px-8 md:px-12 shadow-2xl active:scale-95 transition-all border border-white/10"
                                           >
-                                             <ScanLine className="w-5 h-5 md:w-6 md:h-6 mr-3 md:mr-4" /> Inspect Node 
+                                             <ScanLine className="w-5 h-5 md:w-6 md:h-6 mr-3 md:mr-4" /> View Tracking 
                                           </Button>
                                         )}
                                         <div className="flex gap-4">
                                            <Button 
-                                             onClick={() => window.open(`/order/${o.id}/journey`, "_blank")} 
-                                             className="flex-1 bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] rounded-2xl h-14 px-8 uppercase text-[10px] font-black italic tracking-widest transition-all group/btn shadow-inner"
+                                              onClick={() => window.open(`/order/${o.id}/journey`, "_blank")} 
+                                              className="flex-1 bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] rounded-2xl h-14 px-8 uppercase text-[10px] font-bold tracking-widest transition-all shadow-inner"
                                            >
-                                              <ExternalLink className="w-4 h-4 mr-3 text-slate-700 group-hover/btn:text-blue-500 group-hover/btn:scale-110 transition-all" /> Journey
+                                              <ExternalLink className="w-4 h-4 mr-3 text-slate-700 group-hover:text-blue-500 transition-all" /> Journey
                                            </Button>
                                            <Button 
-                                             onClick={() => window.open(`/proof/${o.id}?viewType=logistics`, "_blank")} 
-                                             className="flex-1 bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] rounded-2xl h-14 px-8 uppercase text-[10px] font-black italic tracking-widest transition-all group/btn shadow-inner"
+                                              onClick={() => window.open(`/proof/${o.id}?viewType=logistics`, "_blank")} 
+                                              className="flex-1 bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] rounded-2xl h-14 px-8 uppercase text-[10px] font-bold tracking-widest transition-all shadow-inner"
                                            >
-                                              <Activity className="w-4 h-4 mr-3 text-slate-700 group-hover/btn:text-emerald-500 group-hover/btn:scale-110 transition-all" /> Status
+                                              <Activity className="w-4 h-4 mr-3 text-slate-700 group-hover:text-emerald-500 transition-all" /> Status
                                            </Button>
                                         </div>
                                         {o.status === "COMPLETED" && o.deliveryCertCid && (
-                                           <Button onClick={() => window.open(`/proof/${o.id}`, "_blank")} className="w-full bg-emerald-500/5 text-emerald-400 border border-emerald-500/15 hover:bg-emerald-500/10 rounded-2xl h-14 uppercase text-[10px] font-black tracking-[0.3em] transition-all italic shadow-2xl">
-                                              Download Protocol Passport <Download className="w-4 h-4 ml-4" />
+                                           <Button onClick={() => window.open(`/proof/${o.id}`, "_blank")} className="w-full bg-emerald-500/5 text-emerald-400 border border-emerald-500/15 hover:bg-emerald-500/10 rounded-2xl h-14 uppercase text-[10px] font-bold tracking-widest transition-all shadow-2xl">
+                                              Verification Receipt <Download className="w-4 h-4 ml-4" />
                                            </Button>
-                                        )}
-                                        {o.status === "PENDING" && (
-                                           <Link href={`/product/${o.productId}`} className="w-full">
-                                              <Button className="w-full bg-white text-black rounded-2xl h-18 uppercase text-[12px] font-black tracking-[0.4em] hover:bg-slate-200 active:scale-95 transition-all italic shadow-3xl">Execute Handshake</Button>
-                                           </Link>
                                         )}
                                      </div>
                                   </div>
 
-                                  {/* Verification Protocol Linkage */}
+                                  {/* QR Receipt Section */}
                                   {(o.status === "PAID" || o.status === "SHIPPED") && o.qrCode?.qrCodeUrl && (
                                     <motion.div 
                                       whileHover={{ scale: 1.005, y: -4 }}
                                       onClick={() => setSelectedQr(o.qrCode.qrCodeUrl)}
-                                      className="mt-8 md:mt-12 bg-black/60 border border-white/[0.05] rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8 md:gap-12 cursor-pointer hover:border-blue-500/50 transition-all group/handshake relative overflow-hidden shadow-inner"
+                                      className="mt-8 md:mt-12 bg-black/60 border border-white/[0.05] rounded-[2.5rem] p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8 md:gap-12 cursor-pointer hover:border-blue-500/50 transition-all group/handshake relative overflow-hidden shadow-inner"
                                     >
                                        <div className="absolute inset-0 bg-blue-500/[0.02] translate-x-[-100%] group-hover/handshake:translate-x-0 transition-transform duration-1000" />
-                                       <div className="w-24 h-24 md:w-28 md:h-28 bg-white p-2.5 rounded-[1.5rem] md:rounded-[2rem] shrink-0 group-hover/handshake:scale-110 group-hover:rotate-2 transition-all duration-700 shadow-[0_0_40px_rgba(255,255,255,0.15)] relative z-10">
+                                       <div className="w-24 h-24 md:w-28 md:h-28 bg-white p-2.5 rounded-2xl shrink-0 group-hover/handshake:scale-110 transition-all duration-700 shadow-2xl relative z-10">
                                           <Image src={o.qrCode.qrCodeUrl} alt="QR" fill className="object-contain p-3" unoptimized />
                                        </div>
                                        <div className="flex-1 min-w-0 relative z-10 text-center sm:text-left">
                                           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-                                             <div className="text-[10px] md:text-[12px] font-black text-blue-400 uppercase tracking-[0.4em] flex items-center gap-3 md:gap-4 italic leading-none">
-                                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" /> Cryptographic Handshake Interface
+                                             <div className="text-[12px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-3 md:gap-4 leading-none text-left">
+                                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" /> Order Identity Receipt
                                              </div>
-                                             <span className="text-[8px] md:text-[9px] font-black text-slate-700 uppercase tracking-[0.5em] italic group-hover/handshake:text-blue-500 transition-all">Propagate Signal</span>
+                                             <span className="text-[9px] font-bold text-slate-700 uppercase tracking-widest group-hover/handshake:text-blue-500 transition-all">Show to Merchant</span>
                                           </div>
-                                          <p className="text-slate-500 text-[10px] md:text-[11px] leading-relaxed max-w-3xl font-medium uppercase tracking-[0.05em] italic opacity-80 group-hover:opacity-100 transition-opacity">This signed credential must be presented to the fulfilling node for identity verification and multi-signature sequence release. Physical proximity is required for terminal finality.</p>
+                                          <p className="text-slate-500 text-[11px] leading-relaxed max-w-3xl font-medium tracking-tight opacity-80 group-hover:opacity-100 transition-opacity">This is your digital receipt. Show this QR code to the delivery partner or store manager to verify your identity and confirm the arrival of your order.</p>
                                        </div>
-                                       <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-800 group-hover/handshake:text-blue-500 group-hover/handshake:scale-110 transition-all">
+                                       <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-800 group-hover/handshake:text-blue-500 group-hover:scale-110 transition-all">
                                           <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
                                        </div>
                                     </motion.div>
@@ -565,7 +557,7 @@ export default function BuyerDashboard() {
         </main>
       </div>
 
-      {/* ── Settlement Protocol Modal ── */}
+      {/* ── QR Receipt Modal ── */}
       <AnimatePresence>
         {selectedQr && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-[#020408]/98 backdrop-blur-3xl" onClick={() => setSelectedQr(null)}>
@@ -574,36 +566,34 @@ export default function BuyerDashboard() {
                animate={{ scale: 1, opacity: 1, y: 0 }}
                exit={{ scale: 0.9, opacity: 0, y: 100 }}
                transition={{ type: "spring", damping: 25, stiffness: 120 }}
-               className="bg-[#0A0D14] border border-white/[0.12] rounded-[5rem] p-16 max-w-2xl w-full text-center relative shadow-[0_100px_200px_-50px_rgba(0,0,0,1)] overflow-hidden"
+               className="bg-[#0A0D14] border border-white/[0.12] rounded-[4rem] p-12 md:p-16 max-w-2xl w-full text-center relative shadow-[0_100px_200px_-50px_rgba(0,0,0,1)] overflow-hidden"
                onClick={e => e.stopPropagation()}
              >
-                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-80" />
                 <button onClick={() => setSelectedQr(null)} className="absolute top-10 right-10 text-slate-600 hover:text-white bg-white/5 rounded-3xl p-5 transition-all hover:bg-white/10 active:scale-90 shadow-inner">
                   <X className="w-7 h-7" />
                 </button>
                 
-                <div className="w-28 h-28 rounded-[3rem] bg-blue-600/10 flex items-center justify-center mx-auto mb-12 border border-blue-500/20 shadow-[0_0_80px_rgba(37,99,235,0.2)] group">
-                   <QrCode className="w-14 h-14 text-blue-500 animate-pulse group-hover:scale-110 transition-transform duration-700" />
+                <div className="w-24 h-24 rounded-[2.5rem] bg-blue-600/10 flex items-center justify-center mx-auto mb-12 border border-blue-500/20 shadow-2xl">
+                   <QrCode className="w-12 h-12 text-blue-500" />
                 </div>
                 
-                <h3 className={`${outfit.className} text-5xl font-black text-white tracking-[0.1em] uppercase italic mb-4 leading-none`}>Principal Key</h3>
-                <p className="text-slate-600 text-[12px] font-black uppercase tracking-[0.6em] mb-14 italic opacity-80">Settlement Authorization Protocol R.4.2</p>
+                <h3 className={`${outfit.className} text-4xl md:text-5xl font-bold text-white tracking-tight uppercase mb-4 leading-none`}>Your Receipt</h3>
+                <p className="text-slate-600 text-[11px] font-bold uppercase tracking-widest mb-14 opacity-80">Order Verification Key</p>
                 
-                <div className="bg-white p-8 rounded-[4rem] shadow-[0_60px_120px_rgba(0,0,0,0.6)] relative group mb-14 border-[12px] border-black/10">
-                   <div className="absolute inset-0 bg-blue-500/20 blur-[100px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1500" />
-                   <div className="w-full h-96 relative bg-white rounded-3xl overflow-hidden shadow-inner">
-                      <Image src={selectedQr} alt="QR Principal" fill className="object-contain p-6 transition-transform duration-1000 group-hover:scale-125" unoptimized />
+                <div className="bg-white p-6 rounded-[3rem] shadow-2xl relative group mb-14">
+                   <div className="w-full h-80 relative bg-white rounded-2xl overflow-hidden shadow-inner">
+                      <Image src={selectedQr} alt="QR Code" fill className="object-contain p-4 transition-transform duration-1000 group-hover:scale-110" unoptimized />
                    </div>
                 </div>
 
-                <a href={selectedQr} download="chainverify-settlement-key.png" className="block w-full">
-                   <Button className="w-full bg-white text-black h-24 rounded-[3rem] font-black uppercase tracking-[0.5em] text-sm hover:bg-slate-200 shadow-3xl transition-all active:scale-95 italic border-4 border-black/5">
-                      <Download className="w-7 h-7 mr-5" /> Export Encrypted Hash
+                <a href={selectedQr} download="order-receipt-qr.png" className="block w-full">
+                   <Button className="w-full bg-white text-black h-20 rounded-[2.5rem] font-bold uppercase tracking-widest text-sm hover:bg-slate-200 shadow-2xl transition-all active:scale-95 italic border-4 border-black/5">
+                      <Download className="w-6 h-6 mr-4" /> Download QR Code
                    </Button>
                 </a>
                 
-                <p className="mt-12 text-[10px] font-black text-slate-800 uppercase tracking-[0.5em] italic leading-relaxed max-w-sm mx-auto">
-                   CRITICAL: DO NOT Propagate this key outside secure physical proximity of the fulfillment terminal.
+                <p className="mt-12 text-[10px] font-bold text-slate-800 uppercase tracking-widest italic leading-relaxed max-w-sm mx-auto">
+                   Do not share this QR code with anyone except the authorized delivery partner or store representative.
                 </p>
              </motion.div>
           </div>

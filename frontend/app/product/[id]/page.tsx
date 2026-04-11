@@ -44,7 +44,7 @@ export default function ProductPage() {
   const { isConnected, publicKey } = useSelector((state: RootState) => state.wallet)
   const { toast } = useToast()
 
-  useEffect(() => { loadProduct() }, [id])
+  useEffect(() => { loadProduct() }, [id, isAuthenticated, publicKey])
   useEffect(() => { 
     import('@/lib/exchange-rates').then(m => {
       m.getAllRates().then(rates => {
@@ -264,12 +264,12 @@ export default function ProductPage() {
                 <div>
                   <div className="text-xs font-semibold text-indigo-400 mb-2">Community Verification</div>
                   <h3 className="text-2xl md:text-3xl font-bold flex items-center gap-3 text-white">
-                    <ShieldCheck className="w-8 h-8 text-indigo-400" /> Community Audit
+                    <ShieldCheck className="w-8 h-8 text-indigo-400" /> Community Review
                   </h3>
                 </div>
                 <Button 
                   onClick={() => setShowBountyModal(true)}
-                  className="rounded-xl h-12 px-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all active:scale-95"
+                  className="rounded-xl h-12 px-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all active:scale-95 shadow-lg"
                 >
                   <Coins className="w-4 h-4 mr-2" /> Request Verification
                 </Button>
@@ -277,22 +277,22 @@ export default function ProductPage() {
 
               <div className="grid sm:grid-cols-3 gap-8 mb-14">
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 text-center group-hover:border-indigo-500/30 transition-all backdrop-blur-xl">
-                  <div className="text-6xl font-display font-black text-indigo-400 mb-2 italic tracking-tighter">{String(realPct)}%</div>
-                  <div className="text-[10px] font-display font-black text-slate-500 uppercase tracking-[0.4em] italic">Trust Index</div>
+                  <div className="text-6xl font-bold text-indigo-400 mb-2 tracking-tighter">{String(realPct)}%</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Trust Score</div>
                 </div>
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 text-center backdrop-blur-xl">
-                  <div className="text-6xl font-display font-black text-white mb-2 italic tracking-tighter">{String(total)}</div>
-                  <div className="text-[10px] font-display font-black text-slate-500 uppercase tracking-[0.4em] italic">Total Signals</div>
+                  <div className="text-6xl font-bold text-white mb-2 tracking-tighter">{String(total)}</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Votes</div>
                 </div>
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 flex items-center justify-center gap-12 backdrop-blur-xl">
                   <div className="text-center">
-                    <div className="text-3xl font-display font-black text-emerald-400 mb-1 italic">{String(product.voteReal)}</div>
-                    <div className="text-[9px] font-display font-bold text-slate-600 uppercase tracking-widest italic">Verified</div>
+                    <div className="text-3xl font-bold text-emerald-400 mb-1">{String(product.voteReal)}</div>
+                    <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Authentic</div>
                   </div>
                   <div className="w-px h-16 bg-white/5" />
                   <div className="text-center">
-                    <div className="text-3xl font-display font-black text-red-500 mb-1 italic">{String(product.voteFake)}</div>
-                    <div className="text-[9px] font-display font-bold text-slate-600 uppercase tracking-widest italic">Voided</div>
+                    <div className="text-3xl font-bold text-red-500 mb-1">{String(product.voteFake)}</div>
+                    <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Fake</div>
                   </div>
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function ProductPage() {
                     <span className="text-xs font-semibold text-indigo-400">Product History</span>
                  </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-10 text-white flex items-center gap-3">
-                  <Globe className="w-8 h-8 text-indigo-400" /> Traceability Ledger
+                  <Globe className="w-8 h-8 text-indigo-400" /> Product History
                 </h3>
                 
                 <div className="pl-8 md:pl-12 border-l-2 border-white/[0.08] space-y-12 md:space-y-16 relative">

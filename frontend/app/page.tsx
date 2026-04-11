@@ -18,34 +18,34 @@ const outfit = Outfit({ subsets: ["latin"] as const })
 const inter = Inter({ subsets: ["latin"] as const })
 
 const TRUST_SIGNALS = [
-  { icon: <Lock className="w-4 h-4 text-emerald-400" />, text: "Soroban Escrow" },
-  { icon: <Eye className="w-4 h-4 text-cyan-400" />, text: "Community Truth" },
-  { icon: <Globe className="w-4 h-4 text-indigo-400" />, text: "Stellar Ledger" },
+  { icon: <Lock className="w-4 h-4 text-emerald-400" />, text: "Secure Payment Hold" },
+  { icon: <Eye className="w-4 h-4 text-cyan-400" />, text: "Community Trust" },
+  { icon: <Globe className="w-4 h-4 text-indigo-400" />, text: "Verified Records" },
 ]
 
 const STATS_CONFIG = [
-  { key: "verifiedProducts", label: "Verified Assets", defaultValue: 0, suffix: "+", icon: <CheckCircle2 className="w-5 h-5 text-emerald-400" /> },
-  { key: "totalSuppliers", label: "Global Suppliers", defaultValue: 0, suffix: "+", icon: <Users className="w-5 h-5 text-blue-400" /> },
-  { key: "totalUsdcTransacted", label: "USDC Volume", defaultValue: 0, prefix: "$", suffix: "+", icon: <Activity className="w-5 h-5 text-purple-400" /> },
-  { key: "avgVerifyTime", label: "Network Latency", defaultValue: 0, suffix: "h", icon: <Zap className="w-5 h-5 text-amber-400" /> },
+  { key: "verifiedProducts", label: "Verified Products", defaultValue: 0, suffix: "+", icon: <CheckCircle2 className="w-5 h-5 text-emerald-400" /> },
+  { key: "totalSuppliers", label: "Trusted Partners", defaultValue: 0, suffix: "+", icon: <Users className="w-5 h-5 text-blue-400" /> },
+  { key: "totalUsdcTransacted", label: "Total Value", defaultValue: 0, prefix: "$", suffix: "+", icon: <Activity className="w-5 h-5 text-purple-400" /> },
+  { key: "avgVerifyTime", label: "Verification Speed", defaultValue: 0, suffix: "h", icon: <Zap className="w-5 h-5 text-amber-400" /> },
 ]
 
 const FEATURES = [
   {
-    title: "Immutable Identity",
-    desc: "Every supplier is anchored on-chain with a cryptographic trust score that cannot be falsified.",
+    title: "Verified Profiles",
+    desc: "Every partner is verified and has a community trust score that ensures quality and safety.",
     icon: <ShieldCheck className="w-8 h-8 text-blue-400" />,
     color: "from-blue-600 to-cyan-500"
   },
   {
-    title: "Truth Consensus",
-    desc: "Verification is distributed. The community provides collective proof of authenticity before releases.",
+    title: "Community Proof",
+    desc: "Verification is handled by the community. Experts provide collective proof of authenticity before you buy.",
     icon: <Users className="w-8 h-8 text-emerald-400" />,
     color: "from-emerald-600 to-green-400"
   },
   {
-    title: "Atomic Settlement",
-    desc: "Payments are held in Soroban smart contracts and settled instantly in USDC upon proof of delivery.",
+    title: "Secure Payments",
+    desc: "Payments are held in secure smart contracts and released only when delivery is confirmed.",
     icon: <Zap className="w-8 h-8 text-purple-400" />,
     color: "from-purple-600 to-indigo-500"
   }
@@ -142,14 +142,14 @@ export default function LandingPage() {
             </div>
 
             <h1 className={`${outfit.className} text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 leading-[1.1] mb-8`}>
-              The Architecture of<br className="hidden md:block" />
+              The Standard for<br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
                 Absolute Trust.
               </span>
             </h1>
 
             <p className="max-w-2xl text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-12">
-              ChainVerify anchors physical assets to the Stellar blockchain. Decentralized communities verify authenticity, while smart contracts hold payments securely in escrow.
+              ChainVerify ensures you only buy authentic products. Our community verifies every item, while secure payments protect your money until delivery.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 w-full max-w-md sm:max-w-none justify-center items-center">
@@ -222,10 +222,10 @@ export default function LandingPage() {
         <section className="relative px-6 py-32 max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 className={`${outfit.className} text-4xl md:text-5xl font-bold tracking-tight text-white mb-6`}>
-              Verified Quality. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Trustless Settlement.</span>
+              Verified Quality. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Secure Payments.</span>
             </h2>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
-              By distributing verification across independent community nodes, ChainVerify eliminates single points of failure in the supply chain ecosystem.
+              By distributing verification across independent community experts, ChainVerify ensures complete transparency in the marketplace.
             </p>
           </div>
 
@@ -271,7 +271,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full sm:w-auto">
                 <Link href="/seller-dashboard">
                   <Button className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-white text-indigo-900 hover:bg-slate-100 font-bold text-lg shadow-xl hover:scale-105 transition-all">
-                    Register as Supplier
+                    Become a Partner
                   </Button>
                 </Link>
                 <Link href="/community">

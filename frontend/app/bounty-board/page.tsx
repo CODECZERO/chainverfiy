@@ -89,10 +89,10 @@ export default function BountyBoardPage() {
           <div>
             <div className="flex items-center gap-2 text-slate-500 mb-2">
               <Briefcase className="w-4 h-4" />
-              <span className="text-sm font-semibold">Opportunities</span>
+              <span className="text-sm font-semibold uppercase tracking-widest">Community Tasks</span>
             </div>
-            <h1 className={`${outfit.className} text-3xl md:text-5xl font-bold tracking-tight mt-4`}>Bounty Board</h1>
-            <p className="text-slate-500 mt-4 text-base leading-relaxed max-w-xl">Earn rewards by verifying product origins and providing proof.</p>
+            <h1 className={`${outfit.className} text-3xl md:text-5xl font-bold tracking-tight mt-4`}>Rewards <span className="text-amber-500">Hub</span></h1>
+            <p className="text-slate-500 mt-4 text-base leading-relaxed max-w-xl">Earn rewards by verifying product origins and helping the community stay safe.</p>
           </div>
           <div className="flex w-full md:w-auto gap-3">
             <Button asChild variant="outline" className="flex-1 md:flex-none h-12 md:h-14 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold transition-all active:scale-95">
@@ -113,10 +113,10 @@ export default function BountyBoardPage() {
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4">
           <div className="relative flex-1 w-full text-xs font-semibold">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search bounties..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-sm italic`} />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search tasks..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-sm`} />
           </div>
           <Badge variant="secondary" className="whitespace-nowrap px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-lg text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} active bounties
+            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} active tasks
           </Badge>
         </div>
 
@@ -128,7 +128,7 @@ export default function BountyBoardPage() {
           ) : filteredBounties.length > 0 ? (
             <div className="space-y-4">
               <h3 className="text-xs font-bold uppercase tracking-widest text-amber-500 mb-2 flex items-center gap-2">
-                <Coins className="w-4 h-4" /> Available Bounties
+                <Coins className="w-4 h-4" /> Active Missions
               </h3>
               {filteredBounties.map((b) => (
                 <Card key={b.id} className="p-6 border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all group overflow-hidden relative">
@@ -152,7 +152,7 @@ export default function BountyBoardPage() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl italic">"{String(b.description || "")}"</p>
+                      <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">{String(b.description || "")}</p>
                       
                       <div className="flex items-center gap-4 mt-5 text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
                         <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
@@ -176,8 +176,8 @@ export default function BountyBoardPage() {
 
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-amber-500/10 pt-4 md:pt-0 md:pl-8 min-w-[140px]">
                       <div className="text-center md:text-right">
-                        <div className="text-2xl font-black text-amber-500 font-mono tracking-tighter">₹{Number(b.amount || 0).toLocaleString()}</div>
-                        <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward Pool</div>
+                        <div className="text-2xl font-bold text-amber-500 tracking-tight">₹{Number(b.amount || 0).toLocaleString()}</div>
+                        <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
                       </div>
                       <Link href={`/product/${b.productId}`}>
                         <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
@@ -194,10 +194,10 @@ export default function BountyBoardPage() {
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-6 h-6 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-medium mb-2">No bounties found</h3>
-              <p className="text-muted-foreground mb-6">Try searching for something else or create a new bounty.</p>
+              <h3 className="text-xl font-medium mb-2">No tasks found</h3>
+              <p className="text-muted-foreground mb-6">Try searching for something else or create a new community task.</p>
               <Button asChild variant="outline" className="rounded-xl">
-                <Link href="/marketplace">Create Bounty from Marketplace</Link>
+                <Link href="/marketplace">Create Task from Marketplace</Link>
               </Button>
             </div>
           )}

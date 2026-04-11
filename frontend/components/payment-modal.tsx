@@ -198,10 +198,10 @@ export function PaymentModal({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold">
             <ShieldCheck className="w-5 h-5 text-primary" /> Checkout
           </DialogTitle>
-          <DialogDescription>Payment is held in escrow and released after delivery confirmation.</DialogDescription>
+          <DialogDescription>Your payment is held securely and released only after you confirm delivery.</DialogDescription>
         </DialogHeader>
 
         {success ? (
@@ -209,10 +209,10 @@ export function PaymentModal({
             <div className="rounded-lg border p-4">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                <div className="font-semibold">Payment created</div>
+                <div className="font-semibold">Payment Confirmed</div>
               </div>
               <div className="text-sm text-muted-foreground mt-2">
-                TX hash: <span className="font-mono">{String(success.txHash || "")}</span>
+                Transaction Record: <span className="font-mono">{String(success.txHash || "").slice(0, 20)}...</span>
               </div>
               <a
                 className="text-sm text-primary hover:underline inline-flex items-center gap-2 mt-2"
@@ -220,7 +220,7 @@ export function PaymentModal({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View on Stellar Expert <ArrowRight className="w-4 h-4" />
+                View Stellar Record <ArrowRight className="w-4 h-4" />
               </a>
               {success.qrCodeUrl && (
                 <div className="bg-slate-800/50 rounded-2xl p-6 border border-white/5 flex flex-col items-center gap-4 my-4">
@@ -253,17 +253,17 @@ export function PaymentModal({
           </div>
         ) : (
           <>
-            <div className="rounded-lg border p-4">
+             <div className="rounded-lg border p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <div className="font-medium truncate">{String(product.title || "")}</div>
-                  <div className="text-sm text-muted-foreground mt-1">Product ID: {String(product.id || "")}</div>
+                  <div className="font-semibold truncate text-lg">{String(product.title || "")}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Product ID: {String(product.id || "").slice(0, 8)}</div>
                 </div>
-                <Badge variant="secondary">Escrow</Badge>
+                <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Secure Payment</Badge>
               </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <div className="text-2xl font-semibold">₹{Number(product.priceInr).toLocaleString()}</div>
-                <div className="text-sm text-muted-foreground font-mono">≈ {Number(product.priceUsdc).toFixed(4)} USDC</div>
+               <div className="mt-4 flex items-baseline justify-between">
+                <div className="text-3xl font-bold tracking-tight">₹{Number(product.priceInr).toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground font-mono">≈ {Number(product.priceUsdc).toFixed(2)} USDC</div>
               </div>
             </div>
 
@@ -291,9 +291,9 @@ export function PaymentModal({
                   <Loader2 className="w-4 h-4 animate-spin" /> Fetching quote...
                 </div>
               ) : quote ? (
-                <div className="mt-2 text-sm text-muted-foreground">
+                 <div className="mt-2 text-sm text-muted-foreground">
                   <div className="font-mono">
-                    {String(quote.sourceAmount || 0)} {String(quote.sourceCurrency || "")} → {String(quote.targetUsdc || 0)} USDC in escrow
+                    {String(quote.sourceAmount || 0)} {String(quote.sourceCurrency || "")} → {String(quote.targetUsdc || 0)} USDC in Secure Hold
                   </div>
                   <div className="mt-1 text-xs">
                     Rate: {String(quote.exchangeRate || "")} · Fee: {String(quote.fee || 0)} USDC
@@ -304,19 +304,19 @@ export function PaymentModal({
               )}
             </div>
 
-            <div className="grid gap-2">
-              <Button disabled={!quote || paying !== null || (!user?.id && !publicKey)} className="w-full" onClick={handleWalletPay}>
-                {paying === "wallet" ? "Processing..." : "Pay with Stellar Wallet"}
+             <div className="grid gap-2">
+              <Button disabled={!quote || paying !== null || (!user?.id && !publicKey)} className="w-full h-12 rounded-xl text-sm font-bold" onClick={handleWalletPay}>
+                {paying === "wallet" ? "Processing..." : "Pay with Wallet"}
               </Button>
               
-              {user?.role === 'SUPPLIER' && (
+               {user?.role === 'SUPPLIER' && (
                 <Button 
                   variant="outline" 
                   disabled={paying !== null || !user?.id} 
-                  className="w-full border-primary/20 hover:bg-primary/5" 
+                  className="w-full h-12 rounded-xl text-sm font-bold border-primary/20 hover:bg-primary/5" 
                   onClick={handleSupplierWalletPay}
                 >
-                  {paying === "supplier_wallet" ? "Processing..." : "Pay with Backend Wallet"}
+                  {paying === "supplier_wallet" ? "Processing..." : "Pay with Managed Store Wallet"}
                 </Button>
               )}
 

@@ -57,7 +57,7 @@ export default function TransparencyPage() {
   }, [])
 
   if (!isClient) {
-    return <div className="min-h-screen bg-[#030408] text-slate-400"><Header /><main className="max-w-7xl mx-auto px-6 py-48 text-center uppercase tracking-widest text-[10px] font-black opacity-50">Initializing Transparent Protocol...</main></div>
+    return <div className="min-h-screen bg-[#030408] text-slate-400"><Header /><main className="max-w-7xl mx-auto px-6 py-48 text-center uppercase tracking-widest text-[10px] font-bold opacity-50">Loading Transparency Data...</main></div>
   }
 
   return (
@@ -75,15 +75,15 @@ export default function TransparencyPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-5 py-2 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-6 md:mb-10 italic shadow-2xl backdrop-blur-xl"
+              className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-5 py-2 rounded-2xl text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-6 md:mb-10 shadow-2xl backdrop-blur-xl"
             >
-              <Activity className="w-4 h-4 animate-pulse" /> Real-time Node Telemetry
+              <Activity className="w-4 h-4" /> Real-time Platform Activity
             </motion.div>
-            <h1 className={`${outfit.className} text-4xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.95] md:leading-[0.85] mb-6 md:mb-10`}>
-              Network <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Transparency.</span>
+            <h1 className={`${outfit.className} text-4xl md:text-7xl font-bold text-white tracking-tight uppercase leading-[0.95] md:leading-[0.85] mb-6 md:mb-10`}>
+              Platform <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Transparency.</span>
             </h1>
-            <p className="text-base md:text-xl text-slate-500 font-extrabold uppercase tracking-widest italic opacity-70 leading-relaxed max-w-2xl">
-              Live audit of the ChainVerify Protocol. Monitor global asset propagation, node consensus, and cryptographic settlement velocity.
+            <p className="text-base md:text-xl text-slate-500 font-bold uppercase tracking-widest opacity-70 leading-relaxed max-w-2xl">
+              Monitor live platform activity and product verifications. View global listings, community trust, and system performance.
             </p>
           </div>
           <button 
@@ -91,14 +91,14 @@ export default function TransparencyPage() {
             className="flex items-center gap-4 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all active:scale-95 group backdrop-blur-xl shadow-2xl"
           >
             <RefreshCcw className={`w-4 h-4 text-blue-400 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"}`} />
-            <span className="text-[10px] font-black uppercase tracking-widest text-white">Refresh Global Feed</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Refresh Feed</span>
           </button>
         </div>
 
         {/* Dynamic Exchange Rate Highlights */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 mb-16 md:mb-24">
           <RateCard 
-            label="USDC / Stellar Magnitude" 
+            label="USDC Market Rate" 
             value={ratesData?.USDC?.inr ? `₹${ratesData.USDC.inr}` : "₹83.33"} 
             trend="+0.02%" 
             icon={Globe} 
@@ -106,7 +106,7 @@ export default function TransparencyPage() {
             chartData={[40, 55, 45, 60, 50, 75, 65]}
           />
           <RateCard 
-            label="XLN Consensus Threshold" 
+            label="XLM Market Rate" 
             value={ratesData?.XLM?.usd ? `$${ratesData.XLM.usd}` : "$0.1242"} 
             trend="-0.15%" 
             icon={Zap} 
@@ -114,7 +114,7 @@ export default function TransparencyPage() {
             chartData={[30, 45, 35, 50, 40, 65, 55]}
           />
           <RateCard 
-            label="TRT Trust Propagation" 
+            label="Community Trust Index" 
             value="1.082" 
             trend="+1.24%" 
             icon={ShieldCheck} 
@@ -125,11 +125,11 @@ export default function TransparencyPage() {
 
         {/* ── Network Vital Nodes ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-16 md:mb-24">
-          <StatMiniCard label="Active Nodes" value="4,102" sub="Global Registry" />
-          <StatMiniCard label="Settlement Env" value="Mainnet-Beta" sub="Soroban VM" />
-          <StatMiniCard label="24h Consensus" value="99.98%" sub="High Fidelity" />
-          <StatMiniCard label="Asset Throughput" value="1.2M+" sub="Verified Units" />
-          <StatMiniCard label="Oracle Latency" value="240ms" sub="Real-time Sync" />
+          <StatMiniCard label="Active Users" value="4,102" sub="Verified Members" />
+          <StatMiniCard label="System Env" value="Mainnet-Beta" sub="Global Network" />
+          <StatMiniCard label="24h Reliability" value="99.98%" sub="Uptime" />
+          <StatMiniCard label="Items Verified" value="1.2M+" sub="Product Units" />
+          <StatMiniCard label="Sync Latency" value="240ms" sub="Real-time Updates" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 mb-16 md:mb-24">
@@ -138,12 +138,12 @@ export default function TransparencyPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] group-hover:bg-blue-500/10 transition-all duration-1000" />
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12">
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2 italic">Propagation Analytics</h3>
-                <div className={`${outfit.className} text-3xl md:text-4xl font-black text-white italic tracking-tighter uppercase`}>Market Volume Metrics</div>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Growth Analytics</h3>
+                <div className={`${outfit.className} text-3xl md:text-4xl font-bold text-white tracking-tight uppercase leading-none`}>Monthly Volume</div>
               </div>
               <div className="flex bg-white/5 border border-white/10 rounded-xl p-1.5 shadow-inner">
-                <button className="px-6 py-2 text-[9px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 rounded-lg italic transition-all">24H Node Data</button>
-                <button className="px-6 py-2 text-[9px] font-black uppercase tracking-widest text-slate-700 hover:text-slate-500 rounded-lg italic">Historical</button>
+                <button className="px-6 py-2 text-[9px] font-bold uppercase tracking-widest text-blue-500 bg-blue-500/10 rounded-lg transition-all">Daily Data</button>
+                <button className="px-6 py-2 text-[9px] font-bold uppercase tracking-widest text-slate-700 hover:text-slate-500 rounded-lg">Historical</button>
               </div>
             </div>
             
@@ -172,7 +172,7 @@ export default function TransparencyPage() {
                       domain={['auto', 'auto']} 
                       stroke="#475569" 
                       fontSize={9} 
-                      fontWeight="900"
+                      fontWeight="bold"
                       axisLine={false} 
                       tickLine={false} 
                       dx={-10}
@@ -185,8 +185,8 @@ export default function TransparencyPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full flex items-center justify-center text-slate-700 font-black uppercase tracking-[0.4em] text-[10px] italic">
-                  Awaiting synchronization payload...
+                <div className="h-full flex items-center justify-center text-slate-700 font-bold uppercase tracking-widest text-[10px]">
+                  Waiting for data...
                 </div>
               )}
             </div>
@@ -194,20 +194,20 @@ export default function TransparencyPage() {
 
           {/* Regional Distribution */}
           <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10 italic">Regional Distribution</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Regional Activity</h3>
             <div className="flex-1 w-full overflow-hidden">
               <div className="space-y-6">
                 {(ratesData?.salesByCountry || [{region: 'North America', volume: '1.2M'}, {region: 'Europe', volume: '840K'}, {region: 'Asia-Pacific', volume: '2.1M'}]).map((reg: any, i: number) => (
                   <div key={i} className="flex items-center justify-between border-b border-white/[0.05] pb-4">
-                    <span className="text-[10px] uppercase font-black tracking-widest text-slate-400 italic">{reg.region || reg.country}</span>
-                    <span className="text-[10px] font-mono font-black text-blue-500 text-right italic">{reg.volume} Asset Node</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">{reg.region || reg.country}</span>
+                    <span className="text-[10px] font-mono font-bold text-blue-500 text-right">{reg.volume} Items</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="mt-10 py-6 border-t border-white/[0.05] flex items-center justify-between">
-               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-700 italic">Total Propagation Nodes</span>
-               <span className="text-[14px] font-black text-white italic">412 Global Nodes</span>
+               <span className="text-[9px] font-bold uppercase tracking-widest text-slate-700">Total Verification Items</span>
+               <span className="text-[14px] font-bold text-white uppercase">412 Global Units</span>
             </div>
           </div>
         </div>
@@ -216,21 +216,21 @@ export default function TransparencyPage() {
         <div className="mb-16 md:mb-24 overflow-hidden">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12">
             <div className="text-center sm:text-left">
-               <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2 italic">Consensus Event Stream</h3>
-               <div className={`${outfit.className} text-3xl font-black text-white italic tracking-tighter uppercase`}>Oracle Events Matrix</div>
+               <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Live Activity Stream</h3>
+               <div className={`${outfit.className} text-3xl font-bold text-white tracking-tight uppercase`}>Recent Verified Activity</div>
             </div>
-            <button className="px-8 py-3 bg-white/[0.03] border border-white/[1] rounded-xl text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-white transition-all shadow-2xl italic">Export Telemetry Log</button>
+            <button className="px-8 py-3 bg-white/[0.03] border border-white/[0.08] rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-all shadow-2xl">Export Activity Log</button>
           </div>
           
           <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden shadow-3xl overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em] border-b border-white/[0.06]">
-                  <th className="pb-8 pl-8 text-left">Protocol Asset</th>
-                  <th className="pb-8 text-left">Settlement Ledger Hash</th>
-                  <th className="pb-8 text-center">Liquidity (USDC)</th>
-                  <th className="pb-8 text-center">Network Load</th>
-                  <th className="pb-8 text-right pr-8">Status Matrix</th>
+                <tr className="text-[9px] font-bold text-slate-700 uppercase tracking-widest border-b border-white/[0.06]">
+                  <th className="pb-8 pl-8 text-left">Product Name</th>
+                  <th className="pb-8 text-left">Stellar Record</th>
+                  <th className="pb-8 text-center">Order Value</th>
+                  <th className="pb-8 text-center">System Fee</th>
+                  <th className="pb-8 text-right pr-8">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.03]">
@@ -238,18 +238,18 @@ export default function TransparencyPage() {
                   ratesData.recentDeals.map((deal: any) => (
                     <tr key={deal.id} className="group hover:bg-white/[0.04] transition-all duration-300">
                       <td className="py-8 pl-8">
-                        <div className="font-black text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight text-base italic">{deal.product}</div>
-                        <div className="text-[9px] text-slate-600 font-black mt-2 uppercase tracking-widest opacity-60 font-mono">NODE_HASH: {deal.id.slice(0, 16)}</div>
+                        <div className="font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight text-lg leading-none">{deal.product}</div>
+                        <div className="text-[9px] text-slate-600 font-bold mt-2 uppercase tracking-widest opacity-60 font-mono">ID: {deal.id.slice(0, 16)}</div>
                       </td>
-                      <td className="py-8 text-xs font-mono text-slate-500 italic lowercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">{deal.wallet}</td>
-                      <td className={`${outfit.className} py-8 text-center font-black text-white tracking-tighter text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>${deal.amount}</td>
+                      <td className="py-8 text-xs font-mono text-slate-500 lowercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">{deal.wallet}</td>
+                      <td className={`${outfit.className} py-8 text-center font-bold text-white tracking-tighter text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>${deal.amount}</td>
                       <td className="py-8 text-center">
-                        <span className="text-[9px] font-black text-blue-400 bg-blue-500/5 px-4 py-2 rounded-xl border border-blue-500/10 uppercase tracking-widest italic shadow-inner">
+                        <span className="text-[9px] font-bold text-blue-400 bg-blue-500/5 px-4 py-2 rounded-xl border border-blue-500/10 uppercase tracking-widest shadow-inner">
                           {deal.fee} XLM
                         </span>
                       </td>
                       <td className="py-8 text-right pr-8">
-                        <span className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.3em] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-xl shadow-emerald-500/5 group-hover:shadow-emerald-500/10 transition-all italic">
+                        <span className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl text-[9px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-xl shadow-emerald-500/5 group-hover:shadow-emerald-500/10 transition-all">
                           <CheckCircle2 className="w-3.5 h-3.5" /> {deal.status}
                         </span>
                       </td>
@@ -257,8 +257,8 @@ export default function TransparencyPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-24 text-center text-slate-700 font-black uppercase tracking-[0.8em] text-[10px] italic">
-                      Scanning Ledger for Propagation Signals...
+                    <td colSpan={5} className="py-24 text-center text-slate-700 font-bold uppercase tracking-widest text-[10px]">
+                      Scanning Network for Recent Activity...
                     </td>
                   </tr>
                 )}
@@ -270,8 +270,8 @@ export default function TransparencyPage() {
         <div className="mt-16 text-center pb-32">
           <div className="inline-flex items-center gap-6 px-10 py-4 bg-white/5 rounded-full border border-white/10 shadow-3xl backdrop-blur-3xl group cursor-help">
             <Zap className="w-5 h-5 text-yellow-400 group-hover:scale-125 transition-transform duration-500" />
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] italic">
-              Verification Oracle Synchronized via <span className="text-white group-hover:text-blue-400 transition-colors">Stellar Consensus Protocol v21.0.4</span>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              Data Synchronized via <span className="text-white group-hover:text-blue-400 transition-colors">Stellar Network</span>
             </p>
           </div>
         </div>
@@ -293,16 +293,16 @@ function RateCard({ label, value, trend, icon: Icon, color }: any) {
            <Icon className={`w-6 h-6 md:w-8 md:h-8 ${color} drop-shadow-[0_0_15px_currentColor]`} />
         </div>
         <div className="flex flex-col items-end">
-           <div className={`text-[10px] font-black tracking-widest px-3 py-1 rounded-lg bg-white/[0.02] border border-white/[0.05] ${trend.startsWith('+') ? 'text-emerald-400' : 'text-red-400'} animate-pulse italic`}>
+           <div className={`text-[10px] font-bold tracking-widest px-3 py-1 rounded-lg bg-white/[0.02] border border-white/[0.05] ${trend.startsWith('+') ? 'text-emerald-400' : 'text-red-400'} animate-pulse`}>
              {trend}
            </div>
-           <div className="text-[8px] font-black text-slate-700 uppercase tracking-widest mt-2 italic opacity-60">Drift Coefficient</div>
+           <div className="text-[8px] font-bold text-slate-700 uppercase tracking-widest mt-2 opacity-60">Market Shift</div>
         </div>
       </div>
 
       <div className="space-y-2 md:space-y-4 mb-8 md:mb-10 relative z-10">
-        <h3 className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] italic leading-none">{label}</h3>
-        <div className={`${outfit.className} text-3xl md:text-5xl font-black text-white italic tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] tabular-nums transition-transform duration-700 group-hover:scale-105 origin-left`}>
+        <h3 className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">{label}</h3>
+        <div className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight tabular-nums transition-transform duration-700 group-hover:scale-105 origin-left`}>
           {value}
         </div>
       </div>
@@ -313,9 +313,9 @@ function RateCard({ label, value, trend, icon: Icon, color }: any) {
 function StatMiniCard({ label, value, sub }: { label: string, value: string, sub: string }) {
   return (
     <div className="glass-premium bg-[#0A0D14]/60 border border-white/[0.06] rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-8 hover:border-white/20 transition-all duration-500 shadow-3xl shadow-black/40">
-      <div className="text-[8px] md:text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2 md:mb-3 italic">{label}</div>
-      <div className={`${outfit.className} text-xl md:text-2xl font-black text-white mb-1 md:mb-1.5 italic tracking-tight`}>{value}</div>
-      <div className="text-[7px] md:text-[8px] font-black text-slate-800 uppercase tracking-[0.3em] font-mono italic opacity-60">{sub}</div>
+      <div className="text-[8px] md:text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-2 md:mb-3">{label}</div>
+      <div className={`${outfit.className} text-xl md:text-2xl font-bold text-white mb-1 md:mb-1.5 tracking-tight`}>{value}</div>
+      <div className="text-[7px] md:text-[8px] font-medium text-slate-800 uppercase tracking-widest font-mono opacity-60">{sub}</div>
     </div>
   )
 }

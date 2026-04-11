@@ -83,11 +83,11 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-primary" />
             </div>
-            Supplier Portal
+            Partner Area
           </DialogTitle>
           <DialogDescription className="pt-1">
-            Access your supplier dashboard, manage products, and verify bulk shipments. 
-            <span className="block mt-1 font-medium text-foreground">Buyers: Connect your wallet on the main page to verify products.</span>
+            Manage your store, verified products, and track order fulfillment. 
+            <span className="block mt-1 font-medium text-foreground">Shopping as a buyer? Simply connect your wallet on the main shop.</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -106,8 +106,8 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
                   <ShieldCheck className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-foreground">Register as Supplier</div>
-                  <div className="text-xs text-muted-foreground line-clamp-2">Join our network of verified manufacturers and distributors.</div>
+                  <div className="text-sm font-bold text-foreground">Become a Partner</div>
+                  <div className="text-xs text-muted-foreground line-clamp-2">Join our network of trusted manufacturers and verified stores.</div>
                 </div>
               </div>
               <Input placeholder="Full name or Company name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />

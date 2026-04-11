@@ -92,73 +92,73 @@ export default function CommunityPage() {
 
   return (
     <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden relative`}>
-      {/* ── Deep Space Atmospheric Effects ── */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+      {/* ── Space Atmospheric Effects ── */}
+      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
       
       <Header />
       
-      {/* ── page Header ── */}
-      <section className="relative pt-32 pb-20 overflow-hidden border-b border-white/[0.04] bg-[#0A0D14]/40 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-20">
+      {/* ── Page Header ── */}
+      <section className="relative pt-32 pb-20 overflow-hidden border-b border-white/[0.04] bg-[#07090F]/40 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
             <div className="max-w-3xl text-center lg:text-left">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-4 md:px-5 py-2 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-6 md:mb-8 italic shadow-2xl"
+                className="inline-flex items-center gap-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 px-5 py-2 rounded-2xl text-[10px] font-bold uppercase tracking-widest mb-8 shadow-xl"
               >
-                <Globe className="w-4 h-4 animate-spin-slow" /> Decentralized Truth Protocol
+                <Globe className="w-4 h-4" /> Global Community Hub
               </motion.div>
-              <h1 className={`${outfit.className} text-4xl md:text-8xl font-black tracking-tighter text-white mb-6 md:mb-8 leading-[0.95] md:leading-[0.85] uppercase italic tracking-[-0.05em]`}>
-                Consensus <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Discourse.</span>
+              <h1 className={`${outfit.className} text-5xl md:text-8xl font-bold tracking-tight text-white mb-8 leading-[1.1]`}>
+                Join the <span className="text-blue-500">Conversation.</span>
               </h1>
-              <p className="text-base md:text-xl text-slate-500 leading-relaxed max-w-2xl font-black uppercase tracking-[0.1em] italic opacity-70">
-                The community-driven layer of truth. Audit proof, discuss performance, and earn verification rewards across the Stellar ledger.
+              <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl font-light">
+                Connect with other members, verify product authenticity together, and help build a more transparent supply chain for everyone.
               </p>
             </div>
 
-            {/* Profile Identity Node */}
+            {/* Profile Identity Module */}
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="w-full max-w-sm glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 shadow-3xl relative overflow-hidden group mt-12 lg:mt-0"
+              className="w-full max-w-sm glass-premium bg-white/[0.02] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-10 shadow-3xl relative overflow-hidden group mt-12 lg:mt-0"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[60px] rounded-full group-hover:bg-blue-500/10 transition-all duration-1000" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[60px] rounded-full" />
               
               <div className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center mb-8 shadow-[0_15px_40px_rgba(37,99,235,0.3)] border border-white/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
-                  {isAuthenticated ? <UserIcon className="w-12 h-12 text-white" /> : <Wallet className="w-12 h-12 text-white" />}
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-2xl border border-white/20">
+                  {isAuthenticated ? <UserIcon className="w-10 h-10 text-white" /> : <Wallet className="w-10 h-10 text-white" />}
                 </div>
                 
                 {isAuthenticated ? (
                   <div className="w-full">
-                    <h3 className={`${outfit.className} text-3xl font-black text-white mb-2 uppercase italic tracking-tighter`}>{user.email?.split('@')[0]}</h3>
-                    <div className="flex flex-wrap justify-center gap-3 mb-8">
-                       <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-black uppercase tracking-widest text-[9px] rounded-lg italic">Protocol Member</div>
-                       {user.role === 'SUPPLIER' && <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-[9px] rounded-lg italic">Verified Node</div>}
+                    <h3 className={`${outfit.className} text-2xl font-bold text-white mb-2`}>{user.email?.split('@')[0]}</h3>
+                    <div className="flex flex-wrap justify-center gap-2 mb-8">
+                       <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold uppercase tracking-widest text-[9px] rounded-lg">Community Member</div>
+                       {user.role === 'SUPPLIER' && <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold uppercase tracking-widest text-[9px] rounded-lg">Verified Maker</div>}
                     </div>
-                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-16 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.2em] uppercase text-[11px] shadow-2xl transition-all active:scale-95 italic border border-white/10`}>
-                      <Plus className="w-5 h-5 mr-3" /> Anchor Discussion
+                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl transition-all active:scale-95`}>
+                      <Plus className="w-5 h-5 mr-3" /> Start a Topic
                     </Button>
                   </div>
                 ) : isConnected ? (
                   <div className="w-full text-center">
-                    <h3 className="font-semibold text-white text-lg mb-1">
+                    <h3 className="font-bold text-white text-lg mb-1">
                       {publicKey?.slice(0, 8)}...{publicKey?.slice(-8)}
                     </h3>
                     <p className="text-xs text-slate-500 mb-6">Stellar Wallet Connected</p>
-                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-14 rounded-xl bg-white text-black hover:bg-slate-200 font-bold transition-all active:scale-95 mb-4`}>
+                    <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-14 rounded-2xl bg-white text-black hover:bg-slate-200 font-bold transition-all active:scale-95 mb-4 shadow-xl`}>
                       <Plus className="w-5 h-5 mr-3" /> New Discussion
                     </Button>
-                    <div className="text-xs text-blue-500 font-medium italic opacity-80">Verified Community Member</div>
+                    <div className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Digital Identity Linked</div>
                   </div>
                 ) : (
                   <div className="w-full">
-                    <h3 className={`${outfit.className} text-2xl text-white mb-4 tracking-tight`}>Initialize Identity</h3>
-                    <p className="text-slate-500 text-xs mb-8 leading-relaxed">Connect your Stellar vault to participate in the Truth Layer.</p>
-                    <Button className={`${outfit.className} w-full h-16 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-[0.2em] uppercase text-[11px] shadow-2xl transition-all active:scale-95 italic border border-white/10`}>
-                      Connect Global Vault
+                    <h3 className={`${outfit.className} text-2xl font-bold text-white mb-3`}>Welcome!</h3>
+                    <p className="text-slate-500 text-sm mb-8 leading-relaxed">Connect your wallet to join discussions and verify products.</p>
+                    <Button className={`${outfit.className} w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl transition-all active:scale-95`}>
+                      Connect My Wallet
                     </Button>
                   </div>
                 )}
@@ -168,44 +168,40 @@ export default function CommunityPage() {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-8 py-24 relative z-10">
-        {/* Search Matrix */}
-        <div className="relative mb-16 md:mb-24 max-w-3xl mx-auto group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[1.5rem] md:rounded-[2rem] blur opacity-10 group-focus-within:opacity-30 transition-opacity" />
+      <main className="max-w-7xl mx-auto px-6 py-24 relative z-10">
+        {/* Search Bar */}
+        <div className="relative mb-20 max-w-2xl mx-auto group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-5 group-focus-within:opacity-20 transition-opacity" />
           <div className="relative">
-             <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
+             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
              <Input 
                value={q} 
                onChange={(e) => setQ(e.target.value)} 
-               placeholder="SEARCH NODES, TAGS, SIGNALS..." 
-               className={`${outfit.className} pl-16 md:pl-20 h-16 md:h-20 rounded-[1.5rem] md:rounded-[2rem] text-xs md:text-sm bg-[#0C121E] border-white/5 focus-visible:ring-blue-500/20 shadow-3xl text-white placeholder:text-slate-800 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] italic selection:bg-blue-500/40`} 
+               placeholder="Search discussions, tags, or members..." 
+               className={`${outfit.className} pl-16 h-18 rounded-[2rem] text-sm bg-white/[0.02] border-white/5 focus-visible:ring-blue-500/20 shadow-inner text-white placeholder:text-slate-600`} 
              />
           </div>
         </div>
 
-        {/* Discourse Ledger */}
+        {/* Discussions List */}
         <div className="space-y-8">
-          {/* Enrolled Protocols (Silent Join Visualization) */}
           {joinedNodes.length > 0 && (
             <div className="mb-20">
-               <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 flex items-center gap-4 italic mb-8">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500 animate-pulse" /> Joined Communities
+               <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 flex items-center gap-4 mb-8">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500" /> My Joined Groups
                </h3>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {joinedNodes.map((node: any) => (
-                    <div key={node.id} className="glass-premium bg-emerald-500/[0.03] border border-emerald-500/10 rounded-2xl p-6 flex items-center justify-between group hover:bg-emerald-500/[0.06] transition-all">
+                    <div key={node.id} className="bg-white/[0.02] border border-white/[0.05] rounded-[2rem] p-6 flex items-center justify-between hover:bg-white/[0.04] transition-all">
                        <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                              <Package className="w-6 h-6 text-emerald-500" />
                           </div>
                           <div>
-                             <div className="text-xs text-white tracking-tight">{node.supplier?.name}</div>
-                             <div className="text-[9px] text-slate-600 tracking-widest">{node.supplier?.category} Node</div>
+                             <div className="text-sm font-bold text-white">{node.supplier?.name}</div>
+                             <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{node.supplier?.category} Group</div>
                           </div>
                        </div>
-                        <Badge variant="outline" className="border-indigo-500/20 text-indigo-400 text-[10px] font-semibold px-3 py-1">
-                          Community Topic
-                        </Badge>
                     </div>
                   ))}
                </div>
@@ -213,56 +209,51 @@ export default function CommunityPage() {
           )}
 
           <div className="flex items-center justify-between mb-10">
-             <h3 className="text-xs font-bold text-slate-500 flex items-center gap-3">
-                <Activity className="w-4 h-4 text-blue-500" /> Recent Activity
+             <h3 className="text-sm font-bold text-slate-500 flex items-center gap-3">
+                <Activity className="w-4 h-4 text-blue-500" /> Latest Activity
              </h3>
              <div className="flex gap-2">
-                <Button variant="ghost" className="text-xs font-semibold text-blue-500 px-4 hover:bg-blue-600/10">Latest</Button>
-                <Button variant="ghost" className="text-xs font-semibold text-slate-500 px-4">Trending</Button>
+                <Button variant="ghost" className="text-xs font-bold text-blue-500 px-4 hover:bg-blue-600/10">Recent</Button>
+                <Button variant="ghost" className="text-xs font-bold text-slate-500 px-4">Trending</Button>
              </div>
           </div>
 
           <AnimatePresence mode="popLayout">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-40">
-                <div className="w-20 h-20 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin shadow-[0_0_40px_rgba(37,99,235,0.3)] mb-8" />
-                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-600 italic animate-pulse">Synchronizing Consensus State...</p>
+                <div className="w-16 h-16 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin mb-8" />
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-600">Loading Discussions...</p>
               </div>
             ) : filtered.length > 0 ? (
               <div className="grid grid-cols-1 gap-8">
                 {filtered.map((p, i) => (
                   <motion.div
                     key={p.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.08 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
                   >
                     <Link 
                       href={`/community/${p.id}`} 
-                      className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-10 flex flex-col xl:flex-row items-center gap-8 md:gap-12 group hover:border-blue-500/40 transition-all duration-700 relative overflow-hidden shadow-3xl"
+                      className="group block bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center gap-8 hover:border-blue-500/40 transition-all duration-500 shadow-xl"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-                      
-                      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-10 flex-1 min-w-0 w-full">
-                        <div className="w-20 h-20 md:w-24 md:h-24 bg-white/[0.02] rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000 relative shadow-2xl overflow-hidden">
-                           <div className="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10 animate-pulse" />
-                           {p.author?.supplierProfile ? <Award className="w-8 h-8 md:w-10 md:h-10 text-emerald-400" /> : <MessageCircle className="w-8 h-8 md:w-10 md:h-10 text-blue-400" />}
+                      <div className="flex items-center gap-6 flex-1 min-w-0 w-full">
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-white/[0.03] rounded-2xl flex items-center justify-center border border-white/[0.08] shrink-0 group-hover:bg-blue-600/10 group-hover:scale-105 transition-all">
+                           {p.author?.supplierProfile ? <Award className="w-8 h-8 text-emerald-400" /> : <MessageCircle className="w-8 h-8 text-blue-400" />}
                         </div>
-                        <div className="flex-1 min-w-0 text-center sm:text-left w-full">
-                          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 md:gap-5 mb-3 md:mb-4">
-                             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-medium text-slate-400">
-                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Community Member"}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-3">
+                             <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Member"}
                             </div>
                             {joinedNodes.some(n => n.supplierId === p.author?.supplierProfile?.id) && (
-                               <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[10px] font-semibold">Verified Member</Badge>
+                               <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[9px] font-bold">Verified Maker</Badge>
                             )}
-                            <span className="text-slate-800 font-black text-xs opacity-50 hidden sm:inline">/</span>
-                            <span className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.3em] italic font-mono opacity-60">ID-{String(p.id).slice(0, 8)}</span>
                           </div>
-                          <h3 className={`${outfit.className} text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors tracking-tight leading-snug`}>{p.title}</h3>
-                          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 md:gap-3">
+                          <h3 className={`${outfit.className} text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors tracking-tight`}>{p.title}</h3>
+                          <div className="flex flex-wrap items-center gap-2">
                             {p.tags?.map((tag: string) => (
-                              <span key={tag} className="px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-xs font-semibold text-slate-500 group-hover:text-slate-400 transition-colors">
+                              <span key={tag} className="px-3 py-1 bg-white/[0.02] border border-white/[0.05] rounded-lg text-xs font-bold text-slate-500">
                                 #{tag}
                               </span>
                             ))}
@@ -270,13 +261,13 @@ export default function CommunityPage() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between xl:justify-end gap-8 md:gap-12 w-full xl:w-auto shrink-0 pt-6 md:pt-10 xl:pt-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] xl:pl-12">
-                         <div className="text-left xl:text-right">
-                            <div className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em] italic leading-none mb-2 md:mb-3">Discourse Vol</div>
-                            <div className={`${outfit.className} text-3xl md:text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] italic tabular-nums`}>{p._count?.comments || 0}</div>
+                      <div className="flex items-center justify-between md:justify-end gap-10 w-full md:w-auto shrink-0 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-white/[0.08] md:pl-10">
+                         <div className="text-left md:text-right">
+                            <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Messages</div>
+                            <div className={`${outfit.className} text-3xl font-bold text-white tracking-tighter`}>{p._count?.comments || 0}</div>
                          </div>
-                         <div className="w-14 h-14 md:w-18 md:h-18 rounded-[1.2rem] md:rounded-[2rem] bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-blue-600/30 transition-all active:scale-95 shadow-2xl group-hover:scale-110 duration-500">
-                            <ArrowUpRight className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                         <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-blue-600 transition-all">
+                            <ArrowUpRight className="w-6 h-6" />
                          </div>
                       </div>
                     </Link>
@@ -284,95 +275,68 @@ export default function CommunityPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-40 rounded-[4rem] border-2 border-dashed border-white/[0.08] bg-white/[0.01] shadow-inner relative overflow-hidden group">
-                 <div className="absolute inset-0 bg-blue-600/[0.01] animate-pulse" />
-                 <MessageSquare className="w-20 h-20 text-slate-800 mx-auto mb-8 opacity-20" />
-                 <h3 className={`${outfit.className} text-3xl font-bold text-white opacity-80`}>Empty Community</h3>
-                 <p className="text-slate-500 text-sm mt-4 opacity-80 max-w-sm mx-auto">No discussions found. Start a new topic to share updates with the community.</p>
-                 <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} mt-12 bg-blue-600 hover:bg-blue-500 text-white font-bold h-14 px-12 rounded-xl shadow-xl transition-all active:scale-95`}>Start Discussion</Button>
+              <div className="text-center py-40 rounded-[3rem] border border-dashed border-white/[0.1] bg-white/[0.01]">
+                 <MessageSquare className="w-16 h-16 text-slate-800 mx-auto mb-6" />
+                 <h3 className={`${outfit.className} text-2xl font-bold text-white`}>No Discussions Yet</h3>
+                 <p className="text-slate-500 text-sm mt-3 max-w-sm mx-auto">Be the first to share your thoughts or request verification from the community.</p>
+                 <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} mt-10 bg-blue-600 hover:bg-blue-500 text-white font-bold h-14 px-10 rounded-2xl shadow-xl transition-all active:scale-95`}>Start Discussion</Button>
               </div>
             )}
           </AnimatePresence>
         </div>
       </main>
 
-      {/* ── Create Topic Node Modal ── */}
+      {/* ── Create Modal ── */}
       <AnimatePresence>
         {showCreateModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={() => setShowCreateModal(false)}
-              className="absolute inset-0 bg-[#030408]/90 backdrop-blur-xl" 
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowCreateModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md" 
             />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 30 }} 
-              animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.9, y: 30 }} 
-              className="relative w-full max-w-3xl glass-premium bg-[#0A0D14]/95 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-16 shadow-3xl overflow-hidden max-h-[90vh] overflow-y-auto"
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} 
+              className="relative w-full max-w-2xl bg-[#0A0D14] border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
-              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/[0.03] rounded-full blur-[120px] pointer-events-none" />
-              
               <div className="relative z-10 w-full">
-                 <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
-                    <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20">
-                       <Zap className="w-8 h-8 text-blue-500" />
+                 <div className="flex items-center gap-6 mb-10">
+                    <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20">
+                       <Plus className="w-7 h-7 text-blue-500" />
                     </div>
-                    <div className="text-center sm:text-left">
+                    <div>
                        <h2 className={`${outfit.className} text-3xl font-bold text-white`}>New Discussion</h2>
-                       <p className="text-sm text-slate-500 mt-1">Share your thoughts or request verification from the community.</p>
+                       <p className="text-sm text-slate-500 mt-1">Share your thoughts with the community.</p>
                     </div>
                  </div>
                 
-                <form onSubmit={handleCreate} className="space-y-10">
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-600 ml-2">Discussion Target / Title</label>
+                <form onSubmit={handleCreate} className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-slate-500 ml-1">Topic Title</label>
                     <Input 
-                      required
-                      value={newTopic.title}
-                      onChange={e => setNewTopic({...newTopic, title: e.target.value})}
-                      placeholder="AUDIT REQUEST: BATCH #409 SOURCING ANOMALIES..." 
-                      className={`${outfit.className} h-18 rounded-3xl bg-black/60 border-white/[0.06] text-white focus-visible:ring-blue-500/20 placeholder:text-slate-900 font-black uppercase tracking-[0.2em] italic shadow-inner`}
+                      required value={newTopic.title} onChange={e => setNewTopic({...newTopic, title: e.target.value})}
+                      placeholder="e.g. Sourcing question for Batch #409" 
+                      className={`${outfit.className} h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-slate-700 font-bold text-lg`}
                     />
                   </div>
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600 ml-2 italic">Context / Log Body</label>
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-slate-500 ml-1">Message Content</label>
                     <textarea 
-                      required
-                      value={newTopic.content}
-                      onChange={e => setNewTopic({...newTopic, content: e.target.value})}
-                      className={`${outfit.className} w-full h-52 rounded-3xl bg-black/60 border-white/[0.06] text-white p-8 focus:ring-2 focus:ring-blue-500/20 focus:outline-none placeholder:text-slate-900 font-black uppercase tracking-[0.15em] italic shadow-inner transition-all resize-none`}
-                      placeholder="PROVIDE GRANULAR EVIDENCE OR PROTOCOL LOGS FOR DISCOURSE..."
+                      required value={newTopic.content} onChange={e => setNewTopic({...newTopic, content: e.target.value})}
+                      className={`${outfit.className} w-full h-48 rounded-2xl bg-white/[0.03] border-white/10 text-white p-6 focus:ring-2 focus:ring-blue-500/20 focus:outline-none placeholder:text-slate-700 font-medium transition-all resize-none shadow-inner`}
+                      placeholder="Describe your topic details here..."
                     />
                   </div>
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600 ml-2 italic">Signal Tags (Comma Separated)</label>
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-slate-500 ml-1">Tags (Comma separated)</label>
                     <Input 
-                      value={newTopic.tags}
-                      onChange={e => setNewTopic({...newTopic, tags: e.target.value})}
-                      placeholder="AUDIT, MATCHA, SUPPLYCHAIN..." 
-                      className={`${outfit.className} h-18 rounded-3xl bg-black/60 border-white/[0.06] text-white focus-visible:ring-blue-500/20 placeholder:text-slate-900 font-black uppercase tracking-[0.2em] italic shadow-inner`}
+                      value={newTopic.tags} onChange={e => setNewTopic({...newTopic, tags: e.target.value})}
+                      placeholder="e.g. shipping, quality, audit" 
+                      className={`${outfit.className} h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-slate-700`}
                     />
                   </div>
                   
-                  <div className="flex gap-6 pt-10">
-                    <Button 
-                      type="button" 
-                      disabled={isSubmitting}
-                      onClick={() => setShowCreateModal(false)}
-                      variant="ghost" 
-                      className="flex-1 h-20 rounded-3xl text-slate-600 font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all italic"
-                    >
-                      Abort Signal
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className={`${outfit.className} flex-1 h-20 rounded-3xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-[0.3em] transition-all shadow-[0_20px_50px_rgba(37,99,235,0.3)] italic border border-white/10`}
-                    >
-                      {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : "Broadcast Signal"}
+                  <div className="flex gap-4 pt-6">
+                    <Button type="button" disabled={isSubmitting} onClick={() => setShowCreateModal(false)} variant="ghost" className="flex-1 h-16 rounded-2xl text-slate-400 font-bold hover:bg-white/5 transition-all">Cancel</Button>
+                    <Button type="submit" disabled={isSubmitting} className={`${outfit.className} flex-1 h-16 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-xl border border-white/10`}>
+                      {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Post Discussion"}
                     </Button>
                   </div>
                 </form>
