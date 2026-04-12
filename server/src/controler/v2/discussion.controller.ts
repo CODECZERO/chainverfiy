@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { asyncHandler } from '../../util/asyncHandler.util.js';
 import { ApiResponse } from '../../util/apiResponse.util.js';
 import * as DiscussionQueries from '../../dbQueries/discussion.Queries.js';
-import { cacheGet, cacheSet, cacheDel } from '../../util/redis.util.js';
+import { cacheGet, cacheSet, cacheDel, cacheDelPattern } from '../../util/redis.util.js';
 
 export const createDiscussion = asyncHandler(async (req: Request, res: Response) => {
   const { title, content, authorId, authorWallet, tags } = req.body;
@@ -12,7 +12,7 @@ export const createDiscussion = asyncHandler(async (req: Request, res: Response)
   }
 
   const discussion = await DiscussionQueries.createDiscussion({ title, content, authorId, authorWallet, tags });
-  await cacheDel('discussions:*');
+  await cacheDelPattern('discussions:*');
   
   return res.status(201).json(new ApiResponse(201, discussion, 'Discussion created successfully'));
 });

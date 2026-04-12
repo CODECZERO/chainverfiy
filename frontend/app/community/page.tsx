@@ -7,14 +7,12 @@ import type { RootState } from "@/lib/redux/store"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { 
-  MessageSquare, Search, ShieldCheck, Lock, Sparkles, 
-  MessageCircle, Loader2, Plus, Wallet, Award, User as UserIcon, ArrowUpRight, Activity, Globe, Zap, Clock, Package
-} from "lucide-react"
-import { getDiscussions, createDiscussion } from "@/lib/api-service"
+import { MessageCircle, Loader2, Plus, Wallet, Award, User as UserIcon, ArrowUpRight, Activity, Globe, Zap, Clock, Package, Search, ShieldCheck, MessageSquare, Lock, Sparkles } from "lucide-react"
+import { createDiscussion } from "@/lib/api-service"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Outfit, Inter } from "next/font/google"
+import { useDiscussions, useJoinedCommunities } from "@/hooks/use-api-queries"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -23,44 +21,21 @@ export default function CommunityPage() {
   const { isAuthenticated, user } = useSelector((s: RootState) => s.userAuth)
   const { isConnected, publicKey } = useSelector((s: RootState) => s.wallet)
   
-  const [discussions, setDiscussions] = useState<any[]>([])
-  const [joinedNodes, setJoinedNodes] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [q, setQ] = useState("")
   const [showCreateModal, setShowCreateModal] = useState(false)
-  
   const [newTopic, setNewTopic] = useState({ title: "", content: "", tags: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const fetchDiscussions = async () => {
-    try {
-      const res = await getDiscussions()
-      if (res) setDiscussions(res)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  // 🪄 Centralized Data Fetching
+  const { data: discussions = [], isLoading: discussionsLoading, refetch: discussionsRefetch } = useDiscussions()
+  const { data: joinedNodes = [], isLoading: nodesLoading } = useJoinedCommunities()
 
-  const fetchJoinedNodes = async () => {
-    if (!isAuthenticated && !isConnected) return
-    try {
-      const { getJoinedCommunities } = await import("@/lib/api-service")
-      const res = await getJoinedCommunities()
-      if (res) setJoinedNodes(res)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  useEffect(() => {
-    setLoading(true)
-    Promise.all([fetchDiscussions(), fetchJoinedNodes()]).finally(() => setLoading(false))
-  }, [isAuthenticated, isConnected])
+  const loading = discussionsLoading || nodesLoading
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase()
     if (!needle) return discussions
-    return discussions.filter((p) => 
+    return discussions.filter((p: any) => 
       `${p.title} ${p.content} ${p.tags?.join(" ")}`.toLowerCase().includes(needle)
     )
   }, [q, discussions])
@@ -81,7 +56,8 @@ export default function CommunityPage() {
       if (res) {
         setNewTopic({ title: "", content: "", tags: "" })
         setShowCreateModal(false)
-        fetchDiscussions()
+        // Refresh discussions via hook reference
+        discussionsRefetch()
       }
     } catch (error) {
       console.error(error)
@@ -134,10 +110,10 @@ export default function CommunityPage() {
                 {isAuthenticated ? (
                   <div className="w-full">
                     <h3 className={`${outfit.className} text-2xl font-bold text-white mb-2`}>{user.email?.split('@')[0]}</h3>
-                    <div className="flex flex-wrap justify-center gap-2 mb-8">
-                       <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold uppercase tracking-widest text-[9px] rounded-lg">Community Member</div>
-                       {user.role === 'SUPPLIER' && <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold uppercase tracking-widest text-[9px] rounded-lg">Verified Maker</div>}
-                    </div>
+                     <div className="flex flex-wrap justify-center gap-2 mb-8">
+                        <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold uppercase tracking-widest text-[9px] rounded-xl">Community Member</div>
+                        {user.role === 'SUPPLIER' && <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold uppercase tracking-widest text-[9px] rounded-xl">Verified Maker</div>}
+                     </div>
                     <Button onClick={() => setShowCreateModal(true)} className={`${outfit.className} w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl transition-all active:scale-95`}>
                       <Plus className="w-5 h-5 mr-3" /> Start a Topic
                     </Button>

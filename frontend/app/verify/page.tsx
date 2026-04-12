@@ -122,7 +122,7 @@ export default function VerifyPage() {
 
       {/* Strategic Terminal Header */}
       <div className="relative pt-24 pb-20 overflow-hidden border-b border-white/[0.04]">
-        <div className="max-w-[1600px] mx-auto px-6 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12">
             <div className="max-w-4xl">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -180,7 +180,7 @@ export default function VerifyPage() {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-20 relative z-10">
         <div className="flex gap-4 p-2 bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] rounded-[2.5rem] w-fit mb-20 shadow-2xl mx-auto lg:mx-0">
           {(["queue", "history"] as const).map((t) => (
             <button
@@ -213,7 +213,7 @@ export default function VerifyPage() {
               ) : remaining.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-48 glass-premium rounded-[4rem] border border-white/[0.06] shadow-3xl"
+                  className="text-center py-48 glass-premium rounded-[2.5rem] border border-white/[0.06] shadow-3xl"
                 >
                   <div className="w-32 h-32 mx-auto mb-10 rounded-[3rem] bg-indigo-600/10 flex items-center justify-center border border-indigo-500/20 shadow-xl">
                     <ShieldCheck className="w-14 h-14 text-indigo-500" />
@@ -231,7 +231,7 @@ export default function VerifyPage() {
                   return (
                     <motion.div
                       key={p.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }}
-                      className="group relative glass-premium rounded-[3.5rem] overflow-hidden border border-white/[0.08] hover:border-indigo-500/40 transition-all duration-700 shadow-3xl"
+                      className="group relative glass-premium rounded-[2.5rem] overflow-hidden border border-white/[0.08] hover:border-indigo-500/40 transition-all duration-700 shadow-3xl"
                     >
                       <div className="flex flex-col lg:flex-row gap-16 p-10 lg:p-14">
                         <div className="w-full lg:w-96 h-96 bg-[#030408]/60 rounded-[3rem] flex items-center justify-center shrink-0 overflow-hidden relative border border-white/[0.03] shadow-inner group-hover:border-indigo-500/30 transition-all duration-700">

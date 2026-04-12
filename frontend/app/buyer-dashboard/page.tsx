@@ -329,7 +329,7 @@ export default function BuyerDashboard() {
                {/* Activity Insights */}
                {active === "orders" && (
                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                    <div className="xl:col-span-8 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl">
+                    <div className="xl:col-span-8 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl">
                        <div className="flex items-center justify-between mb-16">
                           <div>
                              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Spending Insights</h3>
@@ -363,7 +363,7 @@ export default function BuyerDashboard() {
                        </div>
                     </div>
 
-                    <div className="xl:col-span-4 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
+                    <div className="xl:col-span-4 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-12">Payment Breakdown</h3>
                        <div className="flex-1 relative min-h-[250px]">
                           <ResponsiveContainer width="100%" height="100%">
@@ -435,7 +435,7 @@ export default function BuyerDashboard() {
                                  initial={{ opacity: 0, x: -20 }}
                                  animate={{ opacity: 1, x: 0 }}
                                  transition={{ delay: idx * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                 className="glass-premium bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 transition-all group relative overflow-hidden shadow-3xl"
+                                 className="glass-premium bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/30 rounded-[2.5rem] p-6 md:p-12 transition-all group relative overflow-hidden shadow-3xl"
                                >
                                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/[0.01] rounded-full blur-[80px] pointer-events-none" />

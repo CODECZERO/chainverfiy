@@ -1,8 +1,5 @@
-"use client"
-
 import React, { useEffect, useState } from "react"
 import { Header } from "@/components/header"
-import { getExchangeRates } from "@/lib/api-service"
 import { motion } from "framer-motion"
 import { 
   TrendingUp, TrendingDown, RefreshCcw, ShieldCheck, 
@@ -11,6 +8,7 @@ import {
 } from "lucide-react"
 import dynamic from 'next/dynamic'
 import { Outfit, Inter } from "next/font/google"
+import { useExchangeRates } from "@/hooks/use-api-queries"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -30,30 +28,12 @@ const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
 
 export default function TransparencyPage() {
   const [isClient, setIsClient] = useState(false)
-  const [ratesData, setRatesData] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [lastRefreshed, setLastRefreshed] = useState(new Date())
-
-  const fetchRates = async () => {
-    setLoading(true)
-    try {
-      const res = await getExchangeRates()
-      if (res) {
-          console.log("Transparency Rates:", res);
-          setRatesData(res);
-      }
-      setLastRefreshed(new Date())
-    } catch (err) {
-      console.error("Failed to fetch rates", err)
-    }
-    setLoading(false)
-  }
+  
+  // 🪄 Centralized Data Fetching with auto-refresh every 60s
+  const { data: ratesData, isLoading: loading, refetch: fetchRates } = useExchangeRates()
 
   useEffect(() => {
     setIsClient(true)
-    fetchRates()
-    const orbit = setInterval(fetchRates, 60000)
-    return () => clearInterval(orbit)
   }, [])
 
   if (!isClient) {
@@ -87,7 +67,7 @@ export default function TransparencyPage() {
             </p>
           </div>
           <button 
-            onClick={fetchRates}
+            onClick={() => fetchRates()}
             className="flex items-center gap-4 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all active:scale-95 group backdrop-blur-xl shadow-2xl"
           >
             <RefreshCcw className={`w-4 h-4 text-blue-400 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"}`} />
@@ -134,7 +114,7 @@ export default function TransparencyPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 mb-16 md:mb-24">
           {/* Main Volume Trend Chart */}
-          <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 shadow-3xl relative overflow-hidden group">
+          <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] group-hover:bg-blue-500/10 transition-all duration-1000" />
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12">
               <div>
@@ -193,7 +173,7 @@ export default function TransparencyPage() {
           </div>
 
           {/* Regional Distribution */}
-          <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
+          <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Regional Activity</h3>
             <div className="flex-1 w-full overflow-hidden">
               <div className="space-y-6">
@@ -222,7 +202,7 @@ export default function TransparencyPage() {
             <button className="px-8 py-3 bg-white/[0.03] border border-white/[0.08] rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-all shadow-2xl">Export Activity Log</button>
           </div>
           
-          <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden shadow-3xl overflow-x-auto">
+          <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] overflow-hidden shadow-3xl overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="text-[9px] font-bold text-slate-700 uppercase tracking-widest border-b border-white/[0.06]">
@@ -284,7 +264,7 @@ function RateCard({ label, value, trend, icon: Icon, color }: any) {
   return (
     <motion.div 
       whileHover={{ y: -8, scale: 1.01 }}
-      className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-10 shadow-3xl relative overflow-hidden group hover:border-blue-500/40 transition-all duration-700"
+      className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-6 md:p-10 shadow-3xl relative overflow-hidden group hover:border-blue-500/40 transition-all duration-700"
     >
       <div className={`absolute top-0 right-0 w-32 h-32 ${color.replace('text', 'bg').replace('500', '600')}/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000`} />
       

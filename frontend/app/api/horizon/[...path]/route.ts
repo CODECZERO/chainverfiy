@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * This pattern is more "standard" on Vercel and avoids triggering strict 
  * Firewall/WAF rules associated with direct edge rewrites to external sensitive APIs.
  */
-async function handle(request: NextRequest, { params }: { params: { path: string[] } }) {
+async function handle(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const resolvedParams = await params;
   const path = resolvedParams.path.join('/');
   const searchParams = request.nextUrl.searchParams.toString();

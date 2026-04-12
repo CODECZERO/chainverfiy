@@ -1,8 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
 import { TrendingUp, Globe } from "lucide-react"
-import { getUSDCRates } from "@/lib/exchange-rates"
+import { useUSDCRates } from "@/hooks/use-api-queries"
 
 const CURRENCIES = [
   { code: "USD", symbol: "$" },
@@ -14,12 +13,7 @@ const CURRENCIES = [
 ]
 
 export function USDCPriceTicker() {
-  const { data: rates = {}, isLoading } = useQuery({
-    queryKey: ["usdc-rates"],
-    queryFn: () => getUSDCRates(),
-    refetchInterval: 60000,
-    staleTime: 60000,
-  })
+  const { data: rates = {}, isLoading } = useUSDCRates()
 
   if (isLoading && Object.keys(rates).length === 0) {
     return (
@@ -35,9 +29,9 @@ export function USDCPriceTicker() {
   }
 
   return (
-    <div className="h-9 bg-[#05060B] border-b border-white/[0.04] flex items-center overflow-hidden relative z-40">
+    <div role="region" aria-label="Live Market Rates" className="h-9 bg-[#05060B] border-b border-white/[0.04] flex items-center overflow-hidden relative z-40">
       <div className="flex items-center gap-2 px-6 h-full border-r border-white/[0.06] bg-black/40 z-10 shrink-0">
-        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.6)] animate-pulse" />
+        <div aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.6)] animate-pulse" />
         <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 italic">Market Pulse</span>
       </div>
       

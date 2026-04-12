@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/lib/redux/store"
 import { 
   Plus, 
-  Package, 
-  ShoppingCart, 
+  Package,   ShoppingCart, 
   ArrowRight, 
   Clock, 
   ShieldCheck, 
@@ -19,15 +20,15 @@ import {
   Globe,
   MessageCircle,
   Zap,
-  Coins,
   ArrowUpRight,
   User,
   Radio,
   Camera,
   Video,
+  Copy,
+  Coins,
   MapPin,
   CheckCircle2,
-  Copy,
   ExternalLink
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -62,7 +63,7 @@ import dynamic from "next/dynamic"
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
 
-const CustomerManager = dynamic(() => import("@/components/customer-manager"), { 
+const CustomerManager = dynamic(() => import("@/components/customer-manager").then(mod => mod.CustomerManager), { 
   ssr: false,
   loading: () => <div className="h-[400px] flex items-center justify-center bg-white/[0.02] rounded-[2rem] border border-white/5 font-black uppercase tracking-widest text-[10px] text-slate-700 italic">Initializing Intel Core...</div>
 })
@@ -96,7 +97,8 @@ const NAV = [
 ]
 
 export default function SellerDashboard() {
-  const { user } = useWallet()
+  const { isAuthenticated, user } = useSelector((s: RootState) => s.userAuth)
+  const { isConnected, publicKey } = useWallet()
   const router = useRouter()
   const [active, setActive] = useState("overview")
   const [loading, setLoading] = useState(true)
@@ -170,7 +172,7 @@ export default function SellerDashboard() {
   if (user?.role !== 'SUPPLIER') {
     return (
       <div className="min-h-screen bg-[#030408] flex items-center justify-center p-8">
-        <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3rem] p-12 text-center max-w-md shadow-3xl">
+        <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 text-center max-w-md shadow-3xl">
           <div className="w-20 h-20 bg-red-600/10 rounded-[2.5rem] flex items-center justify-center border border-red-500/20 mx-auto mb-8">
              <ShieldCheck className="w-10 h-10 text-red-500" />
           </div>
@@ -281,7 +283,7 @@ export default function SellerDashboard() {
                       { label: "Live Products", value: stats.active, color: "text-emerald-400", bg: "from-emerald-500/10", icon: ShieldCheck },
                       { label: "Pending Review", value: stats.pending, color: "text-amber-400", bg: "from-amber-500/10", icon: Clock },
                       { label: "Completed Sales", value: stats.totalSales, color: "text-blue-400", bg: "from-blue-500/10", icon: Zap },
-                      { label: "Total Revenue", value: `\u20B9${stats.usdcInr}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
+                      { label: "Total Revenue", value: `\u20B9${Math.round(stats.usdcInr)}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
                     ].map((s, i) => (
                       <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
                         <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity`} />
@@ -297,7 +299,7 @@ export default function SellerDashboard() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 shadow-3xl">
+                    <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl">
                       <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Revenue Analytics</h3>
                       <div className="h-[350px] w-full">
                          <ResponsiveContainer width="100%" height="100%">
@@ -317,7 +319,7 @@ export default function SellerDashboard() {
                          </ResponsiveContainer>
                       </div>
                     </div>
-                    <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12 shadow-3xl">
+                    <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl">
                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Currency Pool</h3>
                        <div className="h-[300px] w-full relative flex items-center justify-center">
                           <ResponsiveContainer width="100%" height="100%">
@@ -464,7 +466,7 @@ export default function SellerDashboard() {
                     </div>
                   </div>
 
-                  <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[3.5rem] p-12">
+                  <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12">
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                         <div className="md:col-span-2 space-y-6">
                            <div className="text-[10px] text-slate-600 uppercase font-black italic">Total Managed Capital</div>

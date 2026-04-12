@@ -95,7 +95,7 @@ export function Header() {
          <USDCPriceTicker />
       </div>
 
-      <header className="fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-all duration-500">
+      <header role="banner" className="fixed top-9 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-all duration-500">
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -105,15 +105,15 @@ export function Header() {
           )}
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
+          <Link href="/" aria-label="ChainVerify Home" className="flex items-center gap-2 group shrink-0">
             <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300">
-               <ShieldCheck className="w-5 h-5 text-white" />
+               <ShieldCheck aria-hidden="true" className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors hidden sm:block">ChainVerify</span>
           </Link>
 
           {/* Desktop Navigation - Single Line Structure */}
-          <nav className="hidden lg:flex items-center flex-1 justify-center px-4">
+          <nav aria-label="Main Navigation" className="hidden lg:flex items-center flex-1 justify-center px-4">
             <div className="flex items-center gap-1 xl:gap-2">
               {FLAT_NAV.map((item) => {
                 const isActive = pathname === item.href
@@ -121,6 +121,7 @@ export function Header() {
                   <Link 
                     key={item.href} 
                     href={item.href}
+                    aria-label={`Go to ${item.label}`}
                     className={cn(
                       "group relative px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
                       isActive 
@@ -128,7 +129,7 @@ export function Header() {
                         : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
                     )}
                   >
-                    <item.icon className={cn(
+                    <item.icon aria-hidden="true" className={cn(
                        "w-3.5 h-3.5 transition-transform duration-500 group-hover:scale-110",
                        isActive ? "text-indigo-400" : "text-slate-600 group-hover:text-indigo-400"
                     )} />
@@ -146,6 +147,7 @@ export function Header() {
               {(isAuthenticated || isConnected) && (
                 <Link 
                   href={dashboardUrl}
+                  aria-label="Go to Dashboard"
                   className={cn(
                     "group relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
                     pathname.includes("dashboard")
@@ -153,7 +155,7 @@ export function Header() {
                       : "text-indigo-500/80 hover:text-white hover:bg-white/[0.04]"
                   )}
                 >
-                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <LayoutGrid aria-hidden="true" className="w-3.5 h-3.5" />
                   Dashboard
                 </Link>
               )}
@@ -164,15 +166,18 @@ export function Header() {
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
               className="lg:hidden w-10 h-10 flex items-center justify-center bg-white/[0.03] border border-white/[0.06] rounded-xl text-slate-400 hover:text-white transition-all active:scale-90"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
             <div className="hidden md:flex relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 transition-colors group-focus-within:text-indigo-500" />
+              <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 transition-colors group-focus-within:text-indigo-500" />
               <Input 
                 placeholder="Search..." 
+                aria-label="Search products"
                 className="w-32 bg-white/[0.03] border-white/[0.06] rounded-xl h-9 pl-9 text-xs font-semibold focus-visible:w-48 transition-all focus:bg-white/[0.05] focus:ring-1 focus:ring-indigo-500/30"
               />
             </div>
@@ -191,7 +196,11 @@ export function Header() {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white/[0.03] border border-white/[0.08] p-0 overflow-hidden hover:bg-white/[0.06] transition-all group active:scale-95">
+                  <Button 
+                    variant="ghost" 
+                    aria-label="User profile and settings"
+                    className="relative h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white/[0.03] border border-white/[0.08] p-0 overflow-hidden hover:bg-white/[0.06] transition-all group active:scale-95"
+                  >
                     <div className="absolute inset-0 bg-indigo-600/5 group-hover:bg-indigo-600/10" />
                     {isAuthenticated && user ? (
                       <div className="w-full h-full flex items-center justify-center text-indigo-400 font-bold text-sm">
@@ -199,7 +208,7 @@ export function Header() {
                       </div>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-500 group-hover:text-slate-300">
-                         <UserIcon className="w-5 h-5" />
+                         <UserIcon aria-hidden="true" className="w-5 h-5" />
                       </div>
                     )}
                   </Button>
@@ -273,6 +282,9 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation Menu"
             className="fixed inset-0 z-[120] bg-[#020408]/98 backdrop-blur-2xl flex flex-col p-6 lg:hidden"
           >
             <div className="flex items-center justify-between mb-10">

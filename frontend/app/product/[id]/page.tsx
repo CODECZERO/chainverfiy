@@ -7,7 +7,7 @@ import type { RootState } from "@/lib/redux/store"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { CheckCircle2, XCircle, Clock, MapPin, ExternalLink, MessageCircle, ShieldCheck, Package, Lightbulb, Coins, ArrowLeft, Star, QrCode, ArrowRight, Lock, Loader2, Globe, Activity, Sparkles } from "lucide-react"
+import { CheckCircle2, XCircle, Clock, MapPin, ExternalLink, MessageCircle, ShieldCheck, Package, Lightbulb, Coins, ArrowLeft, Star, QrCode, ArrowRight, Lock, Loader2, Globe, Activity, Sparkles, User as UserIcon } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { PaymentModal } from "@/components/payment-modal"
@@ -19,6 +19,10 @@ import { getBountiesByProduct, getProduct, getVerificationStatus, getBuyerProfil
 import { useToast } from "@/components/ui/use-toast"
 import { getIPFSUrl } from "@/lib/image-utils"
 import { cn } from "@/lib/utils"
+import { Outfit, Inter } from "next/font/google"
+
+const outfit = Outfit({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 const PAYMENT_CURRENCIES = ["USDC", "USDT", "XLM"]
 
@@ -353,6 +357,59 @@ export default function ProductPage() {
                 </div>
               )}
             </div>
+
+            {/* 3.5. Bounty Hub (Restored) */}
+            {bounties?.length > 0 && (
+              <div className="glass-premium rounded-[3rem] p-8 md:p-14 border border-amber-500/10 shadow-3xl relative overflow-hidden group bg-amber-500/[0.02]">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-amber-600/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-12">
+                  <div>
+                    <div className="text-xs font-semibold text-amber-500 mb-2">Proof Incentives</div>
+                    <h3 className="text-2xl md:text-3xl font-bold flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center border border-amber-500/20">
+                         <Coins className="w-7 h-7 text-amber-500" />
+                      </div>
+                      Active Bounties
+                    </h3>
+                  </div>
+                  <div className="px-5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[10px] font-black uppercase text-amber-500 tracking-wider">
+                    {bounties.length} Request{bounties.length > 1 ? 's' : ''} Open
+                  </div>
+                </div>
+
+                <div className="grid gap-6">
+                  {bounties.map((b) => (
+                    <motion.div 
+                      key={b.id} 
+                      whileHover={{ x: 10 }}
+                      className="flex flex-col md:flex-row items-center gap-8 bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 hover:border-amber-500/30 transition-all group/bounty"
+                    >
+                      <div className="flex-1 min-w-0 text-center md:text-left">
+                        <p className={`${inter.className} text-xl font-bold text-white mb-4 leading-relaxed`}>"{b.description}"</p>
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                          <span className="flex items-center gap-2"><UserIcon className="w-3.5 h-3.5" /> Issuer: {b.issuer?.email?.split('@')[0] || "Community"}</span>
+                          <div className="hidden sm:block w-1.5 h-1.5 rounded-full bg-slate-800" />
+                          <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {new Date(b.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-8 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/[0.05] pt-8 md:pt-0 md:pl-10">
+                        <div className="text-center md:text-right flex-1 md:flex-none">
+                          <div className="text-[10px] font-bold text-slate-600 uppercase mb-2 tracking-widest">Reward Pool</div>
+                          <div className={`${outfit.className} text-3xl font-bold text-amber-500 tracking-tighter`}>₹{b.amount}</div>
+                        </div>
+                        <Button 
+                          onClick={() => { setSelectedBounty(b); setShowProofModal(true); }}
+                          className="h-14 px-8 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all active:scale-95 shadow-xl shadow-amber-900/10 flex-1 md:flex-none"
+                        >
+                          Fulfill Proof
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* 4. Traceability Ledger */}
             {product.stageUpdates?.length > 0 && (

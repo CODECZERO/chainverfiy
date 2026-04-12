@@ -15,7 +15,14 @@ export const getVerificationStatus = AsyncHandler(async (req: RequestK, res: Res
   const walletFromQuery = req.query.wallet as string;
 
   if (!userId && !walletFromQuery) {
-    throw new ApiError(401, 'Unauthorized — User ID or Wallet required');
+    const guestResult = {
+      isVerified: false,
+      reason: 'Anonymous guest — Connect wallet to check status',
+      role: 'GUEST',
+      userId: null,
+      productId: (req.query.productId as string) || null
+    };
+    return res.json(new ApiResponse(200, guestResult, 'Guest status returned'));
   }
 
   const productId = req.query.productId as string;

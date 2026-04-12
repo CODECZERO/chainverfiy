@@ -1,8 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { getTasks } from "@/lib/api-service"
-import { getUsdcInrRate } from "@/lib/exchange-rates"
+import React, { useState } from "react"
 import { Header } from "@/components/header"
 import { ProductCard } from "@/components/product-card"
 import { Search, Sparkles, Filter } from "lucide-react"
@@ -11,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Outfit, Inter } from "next/font/google"
 import { cn } from "@/lib/utils"
+import { useProducts, useExchangeRates } from "@/hooks/use-api-queries"
 
 const outfit = Outfit({ subsets: ["latin"] as const })
 const inter = Inter({ subsets: ["latin"] as const })
@@ -18,39 +17,19 @@ const inter = Inter({ subsets: ["latin"] as const })
 const CATEGORIES = ["ALL", "Food & Spices", "Textiles", "Handicrafts", "Agriculture", "Electronics", "Other"]
 
 export default function MarketplacePage() {
-  const [tasks, setTasks] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [usdcInr, setUsdcInr] = useState(83.33)
   const [searchQuery, setSearchQuery] = useState("")
-  
   const [activeFilters, setActiveFilters] = useState({
     status: "ALL",
     category: "ALL"
   })
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true)
-        const [items, rate] = await Promise.all([
-          getTasks(),
-          getUsdcInrRate()
-        ])
-        
-        // getTasks now returns the unwrapped array or object from api-service
-        const validItems = Array.isArray(items) ? items : (items?.products || items?.data || []);
-        
-        setTasks(validItems)
-        setUsdcInr(rate)
-      } catch (err) {
-        console.error("Failed to fetch marketplace data:", err)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // 🪄 Centralized Data Fetching via React Query
+  const { data: items, isLoading: itemsLoading } = useProducts()
+  const { data: ratesData } = useExchangeRates()
 
-    fetchData()
-  }, [])
+  const tasks = Array.isArray(items) ? items : (items?.products || items?.data || [])
+  const usdcInr = ratesData?.USDC?.inr || 83.33
+  const loading = itemsLoading
 
   const filteredTasks = tasks.filter(t => {
     if (!t) return false;
@@ -84,7 +63,7 @@ export default function MarketplacePage() {
       <Header />
 
       <main className="relative z-10 pt-32 pb-24">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
           
           {/* ── Section Header ── */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">
