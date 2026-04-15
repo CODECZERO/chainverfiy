@@ -16,19 +16,31 @@ export interface RequestK extends Request {
 export const verifyToken = async (req: RequestK, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies?.accessToken || req.headers.authorization?.replace('Bearer ', '');
-    if (!token) throw new ApiError(401, 'Access token required');
-    if (!process.env.ATS) throw new ApiError(500, 'JWT secret not configured');
+    
+    if (!token) {
+      console.log(`[AUTH] Unauthorized: No token found for ${req.method} ${req.url}`);
+      throw new ApiError(401, 'Access token required');
+    }
+    
+    if (!process.env.ATS) {
+      console.error('[AUTH] Critical: JWT secret (ATS) is missing from environment variables');
+      throw new ApiError(500, 'JWT secret not configured');
+    }
 
-    const decoded = jwt.verify(token, process.env.ATS) as any;
-    if (!decoded?.id) throw new ApiError(401, 'Invalid token');
-
-    req.user = { id: decoded.id, email: decoded.email, role: decoded.role };
-    return next();
+    try {
+      const decoded = jwt.verify(token, process.env.ATS) as any;
+      if (!decoded?.id) throw new ApiError(401, 'Invalid token payload');
+      req.user = { id: decoded.id, email: decoded.email, role: decoded.role };
+      return next();
+    } catch (err: any) {
+      console.log(`[AUTH] Token verification failed: ${err.message}`);
+      throw new ApiError(401, 'Invalid or expired token');
+    }
   } catch (error) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json({ success: false, message: error.message });
     }
-    return res.status(401).json({ success: false, message: 'Invalid or expired token' });
+    return res.status(401).json({ success: false, message: 'Authentication failed' });
   }
 };
 
