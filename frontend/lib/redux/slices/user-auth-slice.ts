@@ -23,7 +23,7 @@ interface UserAuthState {
 const initialState: UserAuthState = {
   isAuthenticated: false,
   user: null,
-  isLoading: false,
+  isLoading: true, // Default to true to prevent flash-redirects before session check
   error: null,
 }
 
