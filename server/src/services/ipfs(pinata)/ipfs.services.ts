@@ -57,8 +57,10 @@ const uploadOnIpfsBill = async (data: Express.Multer.File) => {
       throw new Error(`File not found at path: ${data.path}`);
     }
     const fileBuffer = fs.readFileSync(data.path);
-
-    const file = new File([fileBuffer], data.originalname, { type: data.mimetype });
+    
+    // Ensure we have a valid Blob/File for Pinata SDK v2
+    const blob = new Blob([fileBuffer], { type: data.mimetype });
+    const file = new File([blob], data.originalname, { type: data.mimetype });
 
     console.log(`🚀 Uploading ${data.originalname} to Pinata...`);
     const uploadData = await pinata.upload.public.file(file);

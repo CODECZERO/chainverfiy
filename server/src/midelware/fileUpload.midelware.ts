@@ -1,9 +1,10 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
-// Use process.cwd() so this file compiles under Jest (no import.meta). Server runs from server/ so public is cwd/public.
-const UPLOAD_ROOT = process.cwd();
+// Use os.tmpdir() for serverless environments (Vercel) where project dirs are read-only.
+const UPLOAD_ROOT = os.tmpdir();
 
 // A function to ensure that the folder exists
 const ensureFolder = async (filePath: string) => {
@@ -22,9 +23,8 @@ const ensureFolder = async (filePath: string) => {
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
     try {
-      // Resolve path relative to server root (two levels up from src/midelware)
-      const folderExistPath = path.resolve(UPLOAD_ROOT, 'public');
-      console.log('📁 Upload destination path:', folderExistPath);
+      // Use os.tmpdir() directly for cross-platform and serverless stability
+      const folderExistPath = UPLOAD_ROOT;
       await ensureFolder(folderExistPath);
       cb(null, folderExistPath);
     } catch (error: any) {

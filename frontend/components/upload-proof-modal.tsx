@@ -50,7 +50,12 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
         body: ipfsData
       }).then(res => res.json())
 
-      if (!ipfsRes?.data?.cid) throw new Error("Failed to pin media to IPFS. Check Pinata credentials.")
+      console.log('📦 IPFS Response:', ipfsRes);
+
+      if (!ipfsRes?.data?.cid) {
+        console.error('❌ IPFS Upload Error:', ipfsRes);
+        throw new Error(ipfsRes?.message || "Failed to pin media to IPFS. Check Pinata credentials.")
+      }
       const cid = ipfsRes.data.cid
       setIpfsCid(cid)
 
