@@ -6,30 +6,31 @@ import os from 'os';
 // Use os.tmpdir() for serverless environments (Vercel) where project dirs are read-only.
 const UPLOAD_ROOT = os.tmpdir();
 
-// A function to ensure that the folder exists
-const ensureFolder = async (filePath: string) => {
+// A function to ensure that the folder exists (Synchronous for Multer stability)
+const ensureFolderSync = (filePath: string) => {
   try {
     if (fs.existsSync(filePath)) {
       return true;
     }
-    await fs.promises.mkdir(filePath, { recursive: true });
+    fs.mkdirSync(filePath, { recursive: true });
     return true;
   } catch (error: any) {
-    throw new Error(`Error creating directory: ${error.message}`);
+    console.error(`❌ Error creating directory ${filePath}:`, error.message);
+    return false;
   }
 };
 
 // Multer function to store file in local server
 const storage = multer.diskStorage({
-  destination: async function (req, file, cb) {
-    try {
-      // Use os.tmpdir() directly for cross-platform and serverless stability
-      const folderExistPath = UPLOAD_ROOT;
-      await ensureFolder(folderExistPath);
+  destination: function (req, file, cb) {
+    // Use os.tmpdir() directly for cross-platform and serverless stability
+    const folderExistPath = UPLOAD_ROOT;
+    const exists = ensureFolderSync(folderExistPath);
+    
+    if (exists) {
       cb(null, folderExistPath);
-    } catch (error: any) {
-      console.error('❌ Error setting upload destination:', error);
-      cb(error, '');
+    } else {
+      cb(new Error(`Failed to initialize upload directory: ${folderExistPath}`), '');
     }
   },
   filename: function (req, file, cb) {

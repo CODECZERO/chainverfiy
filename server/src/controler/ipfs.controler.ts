@@ -12,7 +12,18 @@ interface BillData {}
 
 const UploadFileOnIpfs = AsyncHandler(async (req: RequestBill, res: Response) => {
   const file = req.file;
-  console.log('📤 File upload request received:', file?.originalname);
+  
+  // Diagnostic logging
+  console.log('--- IPFS UPLOAD DIAGNOSTICS ---');
+  console.log('Method:', req.method);
+  console.log('Content-Type:', req.headers['content-type']);
+  if (file) {
+    console.log('📤 File detected:', file.originalname, `(${file.mimetype}, ${file.size} bytes)`);
+  } else {
+    console.log('❌ No file detected in req.file');
+    console.log('Body keys:', Object.keys(req.body || {}));
+  }
+  console.log('-------------------------------');
 
   if (!file) {
     throw new ApiError(400, 'Please provide a valid image (JPG, PNG, WebP) or PDF file');
