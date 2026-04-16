@@ -39,10 +39,21 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const allowedFormats = [
+    'image/jpeg', 
+    'image/png', 
+    'image/gif', 
+    'image/webp', 
+    'image/bmp',
+    'image/tiff',
+    'application/pdf'
+  ];
+  
   if (allowedFormats.includes(file.mimetype)) {
     cb(null, true);
   } else {
+    // Note: Multer does not provide a default error if fileFilter returns false.
+    // It simply leaves req.file as undefined.
     cb(null, false);
   }
 };

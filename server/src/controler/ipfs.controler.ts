@@ -14,7 +14,9 @@ const UploadFileOnIpfs = AsyncHandler(async (req: RequestBill, res: Response) =>
   const file = req.file;
   console.log('📤 File upload request received:', file?.originalname);
 
-  if (!file) throw new ApiError(400, 'Please provide img');
+  if (!file) {
+    throw new ApiError(400, 'Please provide a valid image (JPG, PNG, WebP) or PDF file');
+  }
 
   const uploadOnIpfsFile = await uploadOnIpfsBill(file);
   console.log('IPFS upload result:', uploadOnIpfsFile);
