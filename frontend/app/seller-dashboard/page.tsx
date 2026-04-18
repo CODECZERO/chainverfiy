@@ -59,6 +59,7 @@ import Link from "next/link"
 import { Outfit, Inter } from "next/font/google"
 import { motion, AnimatePresence } from "framer-motion"
 import dynamic from "next/dynamic"
+import { cn } from "@/lib/utils"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -187,7 +188,12 @@ export default function SellerDashboard() {
   }
 
   return (
-    <div className={`h-screen flex flex-col bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative`}>
+    <div 
+      className={cn(
+        "h-screen flex flex-col bg-[#030408] text-slate-400 selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative",
+        inter.className
+      )}
+    >
       {/* ── Deep Space Atmospheric Effects ── */}
       <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
