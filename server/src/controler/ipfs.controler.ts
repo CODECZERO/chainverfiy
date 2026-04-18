@@ -17,16 +17,21 @@ const UploadFileOnIpfs = AsyncHandler(async (req: RequestBill, res: Response) =>
   console.log('--- IPFS UPLOAD DIAGNOSTICS ---');
   console.log('Method:', req.method);
   console.log('Content-Type:', req.headers['content-type']);
+  
   if (file) {
     console.log('📤 File detected:', file.originalname, `(${file.mimetype}, ${file.size} bytes)`);
   } else {
     console.log('❌ No file detected in req.file');
+    // Check if it's in body (sometimes happens if headers are weird)
     console.log('Body keys:', Object.keys(req.body || {}));
+    if (req.body?.file) {
+      console.log('⚠️ Found "file" in req.body instead of req.file. This indicates a multipart boundary issue.');
+    }
   }
   console.log('-------------------------------');
 
   if (!file) {
-    throw new ApiError(400, 'Please provide a valid image (JPG, PNG, WebP) or PDF file');
+    throw new ApiError(400, 'Proof file missing. Please ensure you are uploading a valid image or PDF as a "file" field.');
   }
 
   const uploadOnIpfsFile = await uploadOnIpfsBill(file);

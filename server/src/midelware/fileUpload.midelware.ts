@@ -42,7 +42,10 @@ const storage = multer.diskStorage({
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedFormats = [
     'image/jpeg', 
+    'image/jpg',
+    'image/pjpeg',
     'image/png', 
+    'image/x-png',
     'image/gif', 
     'image/webp', 
     'image/bmp',
@@ -50,12 +53,14 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
     'application/pdf'
   ];
   
+  console.log(`[Multer Filter] Incoming file: ${file.originalname} (${file.mimetype}) for field [${file.fieldname}]`);
+
   if (allowedFormats.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    // Note: Multer does not provide a default error if fileFilter returns false.
-    // It simply leaves req.file as undefined.
-    cb(null, false);
+    console.warn(`[Multer Filter] ❌ Rejected file format: ${file.mimetype}`);
+    // Passing an error to the callback so the controller can distinguish format errors
+    cb(new Error(`Invalid file format: ${file.mimetype}. Allowed: ${allowedFormats.join(', ')}`));
   }
 };
 
