@@ -7,6 +7,9 @@ async function apiFetch(path: string, options?: RequestInit) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
 
+  const targetUrl = `${API}${path}`;
+  console.log(`[apiFetch] Calling: ${targetUrl}`, { method: options?.method || 'GET' });
+
   const headers: any = { ...authHeaders, ...options?.headers };
   
   // Only set application/json if not sending FormData
@@ -14,7 +17,7 @@ async function apiFetch(path: string, options?: RequestInit) {
     headers['Content-Type'] = 'application/json';
   }
 
-  const res = await fetch(`${API}${path}`, {
+  const res = await fetch(targetUrl, {
     credentials: 'include',
     headers,
     ...options,

@@ -217,6 +217,23 @@ export default function SellerDashboard() {
                 <div className="flex items-center gap-1.5 mt-1.5 text-blue-400 font-bold text-[9px] uppercase tracking-widest">
                    <ShieldCheck className="w-3 h-3" /> Verified Seller
                 </div>
+                {(user?.stellarWallet || publicKey) && (
+                  <button 
+                    onClick={copyWallet}
+                    className="flex items-center gap-1.5 mt-2 px-2 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-slate-500 hover:text-white transition-all group/wallet max-w-full overflow-hidden"
+                    title="Click to copy wallet address"
+                  >
+                    <Wallet className="w-3 h-3 text-slate-600 group-hover/wallet:text-blue-400 shrink-0" />
+                    <span className="font-mono text-[9px] truncate tracking-tight uppercase">
+                      {String(user?.stellarWallet || publicKey).slice(0, 6)}...{String(user?.stellarWallet || publicKey).slice(-4)}
+                    </span>
+                    {copied ? (
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                    ) : (
+                      <Copy className="w-3 h-3 text-slate-700 group-hover/wallet:text-slate-400 shrink-0" />
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -274,8 +291,13 @@ export default function SellerDashboard() {
                       </p>
                     </div>
                     <div className="flex gap-5">
-                      <button onClick={loadAll} className="p-4 bg-[#0A0D14]/60 border border-white/[0.08] rounded-[1.5rem] text-slate-500 hover:text-white transition-all">
-                        <RefreshCw className={`w-6 h-6 ${loading ? "animate-spin" : ""}`} />
+                      <button 
+                        onClick={loadAll} 
+                        disabled={loading}
+                        className="flex items-center gap-3 px-6 py-4 bg-[#0A0D14]/60 border border-white/[0.08] rounded-[1.5rem] text-slate-500 hover:text-white transition-all hover:border-blue-500/30 disabled:opacity-50 group"
+                      >
+                        <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin text-blue-500" : "group-hover:rotate-180 transition-transform duration-700"}`} />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">{loading ? "Syncing..." : "Refresh"}</span>
                       </button>
                     </div>
                   </div>

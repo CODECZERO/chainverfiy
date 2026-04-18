@@ -149,10 +149,16 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
 
             <Button
               onClick={handleSubmit}
-              disabled={!formData.amount || !formData.description || !formData.file}
-              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold h-11"
+              disabled={!formData.amount || !formData.description || !formData.file || step === "uploading"}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold h-11 transition-all active:scale-[0.98]"
             >
-              Upload Proof
+              {step === "uploading" ? (
+                <div className="flex items-center gap-2 uppercase tracking-widest text-[10px]">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Processing Protocol
+                </div>
+              ) : (
+                "Upload Proof"
+              )}
             </Button>
           </div>
         )}
