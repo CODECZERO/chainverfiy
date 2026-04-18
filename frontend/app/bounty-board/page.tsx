@@ -84,7 +84,7 @@ export default function BountyBoardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <div className="max-w-5xl mx-auto px-6 md:px-8 py-8 md:py-12">
+      <div className="max-w-5xl mx-auto px-6 md:px-8 pt-28 md:pt-32 pb-8 md:pb-12">
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 md:gap-4">
           <div>
             <div className="flex items-center gap-2 text-slate-500 mb-2">
@@ -176,7 +176,7 @@ export default function BountyBoardPage() {
 
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-amber-500/10 pt-4 md:pt-0 md:pl-8 min-w-[140px]">
                       <div className="text-center md:text-right">
-                        <div className="text-2xl font-bold text-amber-500 tracking-tight">₹{Number(b.amount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold text-amber-500 tracking-tight">₹{Number(b.amount || 0).toLocaleString()}</div>
                         <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
                       </div>
                       <Link href={`/product/${b.productId}`}>

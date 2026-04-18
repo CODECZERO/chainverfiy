@@ -121,7 +121,7 @@ export default function VerifyPage() {
       </div>
 
       {/* Strategic Terminal Header */}
-      <div className="relative pt-24 pb-20 overflow-hidden border-b border-white/[0.04]">
+      <div className="relative pt-28 md:pt-32 pb-20 overflow-hidden border-b border-white/[0.04]">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12">
             <div className="max-w-4xl">

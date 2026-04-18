@@ -61,6 +61,7 @@ export default function BuyerDashboard() {
   
   const { publicKey } = useWallet()
   const [active, setActive] = useState("orders")
+  const [mounted, setMounted] = useState(false)
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -73,7 +74,7 @@ export default function BuyerDashboard() {
     }
   }, [isAuthenticated, authLoading, router, publicKey])
 
-  useEffect(() => { loadOrders() }, [user?.id, publicKey])
+  useEffect(() => { setMounted(true); loadOrders() }, [user?.id, publicKey])
 
   const loadOrders = async () => {
     if (!user?.id && !publicKey) return
@@ -180,7 +181,7 @@ export default function BuyerDashboard() {
       
       <Header />
 
-      <div className="flex flex-1 overflow-hidden relative z-10">
+      <div className="flex flex-1 overflow-hidden relative z-10 pt-24 md:pt-28">
         {/* ── Dashboard Sidebar ── */}
         <aside className="hidden lg:flex flex-col w-80 shrink-0 gap-6 p-8 h-full border-r border-white/[0.04] bg-[#07090F]/40 backdrop-blur-xl">
           {/* User Profile */}
@@ -304,7 +305,7 @@ export default function BuyerDashboard() {
                {/* Dashboard Title */}
                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                   <div>
-                    <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.1]`}>
+                    <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]`}>
                       {active === "orders" ? <span>My <span className="text-blue-500">Orders</span></span> : 
                        active === "tracking" ? <span>Track <span className="text-blue-500">Shipments</span></span> : 
                        active === "completed" ? <span>Order <span className="text-blue-500">History</span></span> : 
@@ -341,8 +342,9 @@ export default function BuyerDashboard() {
                           </div>
                        </div>
                        <div className="h-[350px] w-full mt-4">
-                          <ResponsiveContainer width="100%" height="100%">
-                             <AreaChart data={spendingData}>
+                          {mounted && (
+                            <ResponsiveContainer width="100%" height="100%">
+                               <AreaChart data={spendingData}>
                                 <defs>
                                    <linearGradient id="buyerSpendGrad" x1="0" y1="0" x2="0" y2="1">
                                       <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5}/>
@@ -357,10 +359,11 @@ export default function BuyerDashboard() {
                                    contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px', boxShadow: '0 30px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)'}}
                                    itemStyle={{color: '#fff', fontWeight: 'bold', fontSize: '13px'}}
                                 />
-                                <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2000} />
-                             </AreaChart>
-                          </ResponsiveContainer>
-                       </div>
+                              <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2000} />
+                           </AreaChart>
+                        </ResponsiveContainer>
+                        )}
+                     </div>
                     </div>
 
                     <div className="xl:col-span-4 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
@@ -459,7 +462,7 @@ export default function BuyerDashboard() {
                                         </div>
                                         <div className="min-w-0 flex-1 text-center sm:text-left w-full">
                                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 md:gap-8 mb-4 md:mb-6">
-                                              <h4 className={`${outfit.className} text-xl md:text-3xl font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Product Purchase"}</h4>
+                                              <h4 className={`${outfit.className} text-lg md:text-2xl font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors duration-700 truncate leading-none`}>{o.product?.title || "Product Purchase"}</h4>
                                               <span className={`px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl border text-[9px] font-bold uppercase tracking-widest backdrop-blur-2xl shadow-xl ${s.cls} group-hover:scale-105 transition-transform duration-500`}>
                                                  <div className={`w-2 h-2 rounded-full ${s.dot} inline-block mr-3 md:mr-4 animate-pulse shadow-[0_0_15px_currentColor]`} /> {s.label}
                                               </span>
@@ -481,8 +484,8 @@ export default function BuyerDashboard() {
                                      {/* Order Amount */}
                                      <div className="xl:flex flex-col items-center border-y xl:border-x border-white/[0.04] py-8 md:py-10 xl:px-20 shrink-0 relative w-full xl:w-auto">
                                         <div className="absolute inset-0 bg-blue-500/5 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight tabular-nums drop-shadow-2xl group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10 text-center`}>
-                                           {o.priceUsdc} <span className="text-base md:text-lg text-blue-500 font-bold opacity-60">USDC</span>
+                                        <div className={`${outfit.className} text-2xl md:text-4xl font-bold text-white tracking-tight tabular-nums drop-shadow-2xl group-hover:scale-110 group-hover:text-blue-400 transition-all duration-700 relative z-10 text-center`}>
+                                           {o.priceUsdc} <span className="text-sm md:text-base text-blue-500 font-bold opacity-60">USDC</span>
                                         </div>
                                         <div className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-3 md:mt-4 group-hover:text-slate-400 transition-colors relative z-10 text-center">Secure Payment</div>
                                      </div>

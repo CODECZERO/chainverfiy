@@ -51,7 +51,7 @@ export default function TransparencyPage() {
       
       <Header />
       
-      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+      <main className="max-w-7xl mx-auto px-6 pt-28 md:pt-32 pb-12 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="max-w-4xl">
             <motion.div
@@ -61,10 +61,10 @@ export default function TransparencyPage() {
             >
               <Activity className="w-4 h-4" /> Real-time Platform Activity
             </motion.div>
-            <h1 className={`${outfit.className} text-4xl md:text-7xl font-bold text-white tracking-tight uppercase leading-[0.95] md:leading-[0.85] mb-6 md:mb-10`}>
+            <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold text-white tracking-tight uppercase leading-[0.95] md:leading-[0.85] mb-6 md:mb-10`}>
               Platform <span className="text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Transparency.</span>
             </h1>
-            <p className="text-base md:text-xl text-slate-500 font-bold uppercase tracking-widest opacity-70 leading-relaxed max-w-2xl">
+            <p className="text-sm md:text-lg text-slate-500 font-bold uppercase tracking-widest opacity-70 leading-relaxed max-w-2xl">
               Monitor live platform activity and product verifications. View global listings, community trust, and system performance.
             </p>
           </div>
@@ -220,13 +220,13 @@ export default function TransparencyPage() {
                   ratesData.recentDeals.map((deal: any) => (
                     <tr key={deal.id} className="group hover:bg-white/[0.04] transition-all duration-300">
                       <td className="py-8 pl-8">
-                        <div className="font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight text-lg leading-none">{deal.product}</div>
-                        <div className="text-[9px] text-slate-600 font-bold mt-2 uppercase tracking-widest opacity-60 font-mono">ID: {deal.id.slice(0, 16)}</div>
+                        <div className="font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight text-md leading-none">{deal.product}</div>
+                        <div className="text-[8px] text-slate-600 font-bold mt-2 uppercase tracking-widest opacity-60 font-mono">ID: {deal.id.slice(0, 16)}</div>
                       </td>
-                      <td className="py-8 text-xs font-mono text-slate-500 lowercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">{deal.wallet}</td>
-                      <td className={`${outfit.className} py-8 text-center font-bold text-white tracking-tighter text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>${deal.amount}</td>
+                      <td className="py-8 text-[10px] font-mono text-slate-500 lowercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">{deal.wallet}</td>
+                      <td className={`${outfit.className} py-8 text-center font-bold text-white tracking-tighter text-xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>${deal.amount}</td>
                       <td className="py-8 text-center">
-                        <span className="text-[9px] font-bold text-blue-400 bg-blue-500/5 px-4 py-2 rounded-xl border border-blue-500/10 uppercase tracking-widest shadow-inner">
+                        <span className="text-[8px] font-bold text-blue-400 bg-blue-500/5 px-3 py-1.5 rounded-xl border border-blue-500/10 uppercase tracking-widest shadow-inner">
                           {deal.fee} XLM
                         </span>
                       </td>

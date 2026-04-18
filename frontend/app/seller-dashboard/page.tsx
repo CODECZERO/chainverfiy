@@ -101,6 +101,7 @@ export default function SellerDashboard() {
   const { isConnected, publicKey } = useWallet()
   const router = useRouter()
   const [active, setActive] = useState("overview")
+  const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState([])
   const [orders, setOrders] = useState([])
@@ -124,6 +125,7 @@ export default function SellerDashboard() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     loadAll()
   }, [])
 
@@ -163,7 +165,7 @@ export default function SellerDashboard() {
 
   if (loading && !user) {
     return (
-      <div className="min-h-screen bg-[#030408] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#030408] text-white flex items-center justify-center pt-24">
         <div className="w-16 h-16 border-4 border-blue-600/30 border-t-blue-600 rounded-full animate-spin shadow-[0_0_30px_rgba(37,99,235,0.4)]" />
       </div>
     )
@@ -190,7 +192,7 @@ export default function SellerDashboard() {
       <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="flex flex-1 overflow-hidden relative z-10">
+      <div className="flex flex-1 overflow-hidden relative z-10 pt-24 md:pt-28">
         {/* ── Control Sidebar ── */}
         <aside className="w-80 bg-[#0A0D14]/80 backdrop-blur-2xl border-r border-white/[0.06] flex flex-col p-8 hidden lg:flex relative overflow-hidden">
           <div className="absolute inset-0 bg-blue-600/[0.01] pointer-events-none" />
@@ -225,7 +227,7 @@ export default function SellerDashboard() {
                 key={n.id}
                 whileHover={{ x: 8 }}
                 onClick={() => setActive(n.id)}
-                className={`w-full flex items-center gap-4 px-6 py-4.5 rounded-[1.5rem] transition-all duration-500 relative group ${
+                className={`w-full flex items-center gap-4 px-6 py-4 rounded-[1.5rem] transition-all duration-500 relative group ${
                   active === n.id 
                     ? "bg-blue-600/10 border border-blue-500/30 text-white shadow-2xl" 
                     : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]"
@@ -264,7 +266,7 @@ export default function SellerDashboard() {
                 <div className="space-y-12">
                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16">
                     <div>
-                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight uppercase leading-none`}>
+                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]`}>
                         Store <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">Dashboard</span>
                       </h2>
                       <p className="text-slate-500 text-[11px] font-bold uppercase tracking-widest mt-4 flex items-center gap-3">
@@ -299,11 +301,12 @@ export default function SellerDashboard() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl">
+                    <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl min-h-[480px]">
                       <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Revenue Analytics</h3>
                       <div className="h-[350px] w-full">
-                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={stats.analytics?.revenueByMonth || []}>
+                         {mounted && (
+                          <ResponsiveContainer width="100%" height="100%">
+                             <AreaChart data={stats.analytics?.revenueByMonth || []}>
                                <defs>
                                   <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
                                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4}/>
@@ -317,13 +320,15 @@ export default function SellerDashboard() {
                                <Area type="monotone" dataKey="uv" stroke="#3b82f6" strokeWidth={3} fill="url(#revenueGrad)" />
                             </AreaChart>
                          </ResponsiveContainer>
+                         )}
                       </div>
                     </div>
                     <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl">
                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Currency Pool</h3>
                        <div className="h-[300px] w-full relative flex items-center justify-center">
-                          <ResponsiveContainer width="100%" height="100%">
-                             <PieChart>
+                          {mounted && (
+                            <ResponsiveContainer width="100%" height="100%">
+                               <PieChart>
                                 <Pie
                                    data={stats.analytics?.currencyDistribution?.length > 0 ? stats.analytics.currencyDistribution : [{name: 'Empty', value: 1}]}
                                    innerRadius={60}
@@ -470,7 +475,7 @@ export default function SellerDashboard() {
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                         <div className="md:col-span-2 space-y-6">
                            <div className="text-[10px] text-slate-600 uppercase font-black italic">Total Managed Capital</div>
-                           <div className="text-6xl font-black text-white italic tracking-tighter">\u20B9{Number(stats.totalEarningsInr).toLocaleString()}</div>
+                           <div className="text-5xl font-black text-white italic tracking-tighter">₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
                            <div className="flex gap-4 mt-10">
                               <div className="bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-xl text-emerald-500 font-bold text-[10px] uppercase">+12.4% yield</div>
                               <div className="text-slate-700 font-bold text-[9px] uppercase self-center italic">Verified Protocol Ledger</div>

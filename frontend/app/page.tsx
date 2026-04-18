@@ -116,7 +116,7 @@ export default function LandingPage() {
           animate={{ x: [0, 40, 0], y: [0, -50, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
         />
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
       <Header />
@@ -141,14 +141,14 @@ export default function LandingPage() {
               Stellar Mainnet Active
             </div>
 
-            <h1 className={`${outfit.className} text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 leading-[1.1] mb-8`}>
+            <h1 className={`${outfit.className} text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 leading-[1.1] mb-8`}>
               The Standard for<br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
                 Absolute Trust.
               </span>
             </h1>
 
-            <p className="max-w-2xl text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-12">
+            <p className="max-w-2xl text-md md:text-lg text-slate-400 leading-relaxed font-light mb-12">
               ChainVerify ensures you only buy authentic products. Our community verifies every item, while secure payments protect your money until delivery.
             </p>
 
@@ -221,7 +221,7 @@ export default function LandingPage() {
         {/* ── FEATURES GRID ── */}
         <section className="relative px-6 py-32 max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className={`${outfit.className} text-4xl md:text-5xl font-bold tracking-tight text-white mb-6`}>
+            <h2 className={`${outfit.className} text-3xl md:text-4xl font-bold tracking-tight text-white mb-6`}>
               Verified Quality. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Secure Payments.</span>
             </h2>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
@@ -264,7 +264,7 @@ export default function LandingPage() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl h-full bg-blue-500/20 blur-[100px] pointer-events-none" />
               
               <Sparkles className="w-12 h-12 text-blue-400 mb-6" />
-              <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white mb-6 relative z-10`}>Ready to embrace transparency?</h2>
+              <h2 className={`${outfit.className} text-2xl md:text-4xl font-bold text-white mb-6 relative z-10`}>Ready to embrace transparency?</h2>
               <p className="text-indigo-200/70 text-lg mb-10 max-w-xl relative z-10 font-light">
                 Join thousands of suppliers and verifiers building the future of authenticated commerce.
               </p>

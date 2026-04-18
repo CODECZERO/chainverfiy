@@ -95,13 +95,13 @@ export function Header() {
          <USDCPriceTicker />
       </div>
 
-      <header role="banner" className="fixed top-9 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-all duration-500">
+      <header role="banner" className="fixed top-8 left-0 right-0 z-[100] px-4 md:px-8 py-3 pointer-events-none transition-all duration-500">
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className={cn(
-            "mx-auto max-w-7xl h-14 md:h-16 glass-premium rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-between px-4 md:px-8 pointer-events-auto transition-all duration-500 shadow-2xl shadow-indigo-500/10",
-            isScrolled ? "scale-95 translate-y-2 opacity-95" : "scale-100"
+            "mx-auto max-w-7xl h-12 md:h-14 glass-premium rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-between px-4 md:px-8 pointer-events-auto transition-all duration-500 shadow-2xl shadow-indigo-500/10",
+            isScrolled ? "scale-95 translate-y-1 opacity-95" : "scale-100"
           )}
         >
           {/* Logo */}
@@ -123,7 +123,7 @@ export function Header() {
                     href={item.href}
                     aria-label={`Go to ${item.label}`}
                     className={cn(
-                      "group relative px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
+                      "group relative px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
                       isActive 
                         ? "text-indigo-400 bg-indigo-500/5 shadow-[0_0_20px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/20" 
                         : "text-slate-500 hover:text-white hover:bg-white/[0.04]"

@@ -18,6 +18,7 @@ import { JourneyTimelineRow } from '@/components/journey-timeline-row'
 import { motion } from 'framer-motion'
 import { getIPFSUrl } from '@/lib/image-utils'
 import Image from 'next/image'
+import { uploadToIpfs } from '@/lib/api-service'
 
 const JourneyMap = dynamic(() => import('@/components/journey-map'), {
   ssr: false,
@@ -243,13 +244,9 @@ export default function DeliveryConfirmationPage() {
       formData.append('file', disputeFile)
       formData.append('orderId', params.orderId as string)
       formData.append('type', 'buyer_dispute_proof')
-      const ipfsRes = await fetch(`${api}/ipfs/upload`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      })
-      const ipfsData = await ipfsRes.json()
-      if (!ipfsData.success || !ipfsData.data?.cid) throw new Error('IPFS upload failed')
+      
+      const ipfsData = await uploadToIpfs(formData);
+      if (!ipfsData?.cid) throw new Error('IPFS upload failed')
 
       const disputeRes = await fetch(`${api}/delivery/${params.orderId}/dispute-proof`, {
         method: 'POST',
@@ -260,13 +257,13 @@ export default function DeliveryConfirmationPage() {
         },
         body: JSON.stringify({
           walletPublicKey: effectiveWallet,
-          proofCid: ipfsData.data.cid,
+          proofCid: ipfsData.cid,
           disputeReason: disputeReason.trim(),
         }),
       })
       const disputeData = await disputeRes.json()
-      if (disputeData.success) {
-        setOrder((prev: any) => ({ ...prev, status: 'DISPUTED', buyerProofCid: ipfsData.data.cid }))
+      if (disputeData._success || disputeData.success) {
+        setOrder((prev: any) => ({ ...prev, status: 'DISPUTED', buyerProofCid: ipfsData.cid }))
         setShowDisputeForm(false)
       }
     } catch (err) {

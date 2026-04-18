@@ -125,7 +125,7 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
       {/* Content Section */}
       <div className="px-7 pb-8 pt-3 flex flex-col flex-1">
         <div className="flex justify-between items-start gap-4 mb-4">
-          <h3 className={`${outfit.className} text-xl font-bold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-all line-clamp-1`}>
+          <h3 className={`${outfit.className} text-lg font-bold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-all line-clamp-1`}>
             {String(title || "Generic Product")}
           </h3>
           <div className="flex flex-col items-end shrink-0">
@@ -144,13 +144,13 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
 
         {/* Price/Digital Dollar Section */}
-        <div className="mt-auto relative bg-white/[0.03] border border-white/[0.08] rounded-3xl p-5 mb-8 group-hover:bg-indigo-600/[0.04] transition-all duration-300">
+         <div className="mt-auto relative bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 mb-6 group-hover:bg-indigo-600/[0.04] transition-all duration-300">
            <div className="relative z-10 flex items-center justify-between">
               <div className="flex flex-col">
                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Local Price</span>
-                 <span className={`${outfit.className} text-2xl font-bold text-white`}>
-                   ₹{Number(priceInr).toLocaleString()}
-                 </span>
+                  <span className={`${outfit.className} text-xl font-bold text-white`}>
+                    ₹{Number(priceInr).toLocaleString()}
+                  </span>
               </div>
               <div className="h-10 w-px bg-white/5 mx-2" />
               <div className="flex flex-col items-end">
@@ -163,19 +163,19 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
 
         {/* Community Trust Section */}
-        <div className="space-y-2 mb-8">
-           <div className="flex justify-between text-[9px] font-bold tracking-wider">
-              <span className="text-emerald-500 uppercase">{voteReal} COMMUNITY OK</span>
-              <span className="text-slate-600 uppercase">{voteFake} DISPUTED</span>
-           </div>
-           <div className="relative h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${realPct}%` }}
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(79,70,229,0.5)]"
-              />
-           </div>
-        </div>
+         <div className="space-y-1.5 mb-6">
+            <div className="flex justify-between text-[8px] font-bold tracking-wider">
+               <span className="text-emerald-500 uppercase">{voteReal} COMMUNITY OK</span>
+               <span className="text-slate-600 uppercase">{voteFake} DISPUTED</span>
+            </div>
+            <div className="relative h-1 bg-white/[0.05] rounded-full overflow-hidden">
+               <motion.div 
+                 initial={{ width: 0 }}
+                 animate={{ width: `${realPct}%` }}
+                 className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(79,70,229,0.5)]"
+               />
+            </div>
+         </div>
 
         <Link href={`/product/${id}`} className="block">
           <Button className={`${outfit.className} w-full h-12 rounded-2xl bg-white text-black hover:bg-slate-200 font-bold text-xs shadow-xl transition-all active:scale-[0.98] group/btn`}>

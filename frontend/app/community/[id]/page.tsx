@@ -106,7 +106,7 @@ export default function DiscussionDetailPage() {
       
       <Header />
       
-      <div className="max-w-5xl mx-auto px-8 pt-20 relative z-10">
+      <div className="max-w-5xl mx-auto px-8 pt-28 md:pt-32 relative z-10">
         <Button 
           variant="ghost" 
           onClick={() => router.push('/community')}

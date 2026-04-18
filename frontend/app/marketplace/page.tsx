@@ -70,16 +70,16 @@ export default function MarketplacePage() {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="max-w-3xl"
+              className="max-w-2xl"
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-10 bg-indigo-500/40" />
                 <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest">Premium Selection</span>
               </div>
-              <h1 className={`${outfit.className} text-5xl md:text-7xl font-bold tracking-tight text-white mb-6`}>
+              <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold tracking-tight text-white mb-6`}>
                 Ethical <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400">Storefront</span>
               </h1>
-              <p className="text-xl text-slate-400 leading-relaxed font-light">
+              <p className="text-lg text-slate-400 leading-relaxed font-light">
                 Discover authentic products verified by local communities and anchored on the Stellar blockchain for absolute transparency.
               </p>
             </motion.div>

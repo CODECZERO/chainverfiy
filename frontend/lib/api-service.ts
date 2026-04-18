@@ -7,13 +7,16 @@ async function apiFetch(path: string, options?: RequestInit) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
 
+  const headers: any = { ...authHeaders, ...options?.headers };
+  
+  // Only set application/json if not sending FormData
+  if (!(options?.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const res = await fetch(`${API}${path}`, {
     credentials: 'include',
-    headers: { 
-      'Content-Type': 'application/json', 
-      ...authHeaders,
-      ...options?.headers 
-    },
+    headers,
     ...options,
   });
   const json = await res.json();
@@ -152,7 +155,7 @@ export const getPaymentQuote = (sourceCurrency: string, targetUsdcAmount: string
   apiFetch('/payments/quote', { method: 'POST', body: JSON.stringify({ sourceCurrency, targetUsdcAmount }) });
 export const initiateUPI = (data: any) => apiFetch('/payments/upi/initiate', { method: 'POST', body: JSON.stringify(data) });
 export const uploadToIpfs = (formData: FormData) => 
-  apiFetch('/ipfs/upload', { method: 'POST', body: formData, headers: { 'Content-Type': 'undefined' } }); // Browser will set boundary
+  apiFetch('/ipfs/upload', { method: 'POST', body: formData }); // Browser will now correctly set boundary since we removed default Content-Type
 
 
 // ─── Stellar / Wallet helpers (used by stellar-utils.ts) ───

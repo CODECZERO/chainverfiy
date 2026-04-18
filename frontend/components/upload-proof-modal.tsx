@@ -10,8 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { CheckCircle2, Loader2, Upload } from "lucide-react"
 import { useWallet } from "@/lib/wallet-context"
-// Legacy Mongo/IPFS proof flow removed in ChainVerify (verified marketplace).
 import { submitProofTransaction } from "@/lib/stellar-utils"
+import { uploadToIpfs } from "@/lib/api-service"
 
 interface UploadProofModalProps {
   isOpen: boolean
@@ -45,18 +45,16 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
       // NOTE: Wiring native IPFS Pinata HTTP Gateway connectivity.
       const ipfsData = new FormData()
       ipfsData.append('file', formData.file)
-      const ipfsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ipfs/upload`, {
-        method: 'POST',
-        body: ipfsData
-      }).then(res => res.json())
+      
+      const ipfsRes = await uploadToIpfs(ipfsData);
 
       console.log('📦 IPFS Response:', ipfsRes);
 
-      if (!ipfsRes?.data?.cid) {
+      if (!ipfsRes?.cid) {
         console.error('❌ IPFS Upload Error:', ipfsRes);
         throw new Error(ipfsRes?.message || "Failed to pin media to IPFS. Check Pinata credentials.")
       }
-      const cid = ipfsRes.data.cid
+      const cid = ipfsRes.cid
       setIpfsCid(cid)
 
 

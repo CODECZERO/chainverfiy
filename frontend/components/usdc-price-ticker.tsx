@@ -17,7 +17,7 @@ export function USDCPriceTicker() {
 
   if (isLoading && Object.keys(rates).length === 0) {
     return (
-      <div className="h-9 bg-[#05060B] border-b border-white/[0.04] flex items-center px-6 gap-4 overflow-hidden">
+      <div className="h-8 bg-[#05060B] border-b border-white/[0.04] flex items-center px-6 gap-4 overflow-hidden">
         <div className="w-20 h-4 bg-white/5 rounded animate-pulse" />
         <div className="flex gap-8">
           {[1, 2, 3, 4, 5].map(i => (
@@ -29,18 +29,18 @@ export function USDCPriceTicker() {
   }
 
   return (
-    <div role="region" aria-label="Live Market Rates" className="h-9 bg-[#05060B] border-b border-white/[0.04] flex items-center overflow-hidden relative z-40">
+    <div role="region" aria-label="Live Market Rates" className="h-8 bg-[#05060B] border-b border-white/[0.04] flex items-center overflow-hidden relative z-40">
       <div className="flex items-center gap-2 px-6 h-full border-r border-white/[0.06] bg-black/40 z-10 shrink-0">
         <div aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.6)] animate-pulse" />
-        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 italic">Market Pulse</span>
+        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500 italic">Market Pulse</span>
       </div>
       
       <div className="flex items-center whitespace-nowrap animate-scroll py-2 hover:[animation-play-state:paused] cursor-default">
         {/* Continuous loop for tickers */}
         {[...CURRENCIES, ...CURRENCIES].map((c, idx) => (
           <div key={`${c.code}-${idx}`} className="flex items-center gap-2 px-8 group">
-            <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-400 transition-colors">{c.code}</span>
-            <span className="text-[11px] font-mono font-black text-white/90">
+            <span className="text-[9px] font-bold text-slate-500 group-hover:text-blue-400 transition-colors">{c.code}</span>
+            <span className="text-[10px] font-mono font-black text-white/90">
               {c.symbol}{rates[c.code.toLowerCase()] ? Number(rates[c.code.toLowerCase()]).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : "1.000"}
             </span>
             <div className="flex items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
