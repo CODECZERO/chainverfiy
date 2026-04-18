@@ -355,24 +355,27 @@ export default function SellerDashboard() {
                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Currency Pool</h3>
                        <div className="h-[300px] w-full relative flex items-center justify-center">
                           {mounted && (
-                            <ResponsiveContainer width="100%" height="100%">
-                               <PieChart>
-                                <Pie
-                                   data={stats.analytics?.currencyDistribution?.length > 0 ? stats.analytics.currencyDistribution : [{name: 'Empty', value: 1}]}
-                                   innerRadius={60}
-                                   outerRadius={90}
-                                   dataKey="value"
-                                   stroke="none"
-                                >
-                                   {(stats.analytics?.currencyDistribution || []).map((entry: any, index: number) => (
-                                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                                   ))}
-                                </Pie>
-                             </PieChart>
-                          </ResponsiveContainer>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                             <span className="text-xl font-bold text-white">${stats.usdcBalance}</span>
-                          </div>
+                            <>
+                              <ResponsiveContainer width="100%" height="100%">
+                                 <PieChart>
+                                  <Pie
+                                     data={stats.analytics?.currencyDistribution?.length > 0 ? stats.analytics.currencyDistribution : [{name: 'Empty', value: 1}]}
+                                     innerRadius={60}
+                                     outerRadius={90}
+                                     dataKey="value"
+                                     stroke="none"
+                                  >
+                                     {(stats.analytics?.currencyDistribution || []).map((entry: any, index: number) => (
+                                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                                     ))}
+                                  </Pie>
+                               </PieChart>
+                            </ResponsiveContainer>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                               <span className="text-xl font-bold text-white">${stats.usdcBalance}</span>
+                            </div>
+                           </>
+                          )}
                        </div>
                     </div>
                   </div>
