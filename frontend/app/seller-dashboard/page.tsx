@@ -32,6 +32,7 @@ import {
   ExternalLink
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
 import { useWallet } from "@/lib/wallet-context"
 import { 
   AreaChart, 
@@ -148,9 +149,11 @@ export default function SellerDashboard() {
     }
   }
 
+  const walletAddress = user?.stellarWallet || publicKey || ""
+
   const copyWallet = () => {
-    if (user?.stellarWallet) {
-      navigator.clipboard.writeText(user.stellarWallet)
+    if (walletAddress) {
+      navigator.clipboard.writeText(walletAddress)
       setCopied(true)
       setTimeout(() => setCopied(false), 3000)
     }
@@ -166,15 +169,17 @@ export default function SellerDashboard() {
 
   if (loading && !user) {
     return (
-      <div className="min-h-screen bg-[#030408] text-white flex items-center justify-center pt-24">
-        <div className="w-16 h-16 border-4 border-blue-600/30 border-t-blue-600 rounded-full animate-spin shadow-[0_0_30px_rgba(37,99,235,0.4)]" />
+      <div className="min-h-screen bg-[#05060A] text-white flex items-center justify-center pt-24">
+        <Header />
+        <div className="w-16 h-16 border-4 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin shadow-[0_0_30px_rgba(99,102,241,0.4)]" />
       </div>
     )
   }
 
   if (user?.role !== 'SUPPLIER') {
     return (
-      <div className="min-h-screen bg-[#030408] flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#05060A] flex items-center justify-center p-8">
+        <Header />
         <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 text-center max-w-md shadow-3xl">
           <div className="w-20 h-20 bg-red-600/10 rounded-[2.5rem] flex items-center justify-center border border-red-500/20 mx-auto mb-8">
              <ShieldCheck className="w-10 h-10 text-red-500" />
@@ -190,92 +195,129 @@ export default function SellerDashboard() {
   return (
     <div 
       className={cn(
-        "h-screen flex flex-col bg-[#030408] text-slate-400 selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative",
+        "min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30",
         inter.className
       )}
     >
-      {/* ── Deep Space Atmospheric Effects ── */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* ── Background Elements (matching marketplace) ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </div>
 
-      <div className="flex flex-1 overflow-hidden relative z-10 pt-24 md:pt-28">
-        {/* ── Control Sidebar ── */}
-        <aside className="w-80 bg-[#0A0D14]/80 backdrop-blur-2xl border-r border-white/[0.06] flex flex-col p-8 hidden lg:flex relative overflow-hidden">
-          <div className="absolute inset-0 bg-blue-600/[0.01] pointer-events-none" />
-          
-          <Link href="/" className="flex items-center gap-4 mb-14 group">
-            <div className="w-12 h-12 bg-blue-600 rounded-[1.25rem] flex items-center justify-center shadow-[0_0_25px_rgba(37,99,235,0.3)] group-hover:scale-110 transition-all duration-500 border border-white/20">
-               <ShieldCheck className="w-6 h-6 text-white" />
-            </div>
-            <span className={`${outfit.className} text-xl font-bold text-white tracking-tighter uppercase italic`}>ChainVerify</span>
-          </Link>
+      <Header />
 
-          <div className="glass-premium bg-[#0A0D14]/60 border border-white/[0.08] rounded-[2.5rem] p-6 mb-12 relative overflow-hidden group">
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-1000" />
-            <div className="flex items-center gap-5 relative z-10">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-[0_10px_40px_rgba(37,99,235,0.35)] border border-white/20 group-hover:scale-105 transition-all duration-500">
+      <main className="relative z-10 pt-32 pb-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+
+          {/* ── Seller Profile Header ── */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-12">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="max-w-2xl"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-10 bg-indigo-500/40" />
+                <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest">Seller Command Center</span>
+              </div>
+              <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold tracking-tight text-white mb-6`}>
+                Store <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400">Dashboard</span>
+              </h1>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-500 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-[0_10px_40px_rgba(99,102,241,0.35)] border border-white/20">
                   {String(user?.supplierProfile?.name || user?.email || "S")[0].toUpperCase()}
                 </div>
-              </div>
-              <div className="min-w-0">
-                <div className={`${outfit.className} font-bold text-white text-base truncate tracking-tight`}>{String(user?.supplierProfile?.name || "My Store")}</div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-blue-400 font-bold text-[9px] uppercase tracking-widest">
-                   <ShieldCheck className="w-3 h-3" /> Verified Seller
+                <div>
+                  <div className={`${outfit.className} font-bold text-white text-lg tracking-tight`}>{String(user?.supplierProfile?.name || "My Store")}</div>
+                  <div className="flex items-center gap-1.5 text-indigo-400 font-bold text-[9px] uppercase tracking-widest">
+                    <ShieldCheck className="w-3 h-3" /> Verified Seller
+                  </div>
                 </div>
-                {(user?.stellarWallet || publicKey) && (
-                  <button 
-                    onClick={copyWallet}
-                    className="flex items-center gap-1.5 mt-2 px-2 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-slate-500 hover:text-white transition-all group/wallet max-w-full overflow-hidden"
-                    title="Click to copy wallet address"
-                  >
-                    <Wallet className="w-3 h-3 text-slate-600 group-hover/wallet:text-blue-400 shrink-0" />
-                    <span className="font-mono text-[9px] truncate tracking-tight uppercase">
-                      {String(user?.stellarWallet || publicKey).slice(0, 6)}...{String(user?.stellarWallet || publicKey).slice(-4)}
-                    </span>
-                    {copied ? (
-                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
-                    ) : (
-                      <Copy className="w-3 h-3 text-slate-700 group-hover/wallet:text-slate-400 shrink-0" />
-                    )}
-                  </button>
-                )}
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex flex-col gap-4 min-w-[320px]"
+            >
+              {/* Wallet Address Card */}
+              {walletAddress && (
+                <button
+                  onClick={copyWallet}
+                  className="w-full p-4 bg-white/[0.04] border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all group text-left"
+                  title="Click to copy full wallet address"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Wallet className="w-4 h-4 text-indigo-400" />
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stellar Wallet</span>
+                    {copied ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 ml-auto" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 ml-auto transition-colors" />
+                    )}
+                  </div>
+                  <p className="font-mono text-[11px] text-slate-300 break-all leading-relaxed">
+                    {walletAddress}
+                  </p>
+                  {copied && <span className="text-[9px] text-emerald-400 font-bold uppercase mt-1 block">Copied to clipboard!</span>}
+                </button>
+              )}
+
+              {/* Action buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={loadAll}
+                  disabled={loading}
+                  className="flex items-center gap-2 px-5 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-slate-500 hover:text-white hover:border-indigo-500/30 transition-all disabled:opacity-50 group text-[10px] font-bold uppercase tracking-widest"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-indigo-500" : "group-hover:rotate-180 transition-transform duration-700"}`} />
+                  {loading ? "Syncing..." : "Refresh"}
+                </button>
+                <Link href="/seller-dashboard/new-product">
+                  <Button className="h-full px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-900/20 transition-all active:scale-95">
+                    <Plus className="w-4 h-4 mr-2" /> New Product
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ── Horizontal Tab Nav (replacing sidebar) ── */}
+          <div className="mb-12 overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex items-center gap-2 min-w-max">
+              {NAV.map((n) => (
+                <button
+                  key={n.id}
+                  onClick={() => setActive(n.id)}
+                  className={cn(
+                    "relative px-5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap",
+                    active === n.id
+                      ? "text-indigo-400 bg-indigo-500/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/20"
+                      : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
+                  )}
+                >
+                  <n.icon className={cn(
+                    "w-4 h-4 transition-transform duration-500",
+                    active === n.id ? "text-indigo-400" : "text-slate-600"
+                  )} />
+                  {n.label}
+                  {active === n.id && (
+                    <motion.div
+                      layoutId="dash-active-glow"
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-indigo-500 rounded-full blur-[2px] opacity-80"
+                    />
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
-          <nav className="space-y-3 flex-1">
-            {NAV.map((n) => (
-              <motion.button
-                key={n.id}
-                whileHover={{ x: 8 }}
-                onClick={() => setActive(n.id)}
-                className={`w-full flex items-center gap-4 px-6 py-4 rounded-[1.5rem] transition-all duration-500 relative group ${
-                  active === n.id 
-                    ? "bg-blue-600/10 border border-blue-500/30 text-white shadow-2xl" 
-                    : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]"
-                }`}
-              >
-                {active === n.id && (
-                  <motion.div layoutId="nav-glow" className="absolute left-0 w-1.5 h-6 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
-                )}
-                <n.icon className={`w-5 h-5 ${active === n.id ? "text-blue-400" : "text-slate-600 group-hover:text-slate-400"}`} />
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em]">{n.label}</span>
-              </motion.button>
-            ))}
-          </nav>
-
-          <div className="mt-auto">
-            <Link href="/seller-dashboard/new-product">
-              <Button className="w-full h-16 bg-white text-black hover:bg-slate-100 rounded-[1.5rem] font-bold uppercase tracking-widest text-[10px] shadow-2xl transition-all active:scale-95 border-2 border-white/10 italic">
-                <Plus className="w-5 h-5 mr-3" /> New Listing
-              </Button>
-            </Link>
-          </div>
-        </aside>
-
-        {/* ── Intelligence Deck ── */}
-        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-6 md:p-12 relative">
+          {/* ── Intelligence Deck ── */}
+          <div className="relative">
            <AnimatePresence mode="wait">
             <motion.div
               key={active}
@@ -287,26 +329,6 @@ export default function SellerDashboard() {
             >
               {active === "overview" && (
                 <div className="space-y-12">
-                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16">
-                    <div>
-                      <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]`}>
-                        Store <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">Dashboard</span>
-                      </h2>
-                      <p className="text-slate-500 text-[11px] font-bold uppercase tracking-widest mt-4 flex items-center gap-3">
-                        <Activity className="w-4 h-4 text-blue-500" /> Real-time Store Performance
-                      </p>
-                    </div>
-                    <div className="flex gap-5">
-                      <button 
-                        onClick={loadAll} 
-                        disabled={loading}
-                        className="flex items-center gap-3 px-6 py-4 bg-[#0A0D14]/60 border border-white/[0.08] rounded-[1.5rem] text-slate-500 hover:text-white transition-all hover:border-blue-500/30 disabled:opacity-50 group"
-                      >
-                        <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin text-blue-500" : "group-hover:rotate-180 transition-transform duration-700"}`} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">{loading ? "Syncing..." : "Refresh"}</span>
-                      </button>
-                    </div>
-                  </div>
 
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {[
@@ -584,8 +606,9 @@ export default function SellerDashboard() {
               )}
             </motion.div>
           </AnimatePresence>
-        </main>
+          </div>
       </div>
+      </main>
 
       {/* ── Asset QR Dialog ── */}
       <Dialog open={!!selectedQrProduct} onOpenChange={() => setSelectedQrProduct(null)}>
