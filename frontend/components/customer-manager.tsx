@@ -36,11 +36,18 @@ export function CustomerManager() {
     const fetchOrders = async () => {
       try {
         const res = await getSupplierOrders()
-        if (res.success) {
-          setOrders(res.data)
+        // apiFetch already unwraps ApiResponse — res IS the data array
+        if (Array.isArray(res)) {
+          setOrders(res)
+        } else if (res && typeof res === 'object') {
+          // Fallback: maybe wrapped in { orders: [...] } or { data: [...] }
+          setOrders(res.orders || res.data || [])
+        } else {
+          setOrders([])
         }
       } catch (error) {
         console.error("Failed to fetch supplier orders:", error)
+        setOrders([])
       } finally {
         setLoading(false)
       }
