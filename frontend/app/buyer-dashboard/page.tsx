@@ -40,6 +40,7 @@ const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid
 const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b'];
 
 const NAV = [
+  { id: "overview",     label: "Overview",          icon: Activity },
   { id: "orders",       label: "My Orders",        icon: ShoppingCart },
   { id: "tracking",     label: "Track Shipments",   icon: ScanLine },
   { id: "completed",    label: "Order History",    icon: CheckCircle2 },
@@ -60,7 +61,7 @@ export default function BuyerDashboard() {
   const { isAuthenticated, user, isLoading: authLoading } = useSelector((s: RootState) => s.userAuth)
   
   const { publicKey } = useWallet()
-  const [active, setActive] = useState("orders")
+  const [active, setActive] = useState("overview")
   const [mounted, setMounted] = useState(false)
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -311,82 +312,108 @@ export default function BuyerDashboard() {
                 className="space-y-12"
               >
 
-               {/* Activity Insights */}
-               {active === "orders" && (
-                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                    <div className="xl:col-span-8 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group shadow-3xl">
-                       <div className="flex items-center justify-between mb-16">
-                          <div>
-                             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Spending Insights</h3>
-                             <div className={`${outfit.className} text-2xl md:text-4xl font-bold text-white tracking-tight mt-3 leading-none`}>Purchase Activity</div>
-                          </div>
-                          <div className="hidden sm:flex bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-3.5 items-center gap-4 shadow-inner">
-                             <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
-                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Updates</span>
-                          </div>
+               {/* ── Overview / Intelligence Deck ── */}
+               {active === "overview" && (
+                 <div className="space-y-12">
+                   {/* 4-Card Stat Grid */}
+                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                     {[
+                       { label: "Total Orders", value: orders.length, color: "text-blue-400", bg: "from-blue-500/10", icon: ShoppingCart },
+                       { label: "Active Shipments", value: activeOrders.length, color: "text-purple-400", bg: "from-purple-500/10", icon: ScanLine },
+                       { label: "Completed", value: orders.filter(o => o.status === "COMPLETED").length, color: "text-emerald-400", bg: "from-emerald-500/10", icon: CheckCircle2 },
+                       { label: "Total Spent", value: `$${totalSpent.toFixed(0)}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
+                     ].map((s, i) => (
+                       <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
+                         <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity`} />
+                         <div className="flex items-center justify-between mb-8 relative z-10">
+                           <s.icon className={`w-6 h-6 ${s.color}`} />
+                         </div>
+                         <div className="space-y-2 relative z-10">
+                           <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+                           <div className={`${outfit.className} text-3xl font-bold text-white tracking-tight`}>{s.value}</div>
+                         </div>
                        </div>
-                       <div className="h-[350px] w-full mt-4">
-                          {mounted && (
-                            <ResponsiveContainer width="100%" height="100%">
-                               <AreaChart data={spendingData}>
-                                <defs>
-                                   <linearGradient id="buyerSpendGrad" x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5}/>
-                                      <stop offset="100%" stopColor="#3b82f6" stopOpacity={0}/>
-                                   </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                                <XAxis dataKey="date" stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dy={20} />
-                                <YAxis stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dx={-20} />
-                                <RechartsTooltip 
-                                   cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 2 }}
-                                   contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px', boxShadow: '0 30px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)'}}
-                                   itemStyle={{color: '#fff', fontWeight: 'bold', fontSize: '13px'}}
-                                />
-                              <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2000} />
-                           </AreaChart>
-                        </ResponsiveContainer>
-                        )}
-                     </div>
-                    </div>
+                     ))}
+                   </div>
 
-                    <div className="xl:col-span-4 glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl relative overflow-hidden flex flex-col group">
-                       <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-12">Payment Breakdown</h3>
-                       <div className="flex-1 relative min-h-[250px]">
-                          <ResponsiveContainer width="100%" height="100%">
-                             <PieChart>
-                                <Pie 
-                                  data={currencyDistribution.length > 0 ? currencyDistribution : [{name: 'Empty', value: 1}]}
-                                  innerRadius={90} outerRadius={125} paddingAngle={12} dataKey="value" stroke="none"
-                                  animationBegin={500} animationDuration={1500}
-                                >
-                                   {currencyDistribution.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} className="hover:opacity-80 transition-opacity cursor-pointer" />)}
+                   {/* Charts Grid */}
+                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                     <div className="lg:col-span-8 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl min-h-[480px]">
+                       <div className="flex items-center justify-between mb-10">
+                         <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Spending Insights</h3>
+                         <div className="hidden sm:flex bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-3.5 items-center gap-4 shadow-inner">
+                           <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
+                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Updates</span>
+                         </div>
+                       </div>
+                       <div className="h-[350px] w-full">
+                         {mounted && (
+                           <ResponsiveContainer width="100%" height="100%">
+                             <AreaChart data={spendingData}>
+                               <defs>
+                                 <linearGradient id="buyerSpendGrad" x1="0" y1="0" x2="0" y2="1">
+                                   <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5}/>
+                                   <stop offset="100%" stopColor="#3b82f6" stopOpacity={0}/>
+                                 </linearGradient>
+                               </defs>
+                               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
+                               <XAxis dataKey="date" stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dy={20} />
+                               <YAxis stroke="#475569" fontSize={9} fontWeight="bold" tickLine={false} axisLine={false} dx={-20} />
+                               <RechartsTooltip
+                                 cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 2 }}
+                                 contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px', boxShadow: '0 30px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)'}}
+                                 itemStyle={{color: '#fff', fontWeight: 'bold', fontSize: '13px'}}
+                               />
+                               <Area type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={6} fillOpacity={1} fill="url(#buyerSpendGrad)" animationDuration={2000} />
+                             </AreaChart>
+                           </ResponsiveContainer>
+                         )}
+                       </div>
+                     </div>
+                     <div className="lg:col-span-4 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12 shadow-3xl">
+                       <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Payment Breakdown</h3>
+                       <div className="h-[300px] w-full relative flex items-center justify-center">
+                         {mounted && (
+                           <>
+                             <ResponsiveContainer width="100%" height="100%">
+                               <PieChart>
+                                 <Pie
+                                   data={currencyDistribution.length > 0 ? currencyDistribution : [{name: 'Empty', value: 1}]}
+                                   innerRadius={60} outerRadius={90} paddingAngle={12} dataKey="value" stroke="none"
+                                   animationBegin={500} animationDuration={1500}
+                                 >
+                                   {currencyDistribution.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}
                                    {currencyDistribution.length === 0 && <Cell fill="#1F2937" />}
-                                </Pie>
-                                <RechartsTooltip 
-                                   contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold'}} 
-                                />
-                             </PieChart>
-                          </ResponsiveContainer>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                               <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest leading-none mb-2">Total Amount</span>
-                               <span className={`${outfit.className} text-4xl font-bold text-white tracking-tight`}>${totalSpent.toFixed(0)}</span>
-                          </div>
-                       </div>
-                       <div className="grid grid-cols-2 gap-5 mt-16">
-                           {currencyDistribution.map((c, i) => (
-                             <div key={c.name} className="flex items-center gap-4 bg-white/[0.02] p-5 rounded-2xl border border-white/[0.04]">
-                                <div className="w-3.5 h-3.5 rounded-lg shadow-xl shrink-0" style={{backgroundColor: COLORS[i % COLORS.length]}} />
-                                <div className="text-[10px] font-bold uppercase text-slate-500 tracking-widest group-hover/cell:text-slate-200 transition-colors">{c.name}</div>
+                                 </Pie>
+                                 <RechartsTooltip contentStyle={{backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold'}} />
+                               </PieChart>
+                             </ResponsiveContainer>
+                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                               <span className="text-xl font-bold text-white">${totalSpent.toFixed(0)}</span>
                              </div>
-                           ))}
+                           </>
+                         )}
                        </div>
-                    </div>
+                       <div className="grid grid-cols-2 gap-4 mt-8">
+                         {currencyDistribution.map((c, i) => (
+                           <div key={c.name} className="flex items-center gap-3 bg-white/[0.02] p-4 rounded-2xl border border-white/[0.04]">
+                             <div className="w-3 h-3 rounded-lg shadow-xl shrink-0" style={{backgroundColor: COLORS[i % COLORS.length]}} />
+                             <div className="text-[10px] font-bold uppercase text-slate-500 tracking-widest">{c.name}</div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   </div>
                  </div>
                )}
 
-               {/* Orders Grid */}
-               {active === "bounties" ? (
+               {/* ── Orders Tab (list only, no charts) ── */}
+               {active === "orders" && (
+                 <div />
+               )}
+
+               {/* Bounties Tab */}
+               {active === "bounties" && (
                  <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group shadow-inner">
                     <div className="absolute inset-0 bg-blue-600/[0.01] transition-colors" />
                     <div className="w-24 h-24 rounded-[2rem] bg-blue-500/5 flex items-center justify-center mx-auto mb-10 shadow-2xl border border-white/[0.03] group-hover:scale-110 transition-transform duration-1000 opacity-20">
@@ -395,7 +422,10 @@ export default function BuyerDashboard() {
                     <h3 className={`${outfit.className} text-4xl font-bold text-white tracking-tight mb-6`}>Community Rewards Coming Soon</h3>
                     <p className="text-slate-600 max-w-sm mx-auto text-sm leading-relaxed opacity-80">We are finalizing our community reward system. Soon you will be able to earn digital assets by helping verify product authenticity.</p>
                  </div>
-               ) : (
+               )}
+
+               {/* Orders / Tracking / Completed List */}
+               {(active === "orders" || active === "tracking" || active === "completed") && (
                  <div className="space-y-10 pb-40">
                     <div className="flex items-center justify-between px-8">
                        <div className="flex items-center gap-5">
