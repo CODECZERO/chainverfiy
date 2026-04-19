@@ -203,7 +203,7 @@ export default function SellerDashboard() {
     }
   }
 
-  const walletAddress = user?.stellarWallet || user?.supplierProfile?.stellarWallet || publicKey || ""
+  const walletAddress = (user as any)?.stellarWallet || (user as any)?.supplierProfile?.stellarWallet || publicKey || ""
 
   const copyWallet = () => {
     if (walletAddress) {
