@@ -203,7 +203,7 @@ export default function SellerDashboard() {
     }
   }
 
-  const walletAddress = user?.stellarWallet || publicKey || ""
+  const walletAddress = user?.stellarWallet || user?.supplierProfile?.stellarWallet || publicKey || ""
 
   const copyWallet = () => {
     if (walletAddress) {
@@ -299,27 +299,28 @@ export default function SellerDashboard() {
               className="flex flex-col gap-4 min-w-[320px]"
             >
               {/* Wallet Address Card */}
-              {walletAddress && (
-                <button
-                  onClick={copyWallet}
-                  className="w-full p-4 bg-white/[0.04] border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all group text-left"
-                  title="Click to copy full wallet address"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Wallet className="w-4 h-4 text-indigo-400" />
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stellar Wallet</span>
-                    {copied ? (
+              <button
+                onClick={copyWallet}
+                disabled={!walletAddress}
+                className="w-full p-4 bg-white/[0.04] border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all group text-left disabled:opacity-50 disabled:hover:bg-white/[0.04] disabled:hover:border-white/10 disabled:cursor-not-allowed"
+                title={walletAddress ? "Click to copy full wallet address" : "No wallet connected"}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Wallet className="w-4 h-4 text-indigo-400" />
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stellar Wallet</span>
+                  {walletAddress && (
+                    copied ? (
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 ml-auto" />
                     ) : (
                       <Copy className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 ml-auto transition-colors" />
-                    )}
-                  </div>
-                  <p className="font-mono text-[11px] text-slate-300 break-all leading-relaxed">
-                    {walletAddress}
-                  </p>
-                  {copied && <span className="text-[9px] text-emerald-400 font-bold uppercase mt-1 block">Copied to clipboard!</span>}
-                </button>
-              )}
+                    )
+                  )}
+                </div>
+                <p className="font-mono text-[11px] text-slate-300 break-all leading-relaxed">
+                  {walletAddress || "Not connected"}
+                </p>
+                {copied && <span className="text-[9px] text-emerald-400 font-bold uppercase mt-1 block">Copied to clipboard!</span>}
+              </button>
 
               {/* Action buttons */}
               <div className="flex gap-3">
