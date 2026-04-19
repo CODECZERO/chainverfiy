@@ -31,14 +31,23 @@ export default function SelfProfilePage() {
 
   // Fetch enriched profile data (trust tokens, orders, etc.)
   useEffect(() => {
+    setProfileLoading(true)
     if (user?.id) {
-      setProfileLoading(true)
       getUserProfile(user.id)
         .then(data => setEnrichedProfile(data))
         .catch(err => console.warn("[Profile] Could not load enriched profile:", err))
         .finally(() => setProfileLoading(false))
+    } else if (publicKey) {
+      import("@/lib/api-service").then(({ getWalletProfile }) => {
+        getWalletProfile(publicKey)
+          .then(data => setEnrichedProfile(data))
+          .catch(err => console.warn("[Profile] Could not load wallet profile:", err))
+          .finally(() => setProfileLoading(false))
+      })
+    } else {
+      setProfileLoading(false)
     }
-  }, [user?.id])
+  }, [user?.id, publicKey])
 
   const walletAddress = user?.stellarWallet || publicKey || ""
 
@@ -51,7 +60,7 @@ export default function SelfProfilePage() {
   }
 
   const isSupplier = user?.role === "SUPPLIER"
-  const isBuyer = user?.role === "BUYER"
+  const isBuyer = !user || user?.role === "BUYER"
   const dashboardUrl = isSupplier ? "/seller-dashboard" : "/buyer-dashboard"
 
   const trustScore = enrichedProfile?.supplierProfile?.trustScore || 0
@@ -78,7 +87,9 @@ export default function SelfProfilePage() {
     )
   }
 
-  if (!isAuthenticated || !user) {
+  const isProfileReady = isAuthenticated || publicKey
+
+  if (!isProfileReady && !isLoading) {
     return (
       <div className={`min-h-screen bg-[#05060A] text-slate-200 ${inter.className}`}>
         <Header />
@@ -132,11 +143,11 @@ export default function SelfProfilePage() {
               </h1>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-500 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-[0_10px_40px_rgba(99,102,241,0.35)] border border-white/20">
-                  {(user.email || "U")[0].toUpperCase()}
+                  {((user?.email || publicKey) || "U")[0].toUpperCase()}
                 </div>
                 <div>
                   <div className={`${outfit.className} font-bold text-white text-lg tracking-tight`}>
-                    {user.supplierProfile?.name || user.email?.split("@")[0] || "User"}
+                    {user?.supplierProfile?.name || user?.email?.split("@")[0] || "Buyer"}
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={cn(
@@ -145,7 +156,7 @@ export default function SelfProfilePage() {
                         ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                         : "bg-blue-500/10 text-blue-400 border-blue-500/20"
                     )}>
-                      {user.role}
+                      {user?.role || "BUYER"}
                     </span>
                     <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Since {memberSince}</span>
                   </div>

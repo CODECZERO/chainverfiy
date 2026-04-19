@@ -17,7 +17,13 @@ import { cn } from "@/lib/utils"
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
 
+import { useWallet } from "@/lib/wallet-context"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/lib/redux/store"
+
 export default function BuyerSettingsPage() {
+  const { user: authUser, isAuthenticated, isLoading: authLoading } = useSelector((s: RootState) => s.userAuth)
+  const { publicKey } = useWallet()
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>({
     name: "",
@@ -51,8 +57,13 @@ export default function BuyerSettingsPage() {
       }
       setLoading(false)
     }
-    loadData()
-  }, [])
+    
+    if (authUser?.id || publicKey) {
+      loadData()
+    } else {
+      setLoading(false)
+    }
+  }, [authUser?.id, publicKey])
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,11 +83,28 @@ export default function BuyerSettingsPage() {
     setSaving(false)
   }
 
-  if (loading) return (
+  const isProfileReady = isAuthenticated || publicKey
+
+  if (authLoading || loading) return (
     <div className={cn("min-h-screen bg-[#05060A] flex items-center justify-center", inter.className)}>
       <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
     </div>
   )
+
+  if (!isProfileReady) {
+    return (
+      <div className={`min-h-screen bg-[#05060A] text-slate-200 ${inter.className}`}>
+        <Header />
+        <div className="max-w-md mx-auto px-4 py-32 text-center">
+          <div className="w-24 h-24 rounded-[2rem] bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-10 shadow-2xl">
+            <Shield className="w-10 h-10 text-indigo-400" />
+          </div>
+          <h1 className={`${outfit.className} text-4xl font-bold text-white mb-4`}>Sign In Required</h1>
+          <p className="text-slate-500 font-medium text-sm mb-10 leading-relaxed max-w-sm mx-auto">Please sign in or connect your wallet to access settings.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={cn("min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30", inter.className)}>
@@ -109,7 +137,7 @@ export default function BuyerSettingsPage() {
              </div>
              <div>
                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Active Wallet</div>
-               <div className="text-xs font-mono text-white">{truncateWallet(user?.stellarWallet || user?.publicKey || "Not connected")}</div>
+               <div className="text-xs font-mono text-white">{truncateWallet(user?.stellarWallet || publicKey || "Not connected")}</div>
              </div>
           </motion.div>
         </div>

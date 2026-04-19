@@ -144,11 +144,11 @@ export default function ProductPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#030408] text-slate-200">
+    <div className={cn("min-h-screen bg-[#05060A] text-slate-200", inter.className)}>
       <Header />
-      <div className="max-w-7xl mx-auto px-6 py-24 animate-pulse space-y-12">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-32 animate-pulse space-y-12">
         <div className="h-4 bg-white/5 rounded-full w-48" />
-        <div className="grid lg:grid-cols-12 gap-16">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
           <div className="lg:col-span-8 space-y-8">
             <div className="aspect-[16/10] bg-white/5 rounded-[3rem]" />
             <div className="h-16 bg-white/5 rounded-2xl w-3/4" />
@@ -169,39 +169,41 @@ export default function ProductPage() {
   const isVerified = product.status === "VERIFIED"
 
   return (
-    <div className="min-h-screen bg-[#030408] text-slate-200 pb-24 selection:bg-indigo-500/30 overflow-hidden relative">
+    <div className={cn("min-h-screen bg-[#05060A] text-slate-200 pb-24 selection:bg-indigo-500/30 overflow-x-hidden relative", inter.className)}>
       <Header />
       
       {/* ── Atmospheric Background ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="glow-orb w-[800px] h-[800px] bg-indigo-600/5 top-[-20%] right-[-10%] animate-float-slow" />
-        <div className="glow-orb w-[600px] h-[600px] bg-blue-600/5 bottom-[-10%] left-[-10%] animate-float-fast" />
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.02]" />
+        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] animate-float-slow" />
+        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px] animate-float-fast" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px] animate-float-slow" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
-      {/* ── Breadcrumb & Global ID ── */}
-      <div className="glass-premium border-y border-white/[0.04] sticky top-14 md:top-16 z-50">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-4 md:py-8 relative z-10 flex items-center justify-between">
-          <Link href="/marketplace" className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-indigo-400 transition-all">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
-          </Link>
-          <div className="flex items-center gap-4">
-             <div className="px-5 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-[10px] font-bold text-slate-400">
-                PRODUCT ID / {id?.slice(0, 8)}
-             </div>
-             <span className={cn(
-               "inline-flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-bold",
-               isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]" : "bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]"
-             )}>
-               {isVerified ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-               {isVerified ? "Verified" : "Verification Pending"}
-             </span>
+      <main className="relative z-10 pt-32">
+        {/* ── Breadcrumb & Global ID ── */}
+        <div className="glass-premium border-y border-white/[0.04]">
+          <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 md:py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <Link href="/marketplace" className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-indigo-400 transition-all">
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
+            </Link>
+            <div className="flex items-center gap-4">
+               <div className="px-5 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-[10px] font-bold text-slate-400">
+                  PRODUCT ID / {id?.slice(0, 8)}
+               </div>
+               <span className={cn(
+                 "inline-flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-bold",
+                 isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]" : "bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]"
+               )}>
+                 {isVerified ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                 {isVerified ? "Verified" : "Verification Pending"}
+               </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-12 md:py-20 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 py-12 md:py-20">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
 
           {/* ── Left Column: Media & Data (8 columns) ── */}
           <div className="lg:col-span-8 space-y-20">
@@ -545,21 +547,21 @@ export default function ProductPage() {
               <div className="glass-premium border border-white/[0.06] hover:border-indigo-500/30 rounded-[3rem] p-8 transition-all group overflow-hidden relative">
                 <div className="absolute inset-0 bg-indigo-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-20 h-20 rounded-[1.75rem] bg-gradient-to-br from-indigo-500 to-blue-700 flex items-center justify-center font-display font-black text-3xl text-white shadow-2xl group-hover:scale-110 transition-transform italic">
-                    {String(product.supplier?.name?.[0] || "S")}
+                  <div className="w-20 h-20 rounded-[1.75rem] bg-gradient-to-br from-indigo-500 to-blue-700 flex items-center justify-center font-display font-black text-3xl text-white shadow-2xl group-hover:scale-110 transition-transform italic shrink-0">
+                    {String(product.supplier?.name?.[0] || "S").toUpperCase()}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Seller</div>
-                    <h4 className="font-bold text-xl text-white group-hover:text-indigo-400 transition-colors tracking-tight">
+                    <h4 className="font-bold text-xl text-white group-hover:text-indigo-400 transition-colors tracking-tight truncate">
                       {String(product.supplier?.name || "Verified Supplier")}
                     </h4>
-                    <div className="flex items-center gap-4 mt-2">
-                       <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
-                          <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
-                          <span className="text-[10px] font-bold text-emerald-400">{String(product.supplier?.trustScore || 85)}% Trust</span>
+                    <div className="flex flex-wrap items-center gap-3 mt-3">
+                       <div className="flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+                          <Star className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{String(product.supplier?.trustScore || 85)}% Trust</span>
                        </div>
-                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold tracking-widest">
-                          <MapPin className="w-3.5 h-3.5" /> {String(product.supplier?.location || "Global")}
+                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-white/[0.02] px-3 py-1.5 rounded-xl border border-white/[0.04]">
+                          <MapPin className="w-3 h-3" /> <span className="truncate max-w-[100px] sm:max-w-none">{String(product.supplier?.location || "Global")}</span>
                        </div>
                     </div>
                   </div>
@@ -570,6 +572,7 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+    </main>
 
       {/* Modals */}
       {product && (
