@@ -301,8 +301,8 @@ export default function ProductPage() {
                 </Button>
               </div>
 
-              <div className="grid sm:grid-cols-3 gap-6 mb-12">
-                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-8 text-center group-hover:border-indigo-500/20 transition-all shadow-inner ring-1 ring-inset ring-black/50 relative overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-6 md:p-8 text-center group-hover:border-indigo-500/20 transition-all shadow-inner ring-1 ring-inset ring-black/50 relative overflow-hidden flex flex-col justify-center">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none" />
                   <div className="text-5xl lg:text-6xl font-display font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 to-blue-600 mb-3 tracking-tighter drop-shadow-sm">{String(realPct)}%</div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-2">
@@ -310,14 +310,14 @@ export default function ProductPage() {
                   </div>
                 </div>
                 
-                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-8 text-center transition-all shadow-inner ring-1 ring-inset ring-black/50">
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-6 md:p-8 text-center transition-all shadow-inner ring-1 ring-inset ring-black/50 flex flex-col justify-center">
                   <div className="text-5xl lg:text-6xl font-display font-black text-white mb-3 tracking-tighter">{String(total)}</div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-2">
                     <Users className="w-3.5 h-3.5" /> Total Votes
                   </div>
                 </div>
                 
-                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-6 flex flex-col justify-center gap-4 shadow-inner ring-1 ring-inset ring-black/50">
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-6 md:p-8 flex flex-col justify-center gap-4 shadow-inner ring-1 ring-inset ring-black/50">
                   <div className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/10 rounded-xl px-4 py-3">
                     <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Authentic
@@ -466,7 +466,7 @@ export default function ProductPage() {
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="bg-[#020305]/80 border border-white/[0.04] rounded-[2.5rem] p-10 hover:border-indigo-500/40 transition-all group/trail shadow-inner ring-1 ring-inset ring-black/50 backdrop-blur-xl relative overflow-hidden"
+                        className="bg-[#020305]/80 border border-white/[0.04] rounded-[2rem] p-6 md:p-10 hover:border-indigo-500/40 transition-all group/trail shadow-inner ring-1 ring-inset ring-black/50 backdrop-blur-xl relative overflow-hidden"
                       >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[60px] rounded-full pointer-events-none" />
                         <div className="flex flex-wrap items-center justify-between gap-6 mb-8 relative z-10">
@@ -507,7 +507,7 @@ export default function ProductPage() {
           <div className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-8">
 
             {/* Acquisition Interface */}
-            <div className="glass-premium rounded-[3rem] p-10 border border-white/[0.08] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden group bg-[#020305]/40">
+            <div className="glass-premium rounded-[2.5rem] p-6 md:p-10 border border-white/[0.08] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden group bg-[#020305]/40">
               <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-600/10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
               
               <div className="mb-10 relative z-10">

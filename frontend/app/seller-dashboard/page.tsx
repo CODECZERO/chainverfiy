@@ -139,71 +139,83 @@ export default function SellerDashboard() {
 
   const loadAll = async () => {
     setLoading(true)
+    const supplierId = user?.supplierProfile?.id || user?.id
+    console.log('[SellerDashboard] Loading data for supplier:', supplierId)
+
+    // ── Each API call is independent so one failure doesn't nuke all tabs ──
+
+    // 1. Products
+    let myProducts: any[] = []
     try {
-      const supplierId = user?.supplierProfile?.id || user?.id
-      console.log('[SellerDashboard] Loading data for supplier:', supplierId)
-      
-      // Fetch products for this supplier directly
       const supplierProducts = supplierId ? await getSupplierProducts(supplierId) : []
-      const myProducts = Array.isArray(supplierProducts) ? supplierProducts : (supplierProducts?.products || [])
+      myProducts = Array.isArray(supplierProducts) ? supplierProducts : (supplierProducts?.products || [])
       setProducts(myProducts)
-      
-      // Fetch supplier orders
+    } catch (e) {
+      console.warn('[SellerDashboard] Products fetch failed:', e)
+    }
+
+    // 2. Orders
+    let ordersArr: any[] = []
+    try {
       const myOrders = await getSupplierOrders(supplierId)
-      setOrders(Array.isArray(myOrders) ? myOrders : (myOrders?.orders || []))
-      
-      // Fetch bounties
+      ordersArr = Array.isArray(myOrders) ? myOrders : (myOrders?.orders || [])
+      setOrders(ordersArr)
+    } catch (e) {
+      console.warn('[SellerDashboard] Orders fetch failed:', e)
+    }
+
+    // 3. Bounties
+    try {
       const myBounties = supplierId ? await getSupplierBounties(supplierId) : []
       setBounties(Array.isArray(myBounties) ? myBounties : (myBounties?.bounties || []))
-      
-      // Fetch analytics
-      let analytics = { revenueByMonth: [], currencyDistribution: [] }
-      if (supplierId) {
-        try {
-          const analyticsData = await getSupplierAnalytics(supplierId)
-          if (analyticsData) analytics = analyticsData
-        } catch (e) {
-          console.warn('[SellerDashboard] Analytics not available:', e)
-        }
-      }
-
-      // Fetch exchange rates
-      let usdcInr = 83.33
-      try {
-        const rates = await getExchangeRates()
-        if (rates?.USDC?.inr) usdcInr = rates.USDC.inr
-      } catch (e) { /* use default */ }
-
-      // Compute stats from products and orders
-      const ordersArr = Array.isArray(myOrders) ? myOrders : (myOrders?.orders || [])
-      const verified = myProducts.filter((p: any) => p.status === 'VERIFIED').length
-      const pending = myProducts.filter((p: any) => p.status === 'PENDING_VERIFICATION').length
-      const totalSalesCount = ordersArr.filter((o: any) => ['PAID', 'SHIPPED', 'DELIVERED', 'COMPLETED'].includes(o.status)).length
-      const totalUsdc = ordersArr.reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
-      const pendingUsdc = ordersArr.filter((o: any) => ['PAID', 'SHIPPED'].includes(o.status)).reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
-      
-      setStats({
-        totalSales: totalSalesCount,
-        active: verified,
-        pending,
-        totalEarningsInr: Math.round(totalUsdc * usdcInr),
-        pendingEarningsInr: Math.round(pendingUsdc * usdcInr),
-        withdrawableInr: Math.round((totalUsdc - pendingUsdc) * usdcInr),
-        usdcBalance: totalUsdc,
-        usdcInr: Math.round(totalUsdc * usdcInr),
-        analytics: {
-          revenueByMonth: analytics.revenueByMonth || [],
-          currencyDistribution: analytics.currencyDistribution || []
-        }
-      })
-    } catch (err) {
-      console.error("[SellerDashboard] Failed to load data:", err)
-    } finally {
-      setLoading(false)
+    } catch (e) {
+      console.warn('[SellerDashboard] Bounties fetch failed:', e)
     }
+
+    // 4. Analytics (optional — may not exist for new suppliers)
+    let analytics = { revenueByMonth: [] as any[], currencyDistribution: [] as any[] }
+    if (supplierId) {
+      try {
+        const analyticsData = await getSupplierAnalytics(supplierId)
+        if (analyticsData) analytics = analyticsData
+      } catch (e) {
+        console.warn('[SellerDashboard] Analytics not available:', e)
+      }
+    }
+
+    // 5. Exchange rates
+    let usdcInr = 83.33
+    try {
+      const rates = await getExchangeRates()
+      if (rates?.USDC?.inr) usdcInr = rates.USDC.inr
+    } catch (e) { /* use default */ }
+
+    // Compute stats from whatever data we managed to load
+    const verified = myProducts.filter((p: any) => p.status === 'VERIFIED').length
+    const pending = myProducts.filter((p: any) => p.status === 'PENDING_VERIFICATION').length
+    const totalSalesCount = ordersArr.filter((o: any) => ['PAID', 'SHIPPED', 'DELIVERED', 'COMPLETED'].includes(o.status)).length
+    const totalUsdc = ordersArr.reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+    const pendingUsdc = ordersArr.filter((o: any) => ['PAID', 'SHIPPED'].includes(o.status)).reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+
+    setStats({
+      totalSales: totalSalesCount,
+      active: verified,
+      pending,
+      totalEarningsInr: Math.round(totalUsdc * usdcInr),
+      pendingEarningsInr: Math.round(pendingUsdc * usdcInr),
+      withdrawableInr: Math.round((totalUsdc - pendingUsdc) * usdcInr),
+      usdcBalance: totalUsdc,
+      usdcInr: Math.round(totalUsdc * usdcInr),
+      analytics: {
+        revenueByMonth: analytics.revenueByMonth || [],
+        currencyDistribution: analytics.currencyDistribution || []
+      }
+    })
+
+    setLoading(false)
   }
 
-  const walletAddress = (user as any)?.stellarWallet || (user as any)?.supplierProfile?.stellarWallet || publicKey || ""
+  const walletAddress = (user as any)?.walletAddress || (user as any)?.stellarWallet || (user as any)?.supplierProfile?.walletAddress || (user as any)?.supplierProfile?.stellarWallet || publicKey || ""
 
   const copyWallet = () => {
     if (walletAddress) {

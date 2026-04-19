@@ -5,11 +5,16 @@ export interface UserProfile {
   email: string
   role: 'SUPPLIER' | 'BUYER' | 'VERIFIER' | 'ADMIN'
   stellarWallet?: string
+  walletAddress?: string
+  whatsappNumber?: string
   supplierProfile?: {
     id: string
     name: string
     trustScore: number
     isVerified: boolean
+    stellarWallet?: string
+    walletAddress?: string
+    whatsappNumber?: string
   } | null
 }
 
