@@ -61,7 +61,7 @@ import { Outfit, Inter } from "next/font/google"
 import { motion, AnimatePresence } from "framer-motion"
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
-import { getProducts, getSupplierProducts, getSupplierOrders, getSupplierBounties, getSupplierAnalytics, getExchangeRates } from "@/lib/api-service"
+import { getProducts, getSupplier, getSupplierProducts, getSupplierOrders, getSupplierBounties, getSupplierAnalytics, getExchangeRates } from "@/lib/api-service"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -126,6 +126,7 @@ export default function SellerDashboard() {
   const [selectedQrProduct, setSelectedQrProduct] = useState<any>(null)
   const [withdrawing, setWithdrawing] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [supplierWallet, setSupplierWallet] = useState("")
 
   useEffect(() => {
     setMounted(true)
@@ -152,6 +153,18 @@ export default function SellerDashboard() {
       setProducts(myProducts)
     } catch (e) {
       console.warn('[SellerDashboard] Products fetch failed:', e)
+    }
+
+    // 1b. Fetch supplier profile to get wallet address
+    try {
+      if (supplierId) {
+        const supplierData = await getSupplier(supplierId)
+        if (supplierData?.stellarWallet) {
+          setSupplierWallet(supplierData.stellarWallet)
+        }
+      }
+    } catch (e) {
+      console.warn('[SellerDashboard] Supplier profile fetch failed:', e)
     }
 
     // 2. Orders
@@ -215,7 +228,7 @@ export default function SellerDashboard() {
     setLoading(false)
   }
 
-  const walletAddress = (user as any)?.walletAddress || (user as any)?.stellarWallet || (user as any)?.supplierProfile?.walletAddress || (user as any)?.supplierProfile?.stellarWallet || publicKey || ""
+  const walletAddress = supplierWallet || (user as any)?.stellarWallet || (user as any)?.supplierProfile?.stellarWallet || publicKey || ""
 
   const copyWallet = () => {
     if (walletAddress) {
