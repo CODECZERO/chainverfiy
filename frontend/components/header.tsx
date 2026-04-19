@@ -100,8 +100,8 @@ export function Header() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className={cn(
-            "mx-auto max-w-7xl h-12 md:h-14 glass-premium rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-between px-4 md:px-8 pointer-events-auto transition-all duration-500 shadow-2xl shadow-indigo-500/10",
-            isScrolled ? "scale-95 translate-y-1 opacity-95" : "scale-100"
+            "mx-auto max-w-7xl h-14 md:h-16 glass-premium rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-between px-4 md:px-8 pointer-events-auto transition-all duration-500 shadow-2xl shadow-indigo-500/10",
+            isScrolled ? "scale-[0.97] translate-y-1 opacity-95" : "scale-100"
           )}
         >
           {/* Logo */}
@@ -113,8 +113,8 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation - Single Line Structure */}
-          <nav aria-label="Main Navigation" className="hidden lg:flex items-center flex-1 justify-center px-4">
-            <div className="flex items-center gap-1 xl:gap-2">
+          <nav aria-label="Main Navigation" className="hidden lg:flex items-center flex-1 justify-center">
+            <div className="flex items-center gap-1">
               {FLAT_NAV.map((item) => {
                 const isActive = pathname === item.href
                 return (
@@ -123,7 +123,7 @@ export function Header() {
                     href={item.href}
                     aria-label={`Go to ${item.label}`}
                     className={cn(
-                      "group relative px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
+                      "group relative px-3.5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap",
                       isActive 
                         ? "text-indigo-400 bg-indigo-500/5 shadow-[0_0_20px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/20" 
                         : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
@@ -145,19 +145,22 @@ export function Header() {
               })}
 
               {(isAuthenticated || isConnected) && (
-                <Link 
-                  href={dashboardUrl}
-                  aria-label="Go to Dashboard"
-                  className={cn(
-                    "group relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2",
-                    pathname.includes("dashboard")
-                      ? "text-indigo-400 bg-indigo-500/5 ring-1 ring-indigo-500/20"
-                      : "text-indigo-500/80 hover:text-white hover:bg-white/[0.04]"
-                  )}
-                >
-                  <LayoutGrid aria-hidden="true" className="w-3.5 h-3.5" />
-                  Dashboard
-                </Link>
+                <>
+                  <div className="w-px h-5 bg-white/[0.08] mx-1.5" />
+                  <Link 
+                    href={dashboardUrl}
+                    aria-label="Go to Dashboard"
+                    className={cn(
+                      "group relative px-3.5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap",
+                      pathname.includes("dashboard")
+                        ? "text-indigo-400 bg-indigo-500/5 ring-1 ring-indigo-500/20"
+                        : "text-indigo-500/80 hover:text-white hover:bg-white/[0.04]"
+                    )}
+                  >
+                    <LayoutGrid aria-hidden="true" className="w-3.5 h-3.5" />
+                    Dashboard
+                  </Link>
+                </>
               )}
             </div>
           </nav>
@@ -174,11 +177,11 @@ export function Header() {
             </button>
 
             <div className="hidden md:flex relative group">
-              <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 transition-colors group-focus-within:text-indigo-500" />
+              <Search aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 transition-colors group-focus-within:text-indigo-500" />
               <Input 
                 placeholder="Search..." 
                 aria-label="Search products"
-                className="w-32 bg-white/[0.03] border-white/[0.06] rounded-xl h-9 pl-9 text-xs font-semibold focus-visible:w-48 transition-all focus:bg-white/[0.05] focus:ring-1 focus:ring-indigo-500/30"
+                className="w-28 bg-white/[0.03] border-white/[0.06] rounded-xl h-10 pl-10 text-xs font-semibold focus-visible:w-44 transition-all focus:bg-white/[0.05] focus:ring-1 focus:ring-indigo-500/30"
               />
             </div>
 

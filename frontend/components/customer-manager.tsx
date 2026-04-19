@@ -48,11 +48,14 @@ export function CustomerManager() {
     fetchOrders()
   }, [])
 
-  const filteredOrders = orders.filter(o => 
-    o.buyer?.email?.toLowerCase().includes(search.toLowerCase()) ||
-    o.product?.title?.toLowerCase().includes(search.toLowerCase()) ||
-    o.id.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredOrders = orders.filter(o => {
+    const searchLower = search.toLowerCase()
+    return (
+      (o.buyer?.email || "").toLowerCase().includes(searchLower) ||
+      (o.product?.title || "").toLowerCase().includes(searchLower) ||
+      (o.id || "").toLowerCase().includes(searchLower)
+    )
+  })
 
   if (loading) {
     return (
@@ -126,7 +129,7 @@ export function CustomerManager() {
                     order.status === 'SHIPPED' ? 'border-blue-500/30 text-blue-400 bg-blue-500/5' :
                     'border-amber-500/30 text-amber-400 bg-amber-500/5'
                   }`}>
-                    {order.status.toLowerCase()}
+                    {(order.status || '').toLowerCase()}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

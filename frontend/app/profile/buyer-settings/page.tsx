@@ -11,6 +11,11 @@ import {
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { truncateWallet } from "@/lib/qr-utils"
+import { Outfit, Inter } from "next/font/google"
+import { cn } from "@/lib/utils"
+
+const outfit = Outfit({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export default function BuyerSettingsPage() {
   const [user, setUser] = useState<any>(null)
@@ -32,13 +37,13 @@ export default function BuyerSettingsPage() {
           getBuyerProfile()
         ])
         
-        if (meRes.success) setUser(meRes.data)
-        if (profileRes.success) {
+        if (meRes?.id) setUser(meRes)
+        if (profileRes) {
           setProfile({
-            name: profileRes.data.name || "",
-            email: profileRes.data.email || "",
-            phoneNumber: profileRes.data.phoneNumber || "",
-            deliveryAddress: profileRes.data.deliveryAddress || ""
+            name: profileRes.name || "",
+            email: profileRes.email || "",
+            phoneNumber: profileRes.phoneNumber || "",
+            deliveryAddress: profileRes.deliveryAddress || ""
           })
         }
       } catch (err) {
@@ -55,11 +60,11 @@ export default function BuyerSettingsPage() {
     setMessage(null)
     try {
       const res = await updateBuyerProfile(profile)
-      if (res.success) {
+      if (res.id) { // Usually returns the updated profile object
         setMessage({ type: 'success', text: "Profile updated successfully" })
         setTimeout(() => setMessage(null), 3000)
       } else {
-        setMessage({ type: 'error', text: res.message || "Failed to update profile" })
+        setMessage({ type: 'error', text: "Failed to update profile" })
       }
     } catch (err) {
       setMessage({ type: 'error', text: "Network error occurred" })
@@ -68,60 +73,73 @@ export default function BuyerSettingsPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#020408] flex items-center justify-center">
-      <div className="w-12 h-12 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+    <div className={cn("min-h-screen bg-[#05060A] flex items-center justify-center", inter.className)}>
+      <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#020408] text-slate-400 font-sans pb-20">
+    <div className={cn("min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30", inter.className)}>
+      {/* ── Background Elements ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
+      </div>
+
       <Header />
       
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
-              Buyer <span className="text-blue-500">Settings</span>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px w-10 bg-indigo-500/40" />
+              <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest">Configuration</span>
+            </div>
+            <h1 className={`${outfit.className} text-4xl md:text-5xl font-bold tracking-tight text-white`}>
+              Buyer <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400">Settings</span>
             </h1>
-            <p className="text-slate-500 mt-2 font-medium">Manage your verified procurement identity</p>
-          </div>
+            <p className="text-slate-500 mt-3 text-sm font-medium">Manage your verified procurement identity</p>
+          </motion.div>
           
-          <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-6 py-3">
-             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4 bg-white/5 border border-white/[0.08] rounded-2xl px-6 py-4 shadow-inner">
+             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                <Wallet className="w-5 h-5 text-blue-400" />
              </div>
              <div>
-               <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Wallet</div>
-               <div className="text-xs font-black text-white tracking-tight">{truncateWallet(user?.publicKey)}</div>
+               <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Active Wallet</div>
+               <div className="text-xs font-mono text-white">{truncateWallet(user?.stellarWallet || user?.publicKey || "Not connected")}</div>
              </div>
-          </div>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Sidebar Nav */}
-          <div className="lg:col-span-4 space-y-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-4 space-y-4">
              <NavButton active icon={User} label="Personal Profile" />
              <NavButton icon={Shield} label="Security & Privacy" />
              <NavButton icon={Bell} label="Notification Center" />
              <NavButton icon={CreditCard} label="Payment Methods" />
              
-             <div className="mt-12 p-8 bg-blue-600/5 border border-blue-600/10 rounded-[2rem] relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
-                <h3 className="text-sm font-black text-white uppercase tracking-widest italic mb-2">Trust Score</h3>
-                <div className="text-3xl font-black text-blue-500 tracking-tighter">Gold Tier</div>
-                <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-4">Verified Transactions: 12</p>
-                <button className="mt-6 flex items-center gap-2 text-[10px] font-black text-blue-400 hover:text-blue-300 transition-colors">
-                  VIEW BADGES <ArrowRight className="w-3 h-3" />
+             <div className="mt-10 glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+                <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Trust Score</h3>
+                <div className={`${outfit.className} text-4xl font-bold text-white tracking-tight`}>Gold Tier</div>
+                <p className="text-[11px] text-slate-400 font-medium mt-4">Verified Transactions: <span className="text-white font-bold">12</span></p>
+                <button className="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors">
+                  View Badges <ArrowRight className="w-3 h-3" />
                 </button>
              </div>
-          </div>
+          </motion.div>
 
           {/* Settings Form */}
           <div className="lg:col-span-8">
             <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="premium-card bg-[#0A0D14]/80 backdrop-blur-xl border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-12 shadow-3xl"
             >
               <form onSubmit={handleUpdate} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -152,39 +170,50 @@ export default function BuyerSettingsPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2 flex items-center gap-2">
-                     <Globe className="w-3 h-3" /> Default Delivery Yard
+                <div className="space-y-3">
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 flex items-center gap-2">
+                     <Globe className="w-3 h-3 text-indigo-400" /> Default Delivery Yard
                    </label>
-                   <textarea 
-                     className="w-full bg-white/[0.03] border border-white/5 rounded-2xl p-4 text-white font-medium focus:outline-none focus:border-blue-500/50 focus:bg-blue-500/[0.03] transition-all min-h-[120px] resize-none"
-                     placeholder="Enter full shipping/receiving address..."
-                     value={profile.deliveryAddress}
-                     onChange={(e: any) => setProfile({...profile, deliveryAddress: e.target.value})}
-                   />
+                   <div className="relative group">
+                     <textarea 
+                       className="w-full bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 text-white font-medium focus:outline-none focus:border-indigo-500/50 focus:bg-indigo-500/[0.02] transition-all min-h-[120px] resize-none"
+                       placeholder="Enter full shipping/receiving address..."
+                       value={profile.deliveryAddress}
+                       onChange={(e: any) => setProfile({...profile, deliveryAddress: e.target.value})}
+                     />
+                     <div className="absolute bottom-1 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/0 to-transparent group-focus-within:via-indigo-500/50 transition-all duration-700" />
+                   </div>
                 </div>
 
                 <AnimatePresence>
                   {message && (
                     <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className={`flex items-center gap-3 p-4 rounded-2xl border ${message.type === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"}`}
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className={cn(
+                        "flex items-center gap-3 p-4 rounded-2xl border",
+                        message.type === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
+                      )}
                     >
                       {message.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
-                      <span className="text-xs font-black uppercase tracking-widest">{message.text}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest">{message.text}</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                <div className="pt-6 flex justify-end">
+                <div className="pt-8 border-t border-white/[0.05] flex justify-end">
                    <button 
                      type="submit"
                      disabled={saving}
-                     className="flex items-center gap-4 px-10 py-5 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-blue-500 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.3)] hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:translate-y-0"
+                     className="flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-900/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:translate-y-0"
                    >
-                     {saving ? "Synchronizing..." : (
+                     {saving ? (
+                       <>
+                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                         Synchronizing...
+                       </>
+                     ) : (
                         <>
                           <Save className="w-4 h-4" />
                           Update Verified Identity
@@ -203,30 +232,36 @@ export default function BuyerSettingsPage() {
 
 function NavButton({ active, icon: Icon, label }: any) {
   return (
-    <button className={`w-full flex items-center justify-between p-5 rounded-2xl transition-all group ${active ? "bg-white/5 border border-white/10 text-white shadow-xl" : "hover:bg-white/[0.03] text-slate-500 border border-transparent"}`}>
+    <button className={cn(
+      "w-full flex items-center justify-between p-4 rounded-2xl transition-all group",
+      active ? "bg-white/[0.04] border border-white/10 text-white shadow-xl" : "hover:bg-white/[0.02] text-slate-400 border border-transparent"
+    )}>
       <div className="flex items-center gap-4">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active ? "bg-blue-500/20 text-blue-400" : "bg-white/5 text-slate-700 group-hover:text-slate-400"}`}>
+        <div className={cn(
+          "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
+          active ? "bg-indigo-500/20 text-indigo-400" : "bg-white/5 text-slate-500 group-hover:text-slate-300"
+        )}>
           <Icon className="w-5 h-5" />
         </div>
-        <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+        <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
       </div>
-      <ChevronRight className={`w-4 h-4 transition-transform ${active ? "text-blue-500" : "text-slate-800"}`} />
+      <ChevronRight className={cn("w-4 h-4 transition-transform", active ? "text-indigo-500" : "text-slate-700 group-hover:translate-x-1")} />
     </button>
   )
 }
 
 function Input({ label, icon: Icon, ...props }: any) {
   return (
-    <div className="space-y-2">
-      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2 flex items-center gap-2">
-        <Icon className="w-3 h-3" /> {label}
+    <div className="space-y-3">
+      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 flex items-center gap-2">
+        <Icon className="w-3 h-3 text-indigo-400" /> {label}
       </label>
       <div className="relative group">
         <input 
           {...props}
-          className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:border-blue-500/50 focus:bg-blue-500/[0.03] transition-all"
+          className="w-full bg-white/[0.02] border border-white/[0.05] rounded-2xl px-5 py-4 text-white font-medium focus:outline-none focus:border-indigo-500/50 focus:bg-indigo-500/[0.02] transition-all"
         />
-        <div className="absolute bottom-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-blue-500/0 to-transparent group-focus-within:via-blue-500/50 transition-all duration-700" />
+        <div className="absolute bottom-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/0 to-transparent group-focus-within:via-indigo-500/50 transition-all duration-700" />
       </div>
     </div>
   )
