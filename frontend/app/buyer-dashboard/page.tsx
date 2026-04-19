@@ -133,12 +133,12 @@ export default function BuyerDashboard() {
   
   if (authLoading || (loading && isDashboardReady && orders.length === 0)) {
     return (
-      <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className}`}>
+      <div className={`min-h-screen bg-[#05060A] text-slate-200 ${inter.className}`}>
         <Header />
         <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] gap-6">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
-            <Activity className="w-6 h-6 text-blue-400 absolute inset-0 m-auto animate-pulse" />
+            <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+            <Activity className="w-6 h-6 text-indigo-400 absolute inset-0 m-auto animate-pulse" />
           </div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 animate-pulse">Syncing Dashboard...</span>
         </div>
@@ -148,7 +148,7 @@ export default function BuyerDashboard() {
 
   if (user && user.role !== "BUYER") {
     return (
-      <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className}`}>
+      <div className={`min-h-screen bg-[#05060A] text-slate-200 ${inter.className}`}>
         <Header />
         <div className="max-w-md mx-auto px-4 py-32 text-center">
           <div className="w-24 h-24 rounded-[2rem] bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-10 shadow-2xl">
@@ -164,7 +164,7 @@ export default function BuyerDashboard() {
 
   if (!isDashboardReady) {
     return (
-      <div className={`min-h-screen bg-[#030408] text-slate-400 ${inter.className}`}>
+      <div className={`min-h-screen bg-[#05060A] text-slate-200 ${inter.className}`}>
         <Header />
         <div className="max-w-4xl mx-auto px-6 py-32">
           <WalletRequirement fallbackMessage="Please sign in or connect your wallet to view your purchase history." />
@@ -173,159 +173,143 @@ export default function BuyerDashboard() {
     )
   }
 
+  const walletAddr = user?.stellarWallet || publicKey || ""
+
   return (
-    <div className={`h-screen flex flex-col bg-[#030408] text-slate-400 ${inter.className} selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative`}>
-      {/* ── Space Atmospheric Effects ── */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
-      
+    <div className={`min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30 ${inter.className}`}>
+      {/* ── Background Elements (matching marketplace) ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </div>
+
       <Header />
 
-      <div className="flex flex-1 overflow-hidden relative z-10 pt-24 md:pt-28">
-        {/* ── Dashboard Sidebar ── */}
-        <aside className="hidden lg:flex flex-col w-80 shrink-0 gap-6 p-8 h-full border-r border-white/[0.04] bg-[#07090F]/40 backdrop-blur-xl">
-          {/* User Profile */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="glass-premium bg-white/[0.02] border border-white/[0.08] rounded-[2.5rem] p-7 shadow-3xl relative overflow-hidden group"
-          >
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/15 transition-all duration-1000" />
-            <div className="flex items-center gap-5 relative z-10">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-2xl border border-white/20 group-hover:scale-105 transition-all duration-500">
-                {String(user?.email || publicKey || "B")[0].toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <div className={`${outfit.className} font-bold text-white text-xl truncate tracking-tight`}>{String(user?.email?.split("@")[0] || "Buyer Account")}</div>
-                <div className="flex items-center gap-1.5 mt-1 text-blue-400 font-bold text-[9px] uppercase tracking-widest">
-                   <Shield className="w-3 h-3" /> Verified Buyer
-                </div>
-              </div>
-            </div>
+      <main className="relative z-10 pt-32 pb-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
 
-            {/* Wallet Info */}
-            {(user?.stellarWallet || publicKey) && (
-              <div className="mt-8 bg-black/40 border border-white/[0.03] rounded-2xl p-4 flex items-center gap-4 group/wallet hover:border-blue-500/20 transition-all shadow-inner">
-                <div className="w-9 h-9 rounded-xl bg-white/[0.02] flex items-center justify-center border border-white/[0.05] shadow-inner">
-                  <Wallet className="w-3.5 h-3.5 text-slate-500 group-hover/wallet:text-blue-400 transition-colors" />
+          {/* ── Buyer Profile Header ── */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-12">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="max-w-2xl"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-10 bg-indigo-500/40" />
+                <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest">Shopping Hub</span>
+              </div>
+              <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold tracking-tight text-white mb-6`}>
+                Buyer <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400">Dashboard</span>
+              </h1>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-500 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-[0_10px_40px_rgba(99,102,241,0.35)] border border-white/20">
+                  {String(user?.email || publicKey || "B")[0].toUpperCase()}
                 </div>
-                <span className="text-[9px] font-mono text-slate-500 truncate flex-1 uppercase tracking-widest">
-                  {String(user?.stellarWallet || publicKey || "").slice(0, 8)}...{String(user?.stellarWallet || publicKey || "").slice(-8)}
-                </span>
-                <button onClick={copyWallet} className="text-slate-600 hover:text-white transition-all bg-white/[0.03] p-2.5 rounded-lg border border-white/[0.05] active:scale-90">
-                  {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                <div>
+                  <div className={`${outfit.className} font-bold text-white text-lg tracking-tight`}>{String(user?.email?.split("@")[0] || "Buyer Account")}</div>
+                  <div className="flex items-center gap-1.5 text-indigo-400 font-bold text-[9px] uppercase tracking-widest">
+                    <Shield className="w-3 h-3" /> Verified Buyer
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex flex-col gap-4 min-w-[320px]"
+            >
+              {/* Wallet Address Card */}
+              {walletAddr && (
+                <button
+                  onClick={copyWallet}
+                  className="w-full p-4 bg-white/[0.04] border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all group text-left"
+                  title="Click to copy full wallet address"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Wallet className="w-4 h-4 text-indigo-400" />
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stellar Wallet</span>
+                    {copied ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 ml-auto" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 ml-auto transition-colors" />
+                    )}
+                  </div>
+                  <p className="font-mono text-[11px] text-slate-300 break-all leading-relaxed">
+                    {walletAddr}
+                  </p>
+                  {copied && <span className="text-[9px] text-emerald-400 font-bold uppercase mt-1 block">Copied to clipboard!</span>}
                 </button>
+              )}
+
+              {/* Total Spent + Actions */}
+              <div className="flex gap-3 items-stretch">
+                <div className="flex-1 p-4 bg-white/[0.04] border border-white/10 rounded-2xl">
+                  <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Spent</div>
+                  <div className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>
+                    ${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">USDC</div>
+                </div>
+                <button
+                  onClick={loadOrders}
+                  disabled={loading}
+                  className="flex items-center gap-2 px-5 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-slate-500 hover:text-white hover:border-indigo-500/30 transition-all disabled:opacity-50 group text-[10px] font-bold uppercase tracking-widest"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-indigo-500" : "group-hover:rotate-180 transition-transform duration-700"}`} />
+                </button>
+                <Link href="/marketplace">
+                  <Button className="h-full px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-900/20 transition-all active:scale-95">
+                    <ShoppingCart className="w-4 h-4 mr-2" /> Shop
+                  </Button>
+                </Link>
               </div>
-            )}
-          </motion.div>
+            </motion.div>
+          </div>
 
-          {/* Navigation Menu */}
-          <nav className="flex-1 overflow-y-auto pr-2 space-y-3 mt-4 scrollbar-hide">
-            <div className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mb-4 ml-4 opacity-80">Dashboard Menu</div>
-            {NAV.map((n, i) => (
-              <motion.button 
-                key={n.id} 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                onClick={() => setActive(n.id)}
-                className={`w-full group flex items-center gap-5 px-7 py-5 rounded-[2rem] text-[11px] font-bold uppercase tracking-widest transition-all relative overflow-hidden ${
-                  active === n.id
-                    ? "text-white bg-blue-600/10 border border-blue-500/20 shadow-xl"
-                    : "text-slate-600 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent"
-                }`}
-              >
-                {active === n.id && (
-                  <>
-                    <motion.div layoutId="buyer-nav-glow" className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent" />
-                    <div className="absolute left-0 top-1/4 bottom-1/4 w-1.5 bg-blue-500 rounded-r-full shadow-[0_0_20px_rgba(37,99,235,0.8)]" />
-                  </>
-                )}
-                <n.icon className={`w-5 h-5 transition-all duration-700 ${active === n.id ? "text-blue-400 drop-shadow-[0_0_12px_rgba(37,99,235,0.6)] scale-110" : "text-slate-800 group-hover:scale-110"}`} />
-                <span className="relative z-10">{n.label}</span>
-                {n.id === "tracking" && activeOrders.length > 0 && (
-                   <span className="ml-auto bg-blue-500/10 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-xl border border-blue-500/20 shadow-lg">{activeOrders.length}</span>
-                )}
-              </motion.button>
-            ))}
-          </nav>
-
-          {/* Total Spending */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-premium bg-white/[0.01] border border-white/[0.08] rounded-[2.5rem] p-8 shadow-3xl relative overflow-hidden group"
-          >
-            <div className="absolute top-0 right-0 p-4 opacity-5">
-               <Activity className="w-16 h-16 text-blue-400" />
-            </div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Total Spent</div>
-            <div className="flex items-baseline gap-2">
-               <div className={`${outfit.className} text-4xl font-bold text-white tracking-tight tabular-nums`}>
-                 ${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-               </div>
-               <div className="text-[11px] font-bold text-blue-500 uppercase tracking-widest opacity-80">USDC</div>
-            </div>
-            <div className="mt-6 pt-6 border-t border-white/[0.04] flex items-center gap-3">
-               <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_12px_rgba(37,99,235,0.8)]" />
-               <span className="text-[9px] font-bold text-slate-700 uppercase tracking-widest">Secure Payments</span>
-            </div>
-          </motion.div>
-        </aside>
-
-        {/* ── Main Dashboard ── */}
-        <main className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar p-6 md:p-12 relative">
-           {/* Mobile Navigation */}
-           <div className="lg:hidden flex overflow-x-auto gap-4 pb-8 mb-4 scrollbar-hide no-scrollbar -mx-2 px-2">
-             {NAV.map((n) => (
+          {/* ── Horizontal Tab Nav ── */}
+          <div className="mb-12 overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex items-center gap-2 min-w-max">
+              {NAV.map((n) => (
                 <button
                   key={n.id}
                   onClick={() => setActive(n.id)}
-                  className={`flex-none flex items-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all ${
-                    active === n.id 
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
-                      : "bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300"
+                  className={`relative px-5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap ${
+                    active === n.id
+                      ? "text-indigo-400 bg-indigo-500/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/20"
+                      : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
                   }`}
                 >
-                  <n.icon className="w-4 h-4" />
+                  <n.icon className={`w-4 h-4 transition-transform duration-500 ${active === n.id ? "text-indigo-400" : "text-slate-600"}`} />
                   {n.label}
+                  {n.id === "tracking" && activeOrders.length > 0 && (
+                    <span className="ml-1 bg-indigo-500/20 text-indigo-400 text-[9px] font-bold px-2 py-0.5 rounded-full">{activeOrders.length}</span>
+                  )}
+                  {active === n.id && (
+                    <motion.div
+                      layoutId="buyer-active-glow"
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-indigo-500 rounded-full blur-[2px] opacity-80"
+                    />
+                  )}
                 </button>
-             ))}
-           </div>
+              ))}
+            </div>
+          </div>
 
+          {/* ── Content Area ── */}
+          <div className="relative">
            <AnimatePresence mode="wait">
-             <motion.div
-               key={active}
-               initial={{ opacity: 0, y: 40 }}
-               animate={{ opacity: 1, y: 0 }}
-               exit={{ opacity: 0, y: -40 }}
-               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-               className="space-y-16"
-             >
-               {/* Dashboard Title */}
-               <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                  <div>
-                    <h2 className={`${outfit.className} text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]`}>
-                      {active === "orders" ? <span>My <span className="text-blue-500">Orders</span></span> : 
-                       active === "tracking" ? <span>Track <span className="text-blue-500">Shipments</span></span> : 
-                       active === "completed" ? <span>Order <span className="text-blue-500">History</span></span> : 
-                       <span>Earn <span className="text-blue-500">Rewards</span></span>}
-                    </h2>
-                    <div className="flex items-center gap-4 mt-8">
-                       <div className="h-[2px] w-14 bg-gradient-to-r from-blue-500 to-transparent" />
-                       <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
-                         <Zap className="w-3.5 h-3.5 text-blue-500" /> Secure Order Tracking Synchronized
-                       </p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={loadOrders} 
-                    className="group relative p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl transition-all active:scale-90 hover:border-blue-500/40 shadow-xl overflow-hidden backdrop-blur-xl"
-                  >
-                    <div className="absolute inset-0 bg-blue-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
-                    <RefreshCw className={`w-7 h-7 text-slate-500 group-hover:text-blue-400 transition-all relative z-10 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-1000"}`} />
-                  </button>
-               </div>
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-12"
+              >
 
                {/* Activity Insights */}
                {active === "orders" && (
@@ -557,8 +541,9 @@ export default function BuyerDashboard() {
                )}
              </motion.div>
            </AnimatePresence>
-        </main>
-      </div>
+          </div>
+        </div>
+      </main>
 
       {/* ── QR Receipt Modal ── */}
       <AnimatePresence>

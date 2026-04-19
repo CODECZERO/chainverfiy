@@ -148,11 +148,17 @@ export default function DeliveryVerificationPage() {
   const isBuyer = publicKey === escrow.buyer
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden">
+      {/* Background Elements */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </div>
       <Header />
       <WalletRequirement fallbackMessage="Please connect your wallet to view this order's details.">
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-10 pt-20 md:pt-24">
-        <h1 className="text-2xl sm:text-3xl font-semibold mb-6">Delivery Verification</h1>
+      <div className="relative z-10 max-w-2xl mx-auto px-4 py-8 md:py-10 pt-28 md:pt-32">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-white">Delivery Verification</h1>
         
         <Card className="p-4 md:p-6">
           <div className="mb-4">

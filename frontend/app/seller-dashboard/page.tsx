@@ -61,6 +61,7 @@ import { Outfit, Inter } from "next/font/google"
 import { motion, AnimatePresence } from "framer-motion"
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
+import { getProducts, getSupplierProducts, getSupplierOrders, getSupplierBounties, getSupplierAnalytics, getExchangeRates } from "@/lib/api-service"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -128,20 +129,73 @@ export default function SellerDashboard() {
 
   useEffect(() => {
     setMounted(true)
-    loadAll()
   }, [])
+
+  useEffect(() => {
+    if (user?.supplierProfile?.id || user?.id) {
+      loadAll()
+    }
+  }, [user?.supplierProfile?.id, user?.id])
 
   const loadAll = async () => {
     setLoading(true)
     try {
-      const resp = await fetch("/api/seller/dashboard")
-      if (resp.ok) {
-        const data = await resp.json()
-        setProducts(data.products || [])
-        setOrders(data.orders || [])
-        setBounties(data.bounties || [])
-        setStats(data.stats)
+      const supplierId = user?.supplierProfile?.id || user?.id
+      console.log('[SellerDashboard] Loading data for supplier:', supplierId)
+      
+      // Fetch products for this supplier directly
+      const supplierProducts = supplierId ? await getSupplierProducts(supplierId) : []
+      const myProducts = Array.isArray(supplierProducts) ? supplierProducts : (supplierProducts?.products || [])
+      setProducts(myProducts)
+      
+      // Fetch supplier orders
+      const myOrders = await getSupplierOrders(supplierId)
+      setOrders(Array.isArray(myOrders) ? myOrders : (myOrders?.orders || []))
+      
+      // Fetch bounties
+      const myBounties = supplierId ? await getSupplierBounties(supplierId) : []
+      setBounties(Array.isArray(myBounties) ? myBounties : (myBounties?.bounties || []))
+      
+      // Fetch analytics
+      let analytics = { revenueByMonth: [], currencyDistribution: [] }
+      if (supplierId) {
+        try {
+          const analyticsData = await getSupplierAnalytics(supplierId)
+          if (analyticsData) analytics = analyticsData
+        } catch (e) {
+          console.warn('[SellerDashboard] Analytics not available:', e)
+        }
       }
+
+      // Fetch exchange rates
+      let usdcInr = 83.33
+      try {
+        const rates = await getExchangeRates()
+        if (rates?.USDC?.inr) usdcInr = rates.USDC.inr
+      } catch (e) { /* use default */ }
+
+      // Compute stats from products and orders
+      const ordersArr = Array.isArray(myOrders) ? myOrders : (myOrders?.orders || [])
+      const verified = myProducts.filter((p: any) => p.status === 'VERIFIED').length
+      const pending = myProducts.filter((p: any) => p.status === 'PENDING_VERIFICATION').length
+      const totalSalesCount = ordersArr.filter((o: any) => ['PAID', 'SHIPPED', 'DELIVERED', 'COMPLETED'].includes(o.status)).length
+      const totalUsdc = ordersArr.reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+      const pendingUsdc = ordersArr.filter((o: any) => ['PAID', 'SHIPPED'].includes(o.status)).reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+      
+      setStats({
+        totalSales: totalSalesCount,
+        active: verified,
+        pending,
+        totalEarningsInr: Math.round(totalUsdc * usdcInr),
+        pendingEarningsInr: Math.round(pendingUsdc * usdcInr),
+        withdrawableInr: Math.round((totalUsdc - pendingUsdc) * usdcInr),
+        usdcBalance: totalUsdc,
+        usdcInr: Math.round(totalUsdc * usdcInr),
+        analytics: {
+          revenueByMonth: analytics.revenueByMonth || [],
+          currencyDistribution: analytics.currencyDistribution || []
+        }
+      })
     } catch (err) {
       console.error("[SellerDashboard] Failed to load data:", err)
     } finally {
