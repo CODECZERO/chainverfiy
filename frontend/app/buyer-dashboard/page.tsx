@@ -407,10 +407,6 @@ export default function BuyerDashboard() {
                  </div>
                )}
 
-               {/* ── Orders Tab (list only, no charts) ── */}
-               {active === "orders" && (
-                 <div />
-               )}
 
                {/* Bounties Tab */}
                {active === "bounties" && (
