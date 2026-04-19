@@ -209,53 +209,73 @@ export default function ProductPage() {
           <div className="lg:col-span-8 space-y-20">
             
             {/* 1. Brand & Title */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs font-semibold text-indigo-400">Verified Product</span>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(99,102,241,0.2)]">
+                  Verified Product
+                </span>
+                <span className="px-3 py-1 bg-white/[0.03] border border-white/[0.08] text-slate-400 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+                  Immutable Record
+                </span>
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+              <h1 className={`${outfit.className} text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-8 text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 drop-shadow-sm`}>
                 {String(product.title || "")}
               </h1>
-              <div className="bg-white/[0.02] border-l-4 border-indigo-500/30 rounded-r-3xl p-8 backdrop-blur-xl">
-                 <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-4xl italic font-medium">
-                   {String(product.description || "No localized description available for this unit identity.")}
-                 </p>
+              <div className="relative group">
+                 <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-indigo-500 to-blue-600 rounded-full" />
+                 <div className="bg-white/[0.02] border border-white/[0.04] rounded-r-3xl rounded-l-sm p-8 backdrop-blur-xl group-hover:bg-white/[0.03] transition-colors">
+                   <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-4xl font-medium">
+                     {String(product.description || "No localized description available for this unit identity.")}
+                   </p>
+                 </div>
               </div>
             </motion.div>
 
             {/* 2. Media visualizer */}
             <div className="space-y-6">
-              <div className="aspect-[16/10] glass-premium rounded-[3rem] overflow-hidden relative group shadow-2xl">
-                <div className="absolute inset-0 bg-indigo-500/5 mix-blend-overlay pointer-events-none" />
+              <div className="aspect-[16/10] glass-premium rounded-[3rem] overflow-hidden relative group shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-white/[0.1]">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05060A] via-transparent to-transparent opacity-80 z-10 pointer-events-none" />
+                <div className="absolute inset-0 bg-indigo-500/5 mix-blend-overlay pointer-events-none z-10" />
+                
+                {/* On-Chain Watermark */}
+                <div className="absolute top-6 left-8 z-20 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-display font-black text-emerald-400/80 uppercase tracking-[0.3em] drop-shadow-md">On-Chain Proof</span>
+                </div>
+
                 {product.proofMediaUrls?.[activeImg] ? (
                   <Image 
                     src={getIPFSUrl(product.proofMediaUrls[activeImg])} 
                     alt={product.title} 
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out z-0"
                     priority
                   />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-700">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-700 bg-[#020305] z-0">
                     <Package className="w-24 h-24 mb-6 stroke-[1]" />
-                    <span className="text-[10px] font-display font-black uppercase tracking-[0.3em] italic">Visual Evidence Unsynchronized</span>
+                    <span className="text-[10px] font-display font-black uppercase tracking-[0.3em]">Visual Evidence Unsynchronized</span>
                   </div>
                 )}
+                
+                {/* Inner Glow Ring */}
+                <div className="absolute inset-0 rounded-[3rem] ring-1 ring-inset ring-white/10 pointer-events-none z-20" />
               </div>
               
               {/* Floating Thumbnails */}
               {product.proofMediaUrls?.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-4 px-2">
+                <div className="flex gap-4 overflow-x-auto pb-4 px-2 scrollbar-hide">
                   {product.proofMediaUrls.map((_: string, i: number) => (
                     <button key={i} onClick={() => setActiveImg(i)}
                       className={cn(
-                        "relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 border-2 transition-all duration-300",
+                        "relative w-24 h-24 rounded-[1.25rem] overflow-hidden shrink-0 border-2 transition-all duration-300 group/thumb",
                         i === activeImg 
                           ? "border-indigo-500 shadow-[0_0_30px_rgba(79,70,229,0.4)] scale-110 z-10" 
-                          : "border-transparent opacity-40 hover:opacity-100 scale-100"
+                          : "border-white/5 opacity-50 hover:opacity-100 hover:border-white/20 scale-100"
                       )}
                     >
-                      <Image src={getIPFSUrl(product.proofMediaUrls[i])} alt="" fill className="object-cover" />
+                      <Image src={getIPFSUrl(product.proofMediaUrls[i])} alt="" fill className="object-cover transition-transform duration-500 group-hover/thumb:scale-110" />
+                      <div className={cn("absolute inset-0 transition-opacity duration-300", i === activeImg ? "bg-indigo-500/10" : "bg-black/40 group-hover/thumb:bg-black/20")} />
                     </button>
                   ))}
                 </div>
@@ -281,24 +301,34 @@ export default function ProductPage() {
                 </Button>
               </div>
 
-              <div className="grid sm:grid-cols-3 gap-8 mb-14">
-                <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 text-center group-hover:border-indigo-500/30 transition-all backdrop-blur-xl">
-                  <div className="text-6xl font-bold text-indigo-400 mb-2 tracking-tighter">{String(realPct)}%</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Trust Score</div>
-                </div>
-                <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 text-center backdrop-blur-xl">
-                  <div className="text-6xl font-bold text-white mb-2 tracking-tighter">{String(total)}</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Votes</div>
-                </div>
-                <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] p-10 flex items-center justify-center gap-12 backdrop-blur-xl">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-emerald-400 mb-1">{String(product.voteReal)}</div>
-                    <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Authentic</div>
+              <div className="grid sm:grid-cols-3 gap-6 mb-12">
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-8 text-center group-hover:border-indigo-500/20 transition-all shadow-inner ring-1 ring-inset ring-black/50 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none" />
+                  <div className="text-5xl lg:text-6xl font-display font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 to-blue-600 mb-3 tracking-tighter drop-shadow-sm">{String(realPct)}%</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Trust Score
                   </div>
-                  <div className="w-px h-16 bg-white/5" />
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-red-500 mb-1">{String(product.voteFake)}</div>
-                    <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Fake</div>
+                </div>
+                
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-8 text-center transition-all shadow-inner ring-1 ring-inset ring-black/50">
+                  <div className="text-5xl lg:text-6xl font-display font-black text-white mb-3 tracking-tighter">{String(total)}</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <Users className="w-3.5 h-3.5" /> Total Votes
+                  </div>
+                </div>
+                
+                <div className="bg-[#020305] border border-white/[0.04] rounded-[2rem] p-6 flex flex-col justify-center gap-4 shadow-inner ring-1 ring-inset ring-black/50">
+                  <div className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/10 rounded-xl px-4 py-3">
+                    <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Authentic
+                    </div>
+                    <div className="text-2xl font-display font-black text-emerald-400">{String(product.voteReal)}</div>
+                  </div>
+                  <div className="flex items-center justify-between bg-red-500/5 border border-red-500/10 rounded-xl px-4 py-3">
+                    <div className="text-[9px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-2">
+                      <XCircle className="w-3.5 h-3.5" /> Fake
+                    </div>
+                    <div className="text-2xl font-display font-black text-red-400">{String(product.voteFake)}</div>
                   </div>
                 </div>
               </div>
@@ -334,17 +364,17 @@ export default function ProductPage() {
                         <Button 
                           onClick={() => handleVote('REAL')}
                           disabled={isVoting}
-                          className="h-16 rounded-2xl bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 font-bold transition-all"
+                          className="h-16 rounded-[1.25rem] bg-[#020305] hover:bg-emerald-500/10 text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] group/vote"
                         >
-                          {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-3" />}
+                          {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-3 group-hover/vote:scale-110 transition-transform" />}
                           Confirm Authentic
                         </Button>
                         <Button 
                           onClick={() => handleVote('FAKE')}
                           disabled={isVoting}
-                          className="h-16 rounded-2xl bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/20 font-bold transition-all"
+                          className="h-16 rounded-[1.25rem] bg-[#020305] hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/20 font-bold transition-all shadow-[0_0_20px_rgba(239,68,68,0.05)] hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] group/vote"
                         >
-                          {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <XCircle className="w-5 h-5 mr-3" />}
+                          {isVoting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <XCircle className="w-5 h-5 mr-3 group-hover/vote:scale-110 transition-transform" />}
                           Flag as Fake
                         </Button>
                       </div>
@@ -423,30 +453,32 @@ export default function ProductPage() {
                   <Globe className="w-8 h-8 text-indigo-400" /> Product History
                 </h3>
                 
-                <div className="pl-8 md:pl-12 border-l-2 border-white/[0.08] space-y-12 md:space-y-16 relative">
+                <div className="pl-8 md:pl-12 border-l-2 border-indigo-500/20 space-y-12 md:space-y-16 relative">
+                  <div className="absolute top-0 bottom-0 left-[-2px] w-[2px] bg-gradient-to-b from-indigo-500/50 via-blue-500/50 to-transparent" />
                   {product.stageUpdates.map((s: any, i: number) => (
-                    <div key={s.id} className="relative">
+                    <div key={s.id} className="relative z-10">
                       {/* Timeline Hub */}
-                      <div className="absolute -left-[42px] md:-left-[64px] top-4 w-8 md:w-12 h-8 md:h-12 rounded-lg md:rounded-[1.25rem] bg-[#030408] border border-indigo-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] z-10">
-                         <div className="w-1.5 md:w-2 h-1.5 md:h-2 rounded-full bg-indigo-500 animate-pulse" />
+                      <div className="absolute -left-[42px] md:-left-[64px] top-6 w-8 md:w-12 h-8 md:h-12 rounded-full bg-[#020305] border-2 border-indigo-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] z-10 group-hover/trail:border-indigo-400 group-hover/trail:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all">
+                         <div className="w-2 md:w-3 h-2 md:h-3 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]" />
                       </div>
                       
                       <motion.div 
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="glass-premium rounded-[2.5rem] p-10 hover:border-indigo-500/30 transition-all group/trail"
+                        className="bg-[#020305]/80 border border-white/[0.04] rounded-[2.5rem] p-10 hover:border-indigo-500/40 transition-all group/trail shadow-inner ring-1 ring-inset ring-black/50 backdrop-blur-xl relative overflow-hidden"
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-6 mb-6">
-                          <h4 className="text-xl font-bold text-white tracking-tight">{String(s.stageName || "LOG_ENTRY")}</h4>
-                          <span className="text-xs text-slate-500 font-semibold bg-white/[0.03] px-4 py-2 rounded-xl border border-white/[0.06]">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[60px] rounded-full pointer-events-none" />
+                        <div className="flex flex-wrap items-center justify-between gap-6 mb-8 relative z-10">
+                          <h4 className="text-xl md:text-2xl font-bold text-white tracking-tight drop-shadow-sm">{String(s.stageName || "LOG_ENTRY")}</h4>
+                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest bg-white/[0.03] px-4 py-2 rounded-full border border-white/[0.06] shadow-inner">
                             {s.createdAt ? new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'TIMESTAMP_MISSING'}
                           </span>
                         </div>
                         
-                        {s.note && <p className="text-xl text-slate-400 mb-10 leading-relaxed italic font-medium border-l-2 border-indigo-500/20 pl-6">"{String(s.note)}"</p>}
+                        {s.note && <p className="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed italic font-medium border-l-2 border-indigo-500/40 pl-6 relative z-10">"{String(s.note)}"</p>}
                         
-                        <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-4 relative z-10">
                           {(s.gpsLat && s.gpsLng) && (
                             <a href={`https://www.google.com/maps?q=${encodeURIComponent(`${s.gpsLat},${s.gpsLng}`)}`}
                                target="_blank" rel="noopener noreferrer"
@@ -475,48 +507,60 @@ export default function ProductPage() {
           <div className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-8">
 
             {/* Acquisition Interface */}
-            <div className="glass-premium rounded-[3rem] p-10 border border-white/[0.08] shadow-3xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-600/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="glass-premium rounded-[3rem] p-10 border border-white/[0.08] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden group bg-[#020305]/40">
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-600/10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
               
-              <div className="mb-12">
-                <div className="text-sm font-semibold text-indigo-400 mb-6">Purchase</div>
+              <div className="mb-10 relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                    <Zap className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <div className="text-sm font-bold text-slate-300 tracking-tight">Acquisition Portal</div>
+                </div>
+
                 <div className="flex flex-col gap-6">
-                  <div className="flex flex-col bg-[#030408]/60 border border-white/[0.06] p-8 rounded-3xl relative">
-                    <div className="text-xs font-semibold text-slate-500 mb-3">Price</div>
+                  <div className="flex flex-col bg-[#020305] border border-white/[0.04] p-8 rounded-[2rem] relative shadow-inner ring-1 ring-inset ring-black/50">
+                    <div className="text-[10px] font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center justify-between">
+                      Base Price
+                      <span className="px-2 py-0.5 bg-white/[0.05] rounded-full text-slate-400">Fixed</span>
+                    </div>
                     <div className="flex flex-col">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-5xl font-display font-black text-white tracking-tighter italic">₹{Number(product.priceInr || 0).toLocaleString()}</span>
-                        <span className="text-slate-500 font-display font-black text-xs uppercase italic tracking-widest text-slate-600">INR</span>
+                      <div className="flex items-baseline gap-2 mb-4">
+                        <span className="text-5xl lg:text-6xl font-display font-black text-white tracking-tighter italic drop-shadow-md">₹{Number(product.priceInr || 0).toLocaleString()}</span>
+                        <span className="text-slate-500 font-display font-black text-sm uppercase italic tracking-widest text-slate-600">INR</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                         <div className="h-px flex-1 bg-white/[0.06]" />
-                         <span className="text-[9px] font-display font-black text-indigo-500 uppercase italic">Convert Pulse</span>
-                         <div className="h-px flex-1 bg-white/[0.06]" />
+                      
+                      <div className="relative py-4">
+                         <div className="absolute inset-0 flex items-center"><div className="w-full h-px bg-white/[0.03]" /></div>
+                         <div className="relative flex justify-center"><span className="bg-[#020305] px-4 text-[9px] font-display font-black text-indigo-500/70 uppercase italic tracking-[0.2em]">Live Conversion</span></div>
                       </div>
-                      <div className="mt-4 flex items-baseline justify-end gap-3">
-                        <span className="text-[10px] text-slate-500 font-display font-black uppercase tracking-widest italic">Equivalent</span>
-                        <span className="text-4xl font-display font-black text-indigo-400 tracking-tighter italic font-mono">
-                          {(() => {
-                            const price = Number(product.priceInr || 0)
-                            if (selectedCurrency === 'USDC') return (price / (allRates?.USDC?.inr || 83.33)).toFixed(2)
-                            if (selectedCurrency === 'USDT') return (price / (allRates?.USDT?.inr || 83.33)).toFixed(2)
-                            if (selectedCurrency === 'XLM') return (price / (allRates?.XLM?.inr || 28.6)).toFixed(1)
-                            return price.toLocaleString()
-                          })()}
-                        </span>
-                        <span className="text-sm text-indigo-500/60 font-display font-black uppercase italic tracking-widest">{selectedCurrency}</span>
+
+                      <div className="mt-4 flex items-baseline justify-between gap-3">
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Payable</span>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-4xl lg:text-5xl font-display font-black text-emerald-400 tracking-tighter italic font-mono drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">
+                            {(() => {
+                              const price = Number(product.priceInr || 0)
+                              if (selectedCurrency === 'USDC') return (price / (allRates?.USDC?.inr || 83.33)).toFixed(2)
+                              if (selectedCurrency === 'USDT') return (price / (allRates?.USDT?.inr || 83.33)).toFixed(2)
+                              if (selectedCurrency === 'XLM') return (price / (allRates?.XLM?.inr || 28.6)).toFixed(1)
+                              return price.toLocaleString()
+                            })()}
+                          </span>
+                          <span className="text-sm text-emerald-500/60 font-display font-black uppercase italic tracking-widest">{selectedCurrency}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 bg-white/[0.02] p-2 rounded-2xl border border-white/[0.04]">
+                  <div className="flex items-center justify-center gap-2 bg-white/[0.02] p-1.5 rounded-2xl border border-white/[0.04]">
                     {PAYMENT_CURRENCIES.map(c => (
                       <button key={c} onClick={() => setSelectedCurrency(c)}
                         className={cn(
-                          "flex-1 text-[10px] font-display font-black py-4 rounded-xl transition-all border italic",
+                          "flex-1 text-[10px] font-bold py-3.5 rounded-[14px] transition-all tracking-widest",
                           selectedCurrency === c 
-                            ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_25px_rgba(79,70,229,0.4)]" 
-                            : "bg-transparent border-transparent text-slate-600 hover:text-slate-300"
+                            ? "bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 shadow-[0_0_20px_rgba(79,70,229,0.2)]" 
+                            : "bg-transparent border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]"
                         )}
                       >
                         {c}
@@ -527,18 +571,18 @@ export default function ProductPage() {
               </div>
 
               {/* Escrow Protocol Notice */}
-              <div className="bg-indigo-600/10 border border-indigo-500/20 rounded-3xl p-6 mb-12 flex gap-5">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600/20 flex items-center justify-center shrink-0">
-                  <Lock className="w-5 h-5 text-indigo-400" />
+              <div className="bg-emerald-500/[0.03] border border-emerald-500/20 rounded-[2rem] p-6 mb-10 flex gap-4 relative z-10 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 </div>
-                <div className="text-[10px] text-indigo-200/60 leading-relaxed font-display font-bold uppercase tracking-[0.15em] italic">
-                  Funds strictly secured in <span className="text-indigo-400 font-black">Soroban Smart Escrow</span>. 
-                  Final settlement occurs post-consensus verification.
+                <div className="text-[10px] text-emerald-200/60 leading-relaxed font-bold uppercase tracking-widest mt-1">
+                  Funds strictly secured in <span className="text-emerald-400 font-black">Soroban Smart Escrow</span>. 
+                  Final settlement occurs post-verification.
                 </div>
               </div>
 
-               <Button onClick={checkProfileAndBuy} className="w-full rounded-2xl h-16 text-sm font-bold bg-white text-black hover:bg-slate-200 transition-all active:scale-95">
-                Buy with Crypto <ArrowRight className="w-5 h-5 ml-2" />
+               <Button onClick={checkProfileAndBuy} className="w-full rounded-[1.5rem] h-16 text-sm font-bold bg-white text-black hover:bg-indigo-50 transition-all active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.1)] relative z-10 group/btn">
+                <span className="flex items-center gap-2">Initiate Purchase <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></span>
               </Button>
             </div>
 
