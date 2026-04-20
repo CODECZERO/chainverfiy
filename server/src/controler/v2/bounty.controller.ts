@@ -99,10 +99,10 @@ export const getAllBounties = AsyncHandler(async (req: Request, res: Response) =
 });
 
 export const submitBountyProof = AsyncHandler(async (req: Request, res: Response) => {
-  const { bountyId, solverId, proofCid } = req.body;
+  const { bountyId, solverId, proofCid, stellarWallet } = req.body;
 
-  if (!bountyId || !solverId || !proofCid) {
-    throw new ApiError(400, 'bountyId, solverId, and proofCid are required');
+  if (!bountyId || (!solverId && !stellarWallet) || !proofCid) {
+    throw new ApiError(400, 'bountyId, solverId/stellarWallet, and proofCid are required');
   }
 
   // Check if bounty exists and is active
@@ -111,12 +111,26 @@ export const submitBountyProof = AsyncHandler(async (req: Request, res: Response
   if (bounty.status !== 'ACTIVE') throw new ApiError(400, 'Bounty is not active');
 
   // ── Verification Rule Enforcement ──
-  const solver = await prisma.user.findUnique({
-    where: { id: solverId },
-    include: { supplierProfile: true }
-  });
+  let solver = solverId 
+    ? await prisma.user.findUnique({ where: { id: solverId }, include: { supplierProfile: true } })
+    : stellarWallet
+      ? await prisma.user.findFirst({ where: { stellarWallet }, include: { supplierProfile: true } })
+      : null;
+
+  if (!solver && stellarWallet) {
+    // Auto-create user for wallet-only logins
+    solver = await prisma.user.create({
+      data: {
+        stellarWallet: stellarWallet,
+        role: 'BUYER',
+        isVerified: false,
+      },
+      include: { supplierProfile: true }
+    });
+  }
 
   if (!solver) throw new ApiError(404, 'Solver user not found');
+  const effectiveSolverId = solver.id;
 
   let isVerified = false;
   if (solver.role === 'SUPPLIER' && solver.supplierProfile) {
@@ -124,7 +138,7 @@ export const submitBountyProof = AsyncHandler(async (req: Request, res: Response
   } else if (solver.role === 'BUYER') {
     const order = await prisma.order.findFirst({
       where: {
-        buyerId: solverId,
+        buyerId: effectiveSolverId,
         productId: bounty.productId,
         status: { in: ['PAID', 'SHIPPED', 'DELIVERED', 'COMPLETED'] }
       }
@@ -136,7 +150,7 @@ export const submitBountyProof = AsyncHandler(async (req: Request, res: Response
     throw new ApiError(403, 'Unauthorized: You must be a verified supplier or have purchased/received this product to submit proof.');
   }
 
-  const updatedBounty = await submitBountyProofQuery(bountyId, solverId, proofCid);
+  const updatedBounty = await submitBountyProofQuery(bountyId, effectiveSolverId, proofCid);
 
   return res.json(new ApiResponse(200, updatedBounty, 'Bounty proof submitted successfully'));
 });

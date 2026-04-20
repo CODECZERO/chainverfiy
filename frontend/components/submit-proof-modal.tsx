@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CheckCircle2, Loader2, AlertCircle, Camera, Link as LinkIcon } from "lucide-react"
-import { submitBountyProof } from "@/lib/api-service"
+import { submitBountyProof, uploadToIpfs } from "@/lib/api-service"
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/redux/store"
+import Image from "next/image"
+import { getIPFSUrl } from "@/lib/image-utils"
 
 interface SubmitProofModalProps {
   isOpen: boolean
@@ -19,15 +21,39 @@ interface SubmitProofModalProps {
 
 export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitProofModalProps) {
   const { user } = useSelector((s: RootState) => s.userAuth)
+  const wallet = useSelector((s: RootState) => s.wallet)
   
   const [step, setStep] = useState<"input" | "processing" | "success" | "error">("input")
   const [proofMediaUrl, setProofMediaUrl] = useState("")
   const [note, setNote] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState("")
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await uploadToIpfs(formData);
+      if (res && res.cid) {
+        setProofMediaUrl(res.cid);
+      } else {
+        throw new Error("Failed to upload to IPFS");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to upload image");
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
   const handleSubmit = async () => {
-    if (!bounty?.id || !user?.id) {
+    const identifier = user?.id || wallet.publicKey;
+    if (!bounty?.id || !identifier) {
       setError("Missing information (Bounty or Login)")
       setStep("error")
       return
@@ -44,11 +70,18 @@ export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitP
     setError("")
 
     try {
-      const res = await submitBountyProof({
+      const payload: any = {
         bountyId: bounty.id,
-        solverId: user.id,
-        proofCid: proofMediaUrl // Mapping URL to CID for simplicity in dev
-      })
+        proofCid: proofMediaUrl
+      };
+      
+      if (user?.id) {
+        payload.solverId = user.id;
+      } else if (wallet.publicKey) {
+        payload.stellarWallet = wallet.publicKey;
+      }
+
+      const res = await submitBountyProof(payload)
 
       if (!res) {
         throw new Error("Failed to submit proof")
@@ -99,9 +132,15 @@ export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitP
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                <LinkIcon className="w-4 h-4 text-slate-400" />
-                Proof Media URL (Photo/Video)
+              <label className="text-sm font-medium text-slate-300 flex items-center justify-between">
+                <span className="flex items-center gap-2"><LinkIcon className="w-4 h-4 text-slate-400" /> Proof Media URL (Photo/Video)</span>
+                <div className="relative">
+                   <Button variant="outline" size="sm" className="h-8 text-xs bg-[#1C2333] border-[#1F2D40] text-slate-300 hover:bg-slate-800" disabled={isUploading}>
+                      {isUploading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Camera className="w-3 h-3 mr-2" />}
+                      {isUploading ? "Uploading..." : "Upload File"}
+                   </Button>
+                   <input type="file" accept="image/*,video/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isUploading} />
+                </div>
               </label>
               <Input
                 placeholder="https://example.com/check-proof.jpg"
@@ -109,7 +148,12 @@ export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitP
                 onChange={(e) => setProofMediaUrl(e.target.value)}
                 className="bg-[#1C2333] border-[#1F2D40] text-white rounded-xl"
               />
-              <p className="text-[10px] text-slate-500 mt-1">Upload to a host or paste an IPFS link</p>
+              {proofMediaUrl && (
+                 <div className="mt-2 w-24 h-24 rounded-xl overflow-hidden relative border border-[#1F2D40]">
+                    <Image src={getIPFSUrl(proofMediaUrl)} alt="Preview" fill className="object-cover" />
+                 </div>
+              )}
+              <p className="text-[10px] text-slate-500 mt-1">Upload a file or paste an IPFS CID / URL</p>
             </div>
 
             <div className="space-y-2">
