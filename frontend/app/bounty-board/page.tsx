@@ -11,6 +11,7 @@ import { Briefcase, Search, ArrowRight, ShieldCheck, Sparkles, Coins, Clock, Pac
 import { getAllBounties } from "@/lib/api-service"
 import { useEffect } from "react"
 import { Outfit, Inter } from "next/font/google"
+import { cn } from "@/lib/utils"
 
 const outfit = Outfit({ subsets: ["latin"] })
 const inter = Inter({ subsets: ["latin"] })
@@ -179,6 +180,11 @@ export default function BountyBoardPage() {
                           <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
                             <Clock className={cn("w-3 h-3", isDispute ? "text-rose-500/70" : "text-amber-500/70")} /> {b.createdAt ? new Date(b.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                           </span>
+                          {(b.issuer?.email || b.issuerWallet) && (
+                            <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                              By {b.issuer?.email?.split('@')[0] || (b.issuerWallet ? `${b.issuerWallet.slice(0, 6)}...${b.issuerWallet.slice(-4)}` : "System")}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -211,10 +217,9 @@ export default function BountyBoardPage() {
                     </div>
                   </Card>
                   )
-                })()}
-              ))}
-            </div>
-          ) : (
+                })}
+              </div>
+            ) : (
             <div className="text-center py-20 bg-card rounded-3xl border border-dashed border-border">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-6 h-6 text-muted-foreground" />

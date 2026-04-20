@@ -223,7 +223,7 @@ export default function CommunityPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-3">
                              <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || "Member"}
+                               <UserIcon className="w-3 h-3" /> {p.author?.supplierProfile?.name || p.author?.email?.split('@')[0] || (p.authorWallet ? `${p.authorWallet.slice(0, 6)}...${p.authorWallet.slice(-4)}` : "Member")}
                             </div>
                             {joinedNodes.some(n => n.supplierId === p.author?.supplierProfile?.id) && (
                                <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[9px] font-bold">Verified Maker</Badge>

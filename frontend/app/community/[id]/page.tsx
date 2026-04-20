@@ -132,7 +132,7 @@ export default function DiscussionDetailPage() {
                 <div>
                   <div className="flex items-center gap-4 mb-2">
                     <span className={`${outfit.className} font-black text-white text-2xl uppercase italic tracking-tight`}>
-                      {discussion.author?.supplierProfile?.name || discussion.author?.email?.split('@')[0] || "Auth_Node"}
+                      {discussion.author?.supplierProfile?.name || discussion.author?.email?.split('@')[0] || (discussion.authorWallet ? `${discussion.authorWallet.slice(0, 8)}...${discussion.authorWallet.slice(-8)}` : "Auth_Node")}
                     </span>
                     {discussion.author?.role === 'SUPPLIER' && (
                       <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-[9px] rounded-lg italic">Verified Node</div>

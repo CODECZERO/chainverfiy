@@ -35,13 +35,17 @@ export const createBounty = AsyncHandler(async (req: Request, res: Response) => 
     throw new ApiError(401, 'User identification required to create bounties.');
   }
 
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 48);
+
   const bounty = await createBountyQuery({
     productId,
     issuerId,
     issuerWallet: stellarWallet,
     amount: parseFloat(amount),
     description,
-    paymentMethod: paymentMethod || 'STELLAR_USDC'
+    paymentMethod: paymentMethod || 'STELLAR_USDC',
+    expiresAt
   });
 
   return res.status(201).json(new ApiResponse(201, bounty, 'Bounty request created (Pending payment)'));
