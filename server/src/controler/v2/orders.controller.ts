@@ -431,8 +431,10 @@ export const dispatchOrder = async (req: Request, res: Response) => {
 export const getPublicDispute = async (req: Request, res: Response) => {
   const id = req.params.id as string;
   
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: { 
+      id: id.length < 36 ? { startsWith: id } : id
+    },
     include: {
       product: {
         include: {

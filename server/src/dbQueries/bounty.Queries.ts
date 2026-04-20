@@ -8,6 +8,7 @@ export const createBountyQuery = async (data: {
   amount: number;
   description: string;
   paymentMethod?: PaymentMethod;
+  expiresAt?: Date;
 }) => {
   return await prisma.bounty.create({
     data: {
@@ -18,6 +19,7 @@ export const createBountyQuery = async (data: {
       description: data.description,
       paymentMethod: data.paymentMethod || 'STELLAR_USDC',
       status: 'PENDING',
+      expiresAt: data.expiresAt,
     },
   });
 };

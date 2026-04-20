@@ -130,15 +130,33 @@ export default function BountyBoardPage() {
               <h3 className="text-xs font-bold uppercase tracking-widest text-amber-500 mb-2 flex items-center gap-2">
                 <Coins className="w-4 h-4" /> Active Missions
               </h3>
-              {filteredBounties.map((b) => (
-                <Card key={b.id} className="p-6 border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all group overflow-hidden relative">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-3xl -mr-16 -mt-16 group-hover:bg-amber-500/10 transition-colors" />
-                  
-                  <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 relative z-10">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 flex-wrap mb-3">
-                        <span className="font-bold text-xl group-hover:text-amber-500 transition-colors">{String(b.product?.title || "Product Proof")}</span>
-                        <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 font-bold text-[10px] uppercase tracking-wider px-2 py-0.5">Verification</Badge>
+              {filteredBounties.map((b) => {
+                  const isDispute = String(b.description).startsWith("DISPUTE AUDIT: Order ");
+                  return (
+                    <Card key={b.id} className={cn(
+                      "p-6 transition-all group overflow-hidden relative border",
+                      isDispute ? "border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10" : "border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10"
+                    )}>
+                      <div className={cn(
+                        "absolute top-0 right-0 w-32 h-32 blur-3xl -mr-16 -mt-16 transition-colors",
+                        isDispute ? "bg-rose-500/5 group-hover:bg-rose-500/10" : "bg-amber-500/5 group-hover:bg-amber-500/10"
+                      )} />
+                      
+                      <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 relative z-10">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 flex-wrap mb-3">
+                            <span className={cn(
+                              "font-bold text-xl transition-colors",
+                              isDispute ? "group-hover:text-rose-500" : "group-hover:text-amber-500"
+                            )}>
+                              {isDispute ? "Dispute Audit" : String(b.product?.title || "Product Proof")}
+                            </span>
+                            <Badge className={cn(
+                              "border font-bold text-[10px] uppercase tracking-wider px-2 py-0.5",
+                              isDispute ? "bg-rose-500/20 text-rose-500 border-rose-500/30" : "bg-amber-500/20 text-amber-500 border-amber-500/30"
+                            )}>
+                              {isDispute ? "Governance" : "Verification"}
+                            </Badge>
                         <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${
                           b.status === 'ACTIVE' ? 'border-emerald-500/20 text-emerald-400' : 
                           b.status === 'COMPLETED' ? 'border-blue-500/20 text-blue-400' : 
@@ -154,47 +172,46 @@ export default function BountyBoardPage() {
                       </div>
                       <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">{String(b.description || "")}</p>
                       
-                      <div className="flex items-center gap-4 mt-5 text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
-                        <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                          <Package className="w-3 h-3 text-amber-500/70" /> {String(b.product?.category || "General")}
-                        </span>
-                        <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                          <Clock className="w-3 h-3 text-amber-500/70" /> {b.createdAt ? new Date(b.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                        </span>
-                        {b.expiresAt && (
-                          <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50 text-amber-500/80">
-                            Deadline: {new Date(b.expiresAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        )}
-                        {b.issuer?.email && (
+                        <div className="flex items-center gap-4 mt-5 text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
                           <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                            By {b.issuer.email.split('@')[0]}
+                            <Package className={cn("w-3 h-3", isDispute ? "text-rose-500/70" : "text-amber-500/70")} /> {String(b.product?.category || "General")}
                           </span>
-                        )}
+                          <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                            <Clock className={cn("w-3 h-3", isDispute ? "text-rose-500/70" : "text-amber-500/70")} /> {b.createdAt ? new Date(b.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-amber-500/10 pt-4 md:pt-0 md:pl-8 min-w-[140px]">
-                      <div className="text-center md:text-right">
-                        <div className="text-xl font-bold text-amber-500 tracking-tight">{Number(b.amount || 0).toLocaleString()} USDC</div>
-                        <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
+                      <div className={cn(
+                        "flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-8 min-w-[140px]",
+                        isDispute ? "border-rose-500/10" : "border-amber-500/10"
+                      )}>
+                        <div className="text-center md:text-right">
+                          <div className={cn("text-xl font-bold tracking-tight", isDispute ? "text-rose-500" : "text-amber-500")}>
+                            {Number(b.amount || 0).toLocaleString()} USDC
+                          </div>
+                          <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
+                        </div>
+                        {(() => {
+                          const orderIdMatch = String(b.description).match(/Order #?([a-f0-9\-]+)/);
+                          const href = isDispute && orderIdMatch ? `/dispute/${orderIdMatch[1]}` : `/product/${b.productId}`;
+                          
+                          return (
+                            <Link href={href}>
+                              <Button className={cn(
+                                "text-black font-bold h-11 rounded-xl px-8 shadow-lg active:scale-95 transition-all",
+                                isDispute ? "bg-rose-500 hover:bg-rose-600 shadow-rose-500/20" : "bg-amber-500 hover:bg-amber-600 shadow-amber-500/20"
+                              )}>
+                                {isDispute ? "Audit Dispute" : "Details"} <ArrowRight className="w-4 h-4 ml-2" />
+                              </Button>
+                            </Link>
+                          )
+                        })()}
                       </div>
-                      {(() => {
-                        const isDispute = String(b.description).startsWith("DISPUTE AUDIT: Order ");
-                        const orderIdMatch = String(b.description).match(/Order ([a-f0-9\-]+)/);
-                        const href = isDispute && orderIdMatch ? `/dispute/${orderIdMatch[1]}` : `/product/${b.productId}`;
-                        
-                        return (
-                          <Link href={href}>
-                            <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
-                              {isDispute ? "Audit Dispute" : "Details"} <ArrowRight className="w-4 h-4 ml-2" />
-                            </Button>
-                          </Link>
-                        )
-                      })()}
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                  )
+                })()}
               ))}
             </div>
           ) : (
