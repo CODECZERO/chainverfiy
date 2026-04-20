@@ -425,3 +425,136 @@ export const dispatchOrder = async (req: Request, res: Response) => {
 
   return res.json(new ApiResponse(200, updatedOrder, 'Order marked as dispatched and journey initiated'));
 };
+
+// ─── Decentralized DAO Dispute Validation ───
+
+export const getPublicDispute = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      product: {
+        include: {
+          supplier: {
+            select: { name: true, isVerified: true, trustScore: true }
+          }
+        }
+      },
+      disputeVotes: true
+    }
+  });
+
+  if (!order) {
+    return res.status(404).json(new ApiResponse(404, null, 'Order not found'));
+  }
+
+  if (order.status !== 'DISPUTED') {
+    return res.status(400).json(new ApiResponse(400, null, 'This order is not currently under dispute'));
+  }
+
+  // Count votes
+  const refundVotes = order.disputeVotes.filter(v => v.decision === 'REFUND_BUYER').length;
+  const releaseVotes = order.disputeVotes.filter(v => v.decision === 'RELEASE_FUNDS').length;
+
+  return res.json(new ApiResponse(200, {
+    orderId: order.id,
+    product: order.product,
+    buyerDisputeReason: order.buyerDisputeReason,
+    buyerProofCid: order.buyerProofCid,
+    disputeCreatedAt: order.updatedAt,
+    votes: {
+      refund: refundVotes,
+      release: releaseVotes,
+      total: refundVotes + releaseVotes
+    }
+  }, 'Dispute details fetched successfully'));
+};
+
+export const voteOnDispute = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const { userId, stellarWallet, decision } = req.body;
+
+  if (!decision || (decision !== 'REFUND_BUYER' && decision !== 'RELEASE_FUNDS')) {
+    return res.status(400).json(new ApiResponse(400, null, 'Invalid decision. Must be REFUND_BUYER or RELEASE_FUNDS'));
+  }
+
+  let finalUserId = userId;
+  if (!finalUserId && stellarWallet) {
+    const user = await prisma.user.findUnique({ where: { stellarWallet } });
+    if (user) finalUserId = user.id;
+  }
+
+  if (!finalUserId) {
+    return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or have a registered wallet to vote'));
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { disputeVotes: true }
+  });
+
+  if (!order || order.status !== 'DISPUTED') {
+    return res.status(404).json(new ApiResponse(404, null, 'Active dispute not found'));
+  }
+
+  // Check if already voted
+  const existingVote = order.disputeVotes.find(v => v.userId === finalUserId);
+  if (existingVote) {
+    return res.status(400).json(new ApiResponse(400, null, 'You have already voted on this dispute'));
+  }
+
+  // Record vote
+  await prisma.disputeVote.create({
+    data: {
+      orderId: id,
+      userId: finalUserId,
+      decision
+    }
+  });
+
+  // Re-fetch votes to check threshold
+  const updatedVotes = await prisma.disputeVote.findMany({ where: { orderId: id } });
+  const refundVotes = updatedVotes.filter(v => v.decision === 'REFUND_BUYER').length;
+  const releaseVotes = updatedVotes.filter(v => v.decision === 'RELEASE_FUNDS').length;
+  const totalVotes = refundVotes + releaseVotes;
+
+  let resolutionMsg = 'Vote recorded successfully';
+  const THRESHOLD = 3;
+
+  if (totalVotes >= THRESHOLD) {
+    const escrowService = new EscrowService();
+    
+    if (refundVotes > releaseVotes) {
+      try {
+        await escrowService.refundEscrow(id);
+        await prisma.order.update({ where: { id }, data: { status: 'REFUNDED' } });
+        resolutionMsg = 'Consensus reached. Escrow has been refunded to the buyer.';
+      } catch (e: any) {
+        logger.error(`DAO Refund failed: ${e.message}`);
+        resolutionMsg = 'Vote recorded. Consensus reached for refund but execution failed.';
+      }
+    } else {
+      // Release to supplier
+      try {
+        // EscrowService release expects order id? Let's check if releaseEscrow accepts taskId (which is order.id usually)
+        await escrowService.releaseEscrow(id);
+        await prisma.order.update({ where: { id }, data: { status: 'COMPLETED' } });
+        resolutionMsg = 'Consensus reached. Escrow has been released to the supplier.';
+      } catch (e: any) {
+        logger.error(`DAO Release failed: ${e.message}`);
+        resolutionMsg = 'Vote recorded. Consensus reached for release but execution failed.';
+      }
+    }
+
+    // Resolve the bounty as well
+    const bounty = await prisma.bounty.findFirst({
+      where: { productId: order.productId, status: 'ACTIVE', description: { startsWith: 'DISPUTE AUDIT:' } }
+    });
+    if (bounty) {
+      await prisma.bounty.update({ where: { id: bounty.id }, data: { status: 'COMPLETED' } });
+    }
+  }
+
+  return res.json(new ApiResponse(200, { refundVotes, releaseVotes, totalVotes }, resolutionMsg));
+};

@@ -79,6 +79,12 @@ export const confirmDelivery = (orderId: string, data: any) =>
 export const disputeOrder = (orderId: string, data: any) =>
   apiFetch(`/orders/${orderId}/dispute`, { method: 'POST', body: JSON.stringify(data) });
 
+export const getPublicDispute = (orderId: string) =>
+  apiFetch(`/orders/${orderId}/dispute`);
+
+export const voteOnDispute = (orderId: string, data: { decision: string; userId?: string; stellarWallet?: string }) =>
+  apiFetch(`/orders/${orderId}/dispute/vote`, { method: 'POST', body: JSON.stringify(data) });
+
 export const dispatchOrder = (orderId: string) =>
   apiFetch(`/orders/${orderId}/dispatch`, { method: 'PATCH' });
 

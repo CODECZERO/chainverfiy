@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { asyncHandler } from '../../util/asyncHandler.util.js';
 import { verifyJWT, optionalJWT } from '../../midelware/verify.midelware.js';
-import { placeOrder, getOrderStatus, confirmDelivery, disputeOrder, getBuyerOrders, scanQrHandshake, getPublicProof, dispatchOrder } from '../../controler/v2/orders.controller.js';
+import { placeOrder, getOrderStatus, confirmDelivery, disputeOrder, getBuyerOrders, scanQrHandshake, getPublicProof, dispatchOrder, getPublicDispute, voteOnDispute } from '../../controler/v2/orders.controller.js';
 import { supplierBuyOrder } from '../../controler/v2/supplier-orders.controller.js';
 
 const router = Router();
@@ -10,6 +10,11 @@ const router = Router();
 router.post('/', optionalJWT, asyncHandler(placeOrder));
 router.get('/my-orders', optionalJWT, asyncHandler(getBuyerOrders));
 router.get('/proof/:id', asyncHandler(getPublicProof));
+
+// ─── Decentralized DAO Dispute Validation ───
+router.get('/:id/dispute', asyncHandler(getPublicDispute));
+router.post('/:id/dispute/vote', optionalJWT, asyncHandler(voteOnDispute));
+
 router.get('/:id', optionalJWT, asyncHandler(getOrderStatus));
 router.post('/:id/confirm-delivery', optionalJWT, asyncHandler(confirmDelivery));
 router.post('/supplier-buy', verifyJWT, asyncHandler(supplierBuyOrder));

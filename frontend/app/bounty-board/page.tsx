@@ -179,11 +179,19 @@ export default function BountyBoardPage() {
                         <div className="text-xl font-bold text-amber-500 tracking-tight">{Number(b.amount || 0).toLocaleString()} USDC</div>
                         <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
                       </div>
-                      <Link href={`/product/${b.productId}`}>
-                        <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
-                          Details <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </Link>
+                      {(() => {
+                        const isDispute = String(b.description).startsWith("DISPUTE AUDIT: Order ");
+                        const orderIdMatch = String(b.description).match(/Order ([a-f0-9\-]+)/);
+                        const href = isDispute && orderIdMatch ? `/dispute/${orderIdMatch[1]}` : `/product/${b.productId}`;
+                        
+                        return (
+                          <Link href={href}>
+                            <Button className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-11 rounded-xl px-8 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
+                              {isDispute ? "Audit Dispute" : "Details"} <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </Link>
+                        )
+                      })()}
                     </div>
                   </div>
                 </Card>

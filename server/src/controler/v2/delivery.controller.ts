@@ -314,7 +314,7 @@ export const uploadDisputeProof = async (req: any, res: Response) => {
         issuerId: order.buyerId,
         issuerWallet: walletPublicKey || order.buyer.stellarWallet,
         amount: 5, // Default incentive for verification
-        description: `DISPUTE AUDIT: Order #${order.id.slice(0, 8)}. Buyer claims: "${disputeReason.slice(0, 100)}...". Please verify product integrity.`,
+        description: `DISPUTE AUDIT: Order ${order.id} | Buyer claims: "${disputeReason.slice(0, 100)}...". Please verify product integrity.`,
         status: 'ACTIVE',
         expiresAt: bountyDeadline,
       }
