@@ -188,12 +188,12 @@ export function SubmitProofModal({ isOpen, onClose, bounty, onSuccess }: SubmitP
 
         {step === "success" && (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center">
-              <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+            <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="h-10 w-10 text-amber-400" />
             </div>
             <div>
-              <p className="text-lg font-bold text-white">Bounty Solved!</p>
-              <p className="text-slate-400 text-sm">Your proof has been submitted. The issuer will reward you after manual verification or automatic time-out.</p>
+              <p className="text-lg font-bold text-white">Proof Submitted — Awaiting Review</p>
+              <p className="text-slate-400 text-sm">Your proof has been submitted and is now in the issuer's review queue. Once they verify and approve your submission, the bounty reward will be released to you.</p>
             </div>
           </div>
         )}

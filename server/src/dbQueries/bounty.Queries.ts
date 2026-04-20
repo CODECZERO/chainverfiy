@@ -81,7 +81,41 @@ export const submitBountyProofQuery = async (id: string, solverId: string, proof
       solverId,
       proofCid,
       proofUploadedAt: new Date(),
-      status: 'COMPLETED' // For now, we auto-complete on proof submission for simplicity in dev
+      status: 'IN_REVIEW' // Proof enters review — issuer must approve before payout
     },
+  });
+};
+
+export const approveBountyProofQuery = async (id: string) => {
+  return await prisma.bounty.update({
+    where: { id },
+    data: { status: 'COMPLETED' },
+    include: {
+      solver: { select: { id: true, email: true, stellarWallet: true } },
+      product: { select: { title: true } },
+    },
+  });
+};
+
+export const rejectBountyProofQuery = async (id: string) => {
+  return await prisma.bounty.update({
+    where: { id },
+    data: {
+      status: 'ACTIVE',
+      solverId: null,
+      proofCid: null,
+      proofUploadedAt: null,
+    },
+  });
+};
+
+export const getIssuerBountiesQuery = async (issuerId: string) => {
+  return await prisma.bounty.findMany({
+    where: { issuerId },
+    include: {
+      product: { select: { title: true, category: true, proofMediaUrls: true } },
+      solver: { select: { id: true, email: true, stellarWallet: true } },
+    },
+    orderBy: { updatedAt: 'desc' },
   });
 };

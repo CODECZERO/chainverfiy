@@ -483,6 +483,7 @@ enum PaymentMethod {
 enum BountyStatus {
   PENDING
   ACTIVE
+  IN_REVIEW
   COMPLETED
   EXPIRED
 }

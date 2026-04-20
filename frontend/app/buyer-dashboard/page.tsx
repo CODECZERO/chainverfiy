@@ -20,7 +20,7 @@ import type { RootState } from "@/lib/redux/store"
 import Image from "next/image"
 import { getIPFSUrl } from "@/lib/image-utils"
 import { Outfit, Inter } from "next/font/google"
-import { getMyOrders } from "@/lib/api-service"
+import { getMyOrders, getIssuerBounties, approveBountyProof, rejectBountyProof } from "@/lib/api-service"
 
 
 const outfit = Outfit({ subsets: ["latin"] })
@@ -409,16 +409,9 @@ export default function BuyerDashboard() {
                )}
 
 
-               {/* Bounties Tab */}
+               {/* Bounties Tab — Issuer Review Dashboard */}
                {active === "bounties" && (
-                 <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group shadow-inner">
-                    <div className="absolute inset-0 bg-blue-600/[0.01] transition-colors" />
-                    <div className="w-24 h-24 rounded-[2rem] bg-blue-500/5 flex items-center justify-center mx-auto mb-10 shadow-2xl border border-white/[0.03] group-hover:scale-110 transition-transform duration-1000 opacity-20">
-                       <Coins className="w-12 h-12 text-blue-500" />
-                    </div>
-                    <h3 className={`${outfit.className} text-4xl font-bold text-white tracking-tight mb-6`}>Community Rewards Coming Soon</h3>
-                    <p className="text-slate-600 max-w-sm mx-auto text-sm leading-relaxed opacity-80">We are finalizing our community reward system. Soon you will be able to earn digital assets by helping verify product authenticity.</p>
-                 </div>
+                  <IssuerBountyDashboard userId={user?.id} walletKey={wallet?.publicKey} />
                )}
 
                {/* Orders / Tracking / Completed List */}
@@ -614,6 +607,214 @@ export default function BuyerDashboard() {
           </div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+// ─── Issuer Bounty Dashboard Component ───
+function IssuerBountyDashboard({ userId, walletKey }: { userId?: string; walletKey?: string }) {
+  const [bounties, setBounties] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+  const fetchBounties = async () => {
+    if (!userId) { setLoading(false); return; }
+    try {
+      const data = await getIssuerBounties(userId)
+      setBounties(Array.isArray(data) ? data : [])
+    } catch (e) {
+      console.error('Failed to fetch issuer bounties', e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { fetchBounties() }, [userId])
+
+  const handleApprove = async (bountyId: string) => {
+    setActionLoading(bountyId)
+    try {
+      await approveBountyProof(bountyId, { issuerId: userId, stellarWallet: walletKey })
+      await fetchBounties()
+    } catch (e: any) {
+      alert(e.message || 'Failed to approve')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleReject = async (bountyId: string) => {
+    const reason = prompt('Optional: Reason for rejection?')
+    setActionLoading(bountyId)
+    try {
+      await rejectBountyProof(bountyId, { issuerId: userId, stellarWallet: walletKey, reason: reason || undefined })
+      await fetchBounties()
+    } catch (e: any) {
+      alert(e.message || 'Failed to reject')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const STATUS_STYLES: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+    PENDING:    { label: 'Pending Payment', bg: 'bg-slate-500/10 border-slate-500/20', text: 'text-slate-400', dot: 'bg-slate-400' },
+    ACTIVE:     { label: 'Active — Awaiting Submissions', bg: 'bg-blue-500/10 border-blue-500/20', text: 'text-blue-400', dot: 'bg-blue-400' },
+    IN_REVIEW:  { label: 'Proof Submitted — Review Required', bg: 'bg-amber-500/10 border-amber-500/20', text: 'text-amber-400', dot: 'bg-amber-400' },
+    COMPLETED:  { label: 'Completed & Paid', bg: 'bg-emerald-500/10 border-emerald-500/20', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+    EXPIRED:    { label: 'Expired', bg: 'bg-red-500/10 border-red-500/20', text: 'text-red-400', dot: 'bg-red-400' },
+  }
+
+  if (loading) return (
+    <div className="py-32 flex flex-col items-center justify-center">
+      <Loader2 className="w-10 h-10 animate-spin text-blue-500 mb-6" />
+      <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Loading your bounties...</span>
+    </div>
+  )
+
+  if (!userId) return (
+    <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden shadow-inner">
+      <Coins className="w-12 h-12 text-blue-500 mx-auto mb-6 opacity-30" />
+      <h3 className={`${outfit.className} text-2xl font-bold text-white tracking-tight mb-4`}>Login Required</h3>
+      <p className="text-slate-500 max-w-sm mx-auto text-sm">Sign in with your account to manage bounties you have created and review submitted proofs.</p>
+    </div>
+  )
+
+  if (bounties.length === 0) return (
+    <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden shadow-inner">
+      <Coins className="w-12 h-12 text-blue-500 mx-auto mb-6 opacity-30" />
+      <h3 className={`${outfit.className} text-2xl font-bold text-white tracking-tight mb-4`}>No Bounties Yet</h3>
+      <p className="text-slate-500 max-w-sm mx-auto text-sm">You have not created any verification bounties yet. Go to any product page to create one and incentivize community proof-gathering.</p>
+    </div>
+  )
+
+  const inReview = bounties.filter((b: any) => b.status === 'IN_REVIEW')
+  const others = bounties.filter((b: any) => b.status !== 'IN_REVIEW')
+
+  return (
+    <div className="space-y-10">
+      {inReview.length > 0 && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 px-4">
+            <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.8)]" />
+            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest">Action Required — {inReview.length} Proof{inReview.length > 1 ? 's' : ''} Awaiting Your Review</span>
+          </div>
+
+          {inReview.map((b: any) => {
+            const s = STATUS_STYLES[b.status] || STATUS_STYLES.ACTIVE
+            return (
+              <motion.div
+                key={b.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-[#0A0D15] border-2 border-amber-500/20 rounded-[2rem] p-6 md:p-8 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/[0.03] rounded-full blur-[60px] pointer-events-none" />
+                <div className="relative z-10 space-y-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <h4 className={`${outfit.className} text-lg font-bold text-white truncate`}>{b.product?.title || 'Product'}</h4>
+                      <p className="text-xs text-slate-400 mt-1 line-clamp-2">{b.description}</p>
+                    </div>
+                    <div className={`px-4 py-2 rounded-xl border text-[9px] font-bold uppercase tracking-widest ${s.bg} ${s.text}`}>
+                      <div className={`w-2 h-2 rounded-full ${s.dot} inline-block mr-2 animate-pulse`} /> {s.label}
+                    </div>
+                  </div>
+
+                  <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Submitted By</div>
+                    <div className="text-sm text-white font-mono">
+                      {b.solver?.email || (b.solver?.stellarWallet ? b.solver.stellarWallet.slice(0, 12) + '...' : 'Anonymous Solver')}
+                    </div>
+                    {b.proofUploadedAt && (
+                      <div className="text-[10px] text-slate-500 mt-1">
+                        Submitted {new Date(b.proofUploadedAt).toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+
+                  {b.proofCid && (
+                    <div className="space-y-2">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Submitted Proof</div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-32 h-32 rounded-xl overflow-hidden relative border border-white/[0.06] bg-black/40 shrink-0">
+                          <Image src={getIPFSUrl(b.proofCid)} alt="Proof" fill className="object-cover" unoptimized />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <a href={getIPFSUrl(b.proofCid)} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 font-mono break-all underline">
+                            {b.proofCid}
+                          </a>
+                          <p className="text-[10px] text-slate-500 mt-2">Click to view full resolution proof image in a new tab.</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl px-4 py-3">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Bounty Reward</div>
+                      <div className="text-lg font-black text-white">${Number(b.amount).toFixed(2)} <span className="text-xs text-slate-400">USDC</span></div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-2">
+                    <Button
+                      onClick={() => handleApprove(b.id)}
+                      disabled={actionLoading === b.id}
+                      className="flex-1 h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-900/30"
+                    >
+                      {actionLoading === b.id ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
+                      Approve & Release Payment
+                    </Button>
+                    <Button
+                      onClick={() => handleReject(b.id)}
+                      disabled={actionLoading === b.id}
+                      variant="outline"
+                      className="flex-1 h-12 border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold rounded-xl text-sm"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Reject Proof
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+      )}
+
+      {others.length > 0 && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 px-4">
+            <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">All Bounties ({others.length})</span>
+          </div>
+
+          {others.map((b: any) => {
+            const s = STATUS_STYLES[b.status] || STATUS_STYLES.ACTIVE
+            return (
+              <div key={b.id} className="bg-white/[0.02] border border-white/[0.05] rounded-[2rem] p-6 md:p-8 relative overflow-hidden">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <h4 className={`${outfit.className} text-base font-bold text-white truncate`}>{b.product?.title || 'Product'}</h4>
+                    <p className="text-xs text-slate-500 mt-1 line-clamp-1">{b.description}</p>
+                  </div>
+                  <div className="flex items-center gap-4 shrink-0">
+                    <span className="text-sm font-bold text-white">${Number(b.amount).toFixed(2)}</span>
+                    <div className={`px-3 py-1.5 rounded-lg border text-[8px] font-bold uppercase tracking-widest ${s.bg} ${s.text}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${s.dot} inline-block mr-1.5`} /> {s.label}
+                    </div>
+                  </div>
+                </div>
+                {b.solver && b.status === 'COMPLETED' && (
+                  <div className="mt-4 pt-4 border-t border-white/[0.04] text-xs text-slate-500">
+                    Solved by: <span className="text-emerald-400 font-mono">{b.solver.email || (b.solver.stellarWallet ? b.solver.stellarWallet.slice(0, 16) + '...' : 'Unknown')}</span>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

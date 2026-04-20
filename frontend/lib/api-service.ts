@@ -189,6 +189,15 @@ export const getSupplierBounties = (supplierId: string) =>
 
 export const getAllBounties = () => apiFetch('/bounties');
 
+export const getIssuerBounties = (issuerId: string) =>
+  apiFetch(`/bounties/issuer/${issuerId}`);
+
+export const approveBountyProof = (bountyId: string, data: { issuerId?: string; stellarWallet?: string }) =>
+  apiFetch(`/bounties/${bountyId}/approve-proof`, { method: 'POST', body: JSON.stringify(data) });
+
+export const rejectBountyProof = (bountyId: string, data: { issuerId?: string; stellarWallet?: string; reason?: string }) =>
+  apiFetch(`/bounties/${bountyId}/reject-proof`, { method: 'POST', body: JSON.stringify(data) });
+
 export const createStellarAccount = () => apiFetch('/wallet/create', { method: 'POST' });
 export const walletPay = (data: any) =>
   apiFetch('/payment/wallet-pay', { method: 'POST', body: JSON.stringify(data) });
