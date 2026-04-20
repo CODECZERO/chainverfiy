@@ -15,10 +15,12 @@ if (process.env.NODE_ENV === 'test' || process.env.DISABLE_REDIS === 'true') {
   const useTls = redisUrl.startsWith('rediss://') || process.env.REDIS_TLS === 'true';
 
   redis = globalForRedis.redis || new Redis(redisUrl, {
-    maxRetriesPerRequest: null, // ioredis will keep trying to reconnect
+    maxRetriesPerRequest: 1, // Do not hang indefinitely
+    enableOfflineQueue: false, // Fail fast if disconnected
     retryStrategy(times: number) {
-      const delay = Math.min(times * 100, 3000);
-      return delay;
+      // Don't retry more than 3 times
+      if (times > 3) return null;
+      return Math.min(times * 100, 1000);
     },
     reconnectOnError(err: Error) {
       const targetError = 'READONLY';

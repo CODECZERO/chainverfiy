@@ -364,8 +364,8 @@ export function BountyModal({ isOpen, onClose, product }: BountyModalProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-black/40 rounded-2xl p-6 border border-white/[0.08]">
-                <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-2 italic">Flat Reserve</p>
-                <p className="text-2xl font-black text-white italic tracking-tighter">₹{String(amount || 0)}</p>
+                <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black mb-2 italic">Reward Reserve</p>
+                <p className="text-2xl font-black text-white italic tracking-tighter">{String(amount || 0)} USDC</p>
               </div>
               <div className="bg-blue-500/10 rounded-2xl p-6 border border-blue-500/20">
                 <p className="text-[9px] text-blue-400/70 uppercase tracking-widest font-black mb-2 italic">Crypto Settlement</p>
