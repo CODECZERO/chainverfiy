@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { Header } from "@/components/header"
 import { motion } from "framer-motion"
+import Link from "next/link"
 import { 
   TrendingUp, TrendingDown, RefreshCcw, ShieldCheck, 
   Globe, Coins, ArrowRightLeft, DollarSign, Activity,
@@ -179,17 +180,17 @@ export default function TransparencyPage() {
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-10">Regional Activity</h3>
             <div className="flex-1 w-full overflow-hidden">
               <div className="space-y-6">
-                {(ratesData?.salesByCountry || [{region: 'North America', volume: '1.2M'}, {region: 'Europe', volume: '840K'}, {region: 'Asia-Pacific', volume: '2.1M'}]).map((reg: any, i: number) => (
+                {(ratesData?.salesByCountry || [{region: 'North America', volume: 0, count: 0}, {region: 'Europe', volume: 0, count: 0}, {region: 'Asia-Pacific', volume: 0, count: 0}]).map((reg: any, i: number) => (
                   <div key={i} className="flex items-center justify-between border-b border-white/[0.05] pb-4">
                     <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">{reg.region || reg.country}</span>
-                    <span className="text-[10px] font-mono font-bold text-blue-500 text-right">{reg.volume} Items</span>
+                    <span className="text-[10px] font-mono font-bold text-blue-500 text-right">{reg.count || reg.volume || 0} Orders</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="mt-10 py-6 border-t border-white/[0.05] flex items-center justify-between">
-               <span className="text-[9px] font-bold uppercase tracking-widest text-slate-700">Total Verification Items</span>
-               <span className="text-[14px] font-bold text-white uppercase">412 Global Units</span>
+               <span className="text-[9px] font-bold uppercase tracking-widest text-slate-700">Total Verified Transactions</span>
+               <span className="text-[14px] font-bold text-white uppercase">{ratesData?.recentDeals?.length || 0} Records</span>
             </div>
           </div>
         </div>
@@ -218,7 +219,7 @@ export default function TransparencyPage() {
               <tbody className="divide-y divide-white/[0.03]">
                 {(ratesData?.recentDeals || []).length > 0 ? (
                   ratesData.recentDeals.map((deal: any) => (
-                    <tr key={deal.id} className="group hover:bg-white/[0.04] transition-all duration-300">
+                    <tr key={deal.id} className="group hover:bg-white/[0.04] transition-all duration-300 cursor-pointer" onClick={() => window.location.href = `/order/${deal.id}/journey`}>
                       <td className="py-8 pl-8">
                         <div className="font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight text-md leading-none">{deal.product}</div>
                         <div className="text-[8px] text-slate-600 font-bold mt-2 uppercase tracking-widest opacity-60 font-mono">ID: {deal.id.slice(0, 16)}</div>
@@ -231,7 +232,7 @@ export default function TransparencyPage() {
                         </span>
                       </td>
                       <td className="py-8 text-right pr-8">
-                        <span className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl text-[9px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-xl shadow-emerald-500/5 group-hover:shadow-emerald-500/10 transition-all">
+                        <span className={`inline-flex items-center gap-3 px-6 py-3 rounded-2xl text-[9px] font-bold uppercase tracking-widest shadow-xl transition-all ${deal.status === 'DISPUTED' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-emerald-500/5 group-hover:shadow-emerald-500/10'}`}>
                           <CheckCircle2 className="w-3.5 h-3.5" /> {deal.status}
                         </span>
                       </td>

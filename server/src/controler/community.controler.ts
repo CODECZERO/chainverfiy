@@ -61,8 +61,16 @@ export const getUserHistory = asyncHandler(async (req: Request, res: Response) =
 });
 
 export const getJoinedNodes = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.query.userId as string || (req as any).user?.id;
-  if (!userId) return res.status(400).json(new ApiResponse(400, null, 'User ID required'));
+  let userId = req.query.userId as string || (req as any).user?.id;
+  const stellarWallet = req.query.stellarWallet as string;
+  
+  // Resolve wallet address to userId if no userId provided
+  if (!userId && stellarWallet) {
+    const user = await prisma.user.findUnique({ where: { stellarWallet } });
+    if (user) userId = user.id;
+  }
+  
+  if (!userId) return res.json(new ApiResponse(200, [], 'No user identifier provided'));
   
   const { getJoinedCommunities } = await import('../dbQueries/community.Queries.js');
   const communities = await getJoinedCommunities(userId);

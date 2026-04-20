@@ -134,11 +134,12 @@ export function useCommunityHistory(identifier: string) {
   });
 }
 
-export function useJoinedCommunities() {
+export function useJoinedCommunities(params?: { userId?: string; stellarWallet?: string }) {
   return useQuery({
-    queryKey: queryKeys.joinedCommunities,
-    queryFn: api.getJoinedCommunities,
+    queryKey: [...queryKeys.joinedCommunities, params?.userId, params?.stellarWallet],
+    queryFn: () => api.getJoinedCommunities(params),
     staleTime: 30 * 1000,
+    enabled: !!(params?.userId || params?.stellarWallet),
   });
 }
 

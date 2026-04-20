@@ -411,7 +411,7 @@ export default function BuyerDashboard() {
 
                {/* Bounties Tab — Issuer Review Dashboard */}
                {active === "bounties" && (
-                  <IssuerBountyDashboard userId={user?.id} walletKey={wallet?.publicKey} />
+                  <IssuerBountyDashboard userId={user?.id} walletKey={publicKey || undefined} />
                )}
 
                {/* Orders / Tracking / Completed List */}

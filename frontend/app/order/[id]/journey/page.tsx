@@ -56,8 +56,12 @@ function OrderJourneyContent() {
   const scanFired = useRef(false)
   const lastFetchedRef = useRef<string | null>(null)
 
+  // UUID validation — prevent crash on malformed IDs
+  const isValidId = typeof id === 'string' && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
+
   useEffect(() => {
     const fetchOrder = async () => {
+      if (!isValidId) { setLoading(false); return; }
       if (lastFetchedRef.current === id) return
       lastFetchedRef.current = id as string
       try {
@@ -117,6 +121,53 @@ function OrderJourneyContent() {
   const hasValidToken = token && (token === order?.qrBuyerToken || token === order?.qrSupplierToken)
   const isAuthorized = hasValidToken || (connectedWallet && (connectedWallet === buyerWallet || connectedWallet === supplierWallet))
 
+  // IMPORTANT: useMemo MUST be called before any conditional returns to satisfy React Rules of Hooks
+  const product = order?.product
+  const displayScans = useMemo(() => {
+    if (!order) return []
+    const stageScans = (product?.stageUpdates || []).map((s: any, idx: number) => ({
+      scanNumber: idx,
+      serverTimestamp: s.createdAt,
+      scanSource: 'SYSTEM',
+      resolvedLat: s.gpsLat,
+      resolvedLng: s.gpsLng,
+      resolvedLocation: s.gpsAddress || s.stageName,
+      scannerRole: 'supplier',
+      machineEventType: s.stageName,
+      ipCountryName: 'Origin'
+    }))
+
+    const realScans = order?.qrCode?.scans || []
+    let scans = [...stageScans, ...realScans]
+
+    if (scans.length === 0) {
+      scans = [{
+        scanNumber: 0,
+        serverTimestamp: order.createdAt,
+        scanSource: 'SYSTEM',
+        resolvedLocation: product?.supplier?.location || 'Supplier Facility',
+        resolvedLat: product?.stageUpdates?.[0]?.gpsLat || null,
+        resolvedLng: product?.stageUpdates?.[0]?.gpsLng || null,
+        scannerRole: 'supplier',
+        machineEventType: 'Package Prepared',
+        ipCountryName: 'Origin'
+      }]
+    }
+    return scans
+  }, [order, product])
+
+  // ── Conditional Returns (AFTER all hooks) ──
+
+  if (!isValidId) return (
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-4">
+      <h1 className="text-2xl font-bold mb-4">Invalid Order ID</h1>
+      <p className="text-slate-400 mb-6 text-sm">The order ID in the URL is malformed.</p>
+      <Link href="/marketplace">
+        <Button variant="outline">Back to Marketplace</Button>
+      </Link>
+    </div>
+  )
+
   const performGeolocation = (scanId: string) => {
     if (!("geolocation" in navigator)) return
     setSharingLocation(true)
@@ -132,7 +183,6 @@ function OrderJourneyContent() {
           setSharingLocation(false)
           localStorage.setItem('qr_location_consent', 'true')
         })
-
       },
       () => setSharingLocation(false),
       { timeout: 15000, maximumAge: 60000, enableHighAccuracy: true }
@@ -200,39 +250,6 @@ function OrderJourneyContent() {
       </div>
     )
   }
-
-  const product = order.product
-  const displayScans = useMemo(() => {
-    const stageScans = (product?.stageUpdates || []).map((s: any, idx: number) => ({
-      scanNumber: idx,
-      serverTimestamp: s.createdAt,
-      scanSource: 'SYSTEM',
-      resolvedLat: s.gpsLat,
-      resolvedLng: s.gpsLng,
-      resolvedLocation: s.gpsAddress || s.stageName,
-      scannerRole: 'supplier',
-      machineEventType: s.stageName,
-      ipCountryName: 'Origin'
-    }))
-
-    const realScans = order?.qrCode?.scans || []
-    let scans = [...stageScans, ...realScans]
-
-    if (scans.length === 0 && order) {
-      scans = [{
-        scanNumber: 0,
-        serverTimestamp: order.createdAt,
-        scanSource: 'SYSTEM',
-        resolvedLocation: product?.supplier?.location || 'Supplier Facility',
-        resolvedLat: product?.stageUpdates?.[0]?.gpsLat || null,
-        resolvedLng: product?.stageUpdates?.[0]?.gpsLng || null,
-        scannerRole: 'supplier',
-        machineEventType: 'Package Prepared',
-        ipCountryName: 'Origin'
-      }]
-    }
-    return scans
-  }, [order, product])
 
   return (
     <div className="min-h-screen bg-slate-950 text-white selection:bg-primary/30">

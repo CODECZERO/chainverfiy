@@ -96,12 +96,17 @@ export default function VerifyPage() {
         reason: "" 
       })
 
-      await loadTokens(identifier);
+      // Refresh token balance + queue + history after successful vote
+      await Promise.all([
+        loadTokens(identifier),
+        loadQueue(),
+        loadHistory(identifier),
+      ]);
       
       setVotes(prev => ({ ...prev, [productId]: voteType }))
       setTokensEarned(t => t + 1)
     } catch (e: any) { 
-      alert(e.message || "Protocol rejection: Insufficient authorization or stake.");
+      alert(e.message || "Vote failed. You may have already voted on this product or lack sufficient trust tokens.");
     }
   }
 

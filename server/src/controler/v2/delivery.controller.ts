@@ -346,3 +346,60 @@ export const uploadDisputeProof = async (req: any, res: Response) => {
     new ApiResponse(200, updated, 'Dispute proof submitted — escrow frozen pending review')
   );
 };
+
+/**
+ * Process all disputed orders whose proof deadline has expired.
+ * For each expired dispute, set status to REFUNDED and notify the buyer.
+ * This should be called periodically (cron job or server interval).
+ */
+export const processExpiredDisputes = async (req: Request, res: Response) => {
+  const now = new Date();
+
+  // Find all DISPUTED orders past their proof deadline
+  const expiredOrders = await prisma.order.findMany({
+    where: {
+      status: 'DISPUTED',
+      proofDeadlineAt: { lt: now },
+    },
+    include: {
+      product: { select: { title: true } },
+    },
+  });
+
+  if (expiredOrders.length === 0) {
+    return res.json(new ApiResponse(200, { refundedCount: 0 }, 'No expired disputes found.'));
+  }
+
+  let refundedCount = 0;
+
+  for (const order of expiredOrders) {
+    try {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: 'REFUNDED',
+        },
+      });
+
+      // Notify buyer about the refund
+      await prisma.notification.create({
+        data: {
+          userId: order.buyerId,
+          type: 'DISPUTE_RESOLVED',
+          title: 'Dispute Auto-Resolved — Refund Issued',
+          body: `The 72-hour proof window for "${order.product.title}" has expired without resolution. Your escrow funds have been released back to your wallet.`,
+          referenceId: order.id,
+        },
+      });
+
+      await cacheDel(`order:${order.id}`);
+      refundedCount++;
+    } catch (e) {
+      console.error(`[processExpiredDisputes] Failed to process order ${order.id}:`, e);
+    }
+  }
+
+  return res.json(
+    new ApiResponse(200, { refundedCount, total: expiredOrders.length }, `Processed ${refundedCount} expired disputes.`)
+  );
+};

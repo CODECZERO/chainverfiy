@@ -99,7 +99,13 @@ export const castVote = (data: any) =>
   apiFetch('/community/vote', { method: 'POST', body: JSON.stringify(data) });
 
 export const getLeaderboard = () => apiFetch('/community/leaderboard');
-export const getJoinedCommunities = () => apiFetch('/community/joined');
+export const getJoinedCommunities = (params?: { userId?: string; stellarWallet?: string }) => {
+  const qs = new URLSearchParams();
+  if (params?.userId) qs.set('userId', params.userId);
+  if (params?.stellarWallet) qs.set('stellarWallet', params.stellarWallet);
+  const query = qs.toString();
+  return apiFetch(`/community/joined${query ? `?${query}` : ''}`);
+};
 
 export const getCommunityQueue = (userId?: string) => {
   const q = userId ? `?userId=${userId}` : '';

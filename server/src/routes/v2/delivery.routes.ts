@@ -6,9 +6,14 @@ import {
   confirmDelivery,
   uploadDisputeProof,
   getOrdersByWallet,
+  processExpiredDisputes,
 } from '../../controler/v2/delivery.controller.js';
 
 const router = Router();
+
+// Process expired disputes — auto-refund orders past 72-hour proof window
+// MUST come before /:orderId routes to prevent path collision
+router.post('/process-expired-disputes', asyncHandler(processExpiredDisputes));
 
 // Wallet-matched order lookup — no JWT needed (wallet is the auth)
 router.get('/by-wallet/:publicKey', asyncHandler(getOrdersByWallet));

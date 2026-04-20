@@ -207,8 +207,9 @@ export default function SellerDashboard() {
     const verified = myProducts.filter((p: any) => p.status === 'VERIFIED').length
     const pending = myProducts.filter((p: any) => p.status === 'PENDING_VERIFICATION').length
     const totalSalesCount = ordersArr.filter((o: any) => ['PAID', 'SHIPPED', 'DELIVERED', 'COMPLETED'].includes(o.status)).length
-    const totalUsdc = ordersArr.reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
-    const pendingUsdc = ordersArr.filter((o: any) => ['PAID', 'SHIPPED'].includes(o.status)).reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+    const completedUsdc = ordersArr.filter((o: any) => o.status === 'COMPLETED').reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+    const pendingUsdc = ordersArr.filter((o: any) => ['PAID', 'SHIPPED', 'DELIVERED'].includes(o.status)).reduce((sum: number, o: any) => sum + (Number(o.priceUsdc) || 0), 0)
+    const totalUsdc = completedUsdc + pendingUsdc
 
     setStats({
       totalSales: totalSalesCount,
@@ -216,7 +217,7 @@ export default function SellerDashboard() {
       pending,
       totalEarningsInr: Math.round(totalUsdc * usdcInr),
       pendingEarningsInr: Math.round(pendingUsdc * usdcInr),
-      withdrawableInr: Math.round((totalUsdc - pendingUsdc) * usdcInr),
+      withdrawableInr: Math.round(completedUsdc * usdcInr),
       usdcBalance: totalUsdc,
       usdcInr: Math.round(totalUsdc * usdcInr),
       analytics: {
@@ -607,21 +608,21 @@ export default function SellerDashboard() {
                   <div className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-12">
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                         <div className="md:col-span-2 space-y-6">
-                           <div className="text-[10px] text-slate-600 uppercase font-black italic">Total Managed Capital</div>
+                           <div className="text-[10px] text-slate-600 uppercase font-black italic">Total Revenue (All Orders)</div>
                            <div className="text-5xl font-black text-white italic tracking-tighter">₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
                            <div className="flex gap-4 mt-10">
-                              <div className="bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-xl text-emerald-500 font-bold text-[10px] uppercase">+12.4% yield</div>
+                              <div className="bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-xl text-emerald-500 font-bold text-[10px] uppercase">${stats.usdcBalance.toFixed(2)} USDC</div>
                               <div className="text-slate-700 font-bold text-[9px] uppercase self-center italic">Verified Protocol Ledger</div>
                            </div>
                         </div>
                         <div className="bg-white/5 rounded-[2.5rem] p-10 border border-white/5 space-y-8">
                            <div>
-                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>Pending Node</span> <span className="text-amber-500 font-mono italic">\u20B9{Number(stats.pendingEarningsInr).toLocaleString()}</span></div>
-                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: "35%" }} className="h-full bg-amber-500" /></div>
+                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>In Escrow (Pending)</span> <span className="text-amber-500 font-mono italic">\u20B9{Number(stats.pendingEarningsInr).toLocaleString()}</span></div>
+                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsInr > 0 ? `${Math.round((stats.pendingEarningsInr / stats.totalEarningsInr) * 100)}%` : '0%' }} className="h-full bg-amber-500" /></div>
                            </div>
                            <div>
-                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>Liquid Node</span> <span className="text-blue-500 font-mono italic">\u20B9{Number(stats.totalEarningsInr - stats.pendingEarningsInr).toLocaleString()}</span></div>
-                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: "85%" }} className="h-full bg-blue-500" /></div>
+                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>Settled (Withdrawable)</span> <span className="text-blue-500 font-mono italic">\u20B9{Number(stats.withdrawableInr).toLocaleString()}</span></div>
+                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsInr > 0 ? `${Math.round((stats.withdrawableInr / stats.totalEarningsInr) * 100)}%` : '0%' }} className="h-full bg-blue-500" /></div>
                            </div>
                         </div>
                      </div>

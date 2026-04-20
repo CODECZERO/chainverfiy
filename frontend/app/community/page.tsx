@@ -28,7 +28,10 @@ export default function CommunityPage() {
 
   // 🪄 Centralized Data Fetching
   const { data: discussions = [], isLoading: discussionsLoading, refetch: discussionsRefetch } = useDiscussions()
-  const { data: joinedNodes = [], isLoading: nodesLoading } = useJoinedCommunities()
+  const { data: joinedNodes = [], isLoading: nodesLoading } = useJoinedCommunities({
+    userId: user?.id,
+    stellarWallet: publicKey || undefined,
+  })
 
   const loading = discussionsLoading || nodesLoading
 
