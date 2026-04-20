@@ -176,7 +176,7 @@ export default function BountyBoardPage() {
 
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-amber-500/10 pt-4 md:pt-0 md:pl-8 min-w-[140px]">
                       <div className="text-center md:text-right">
-                        <div className="text-xl font-bold text-amber-500 tracking-tight">₹{Number(b.amount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold text-amber-500 tracking-tight">{Number(b.amount || 0).toLocaleString()} USDC</div>
                         <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Reward</div>
                       </div>
                       <Link href={`/product/${b.productId}`}>

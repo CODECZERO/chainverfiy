@@ -436,7 +436,7 @@ export default function ProductPage() {
                       <div className="shrink-0 flex items-center gap-8 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/[0.05] pt-8 md:pt-0 md:pl-10">
                         <div className="text-center md:text-right flex-1 md:flex-none">
                           <div className="text-[10px] font-bold text-slate-600 uppercase mb-2 tracking-widest">Reward Pool</div>
-                          <div className={`${outfit.className} text-3xl font-bold text-amber-500 tracking-tighter`}>₹{b.amount}</div>
+                          <div className={`${outfit.className} text-3xl font-bold text-amber-500 tracking-tighter`}>{b.amount} USDC</div>
                         </div>
                         <Button 
                           onClick={() => { setSelectedBounty(b); setShowProofModal(true); }}

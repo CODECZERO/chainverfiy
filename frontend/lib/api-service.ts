@@ -1,7 +1,7 @@
 // ChainVerify API service — all calls go to Express backend via Prisma/PostgreSQL
 // Zero blockchain reads — Stellar is only used for payments
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://chainverfiy.onrender.com/api';
 
 async function apiFetch(path: string, options?: RequestInit) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
