@@ -311,7 +311,7 @@ function OrderJourneyContent() {
               </h3>
             </div>
             <div className="flex-1 rounded-2xl overflow-hidden border border-white/[0.06] relative z-0">
-              {displayScans.some((s: any) => typeof s.resolvedLat === 'number' && typeof s.resolvedLng === 'number') ? (
+              {displayScans.some((s: any) => s.resolvedLat != null && s.resolvedLng != null) ? (
                  <JourneyMap scans={displayScans} />
               ) : displayScans.length > 0 ? (
                  <JourneyMap scans={[{ ...displayScans[0], resolvedLat: 28.6139, resolvedLng: 77.2090, resolvedLocation: 'Supplier Origin (Estimated)' }, ...displayScans.slice(1)]} />

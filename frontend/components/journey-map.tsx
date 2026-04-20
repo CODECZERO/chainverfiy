@@ -6,8 +6,8 @@ import { Maximize, Minimize } from 'lucide-react'
 interface Scan {
   scanNumber: number
   serverTimestamp: string
-  resolvedLat: number | null
-  resolvedLng: number | null
+  resolvedLat: number | string | null
+  resolvedLng: number | string | null
   resolvedLocation: string | null
   ipCountry: string | null
   deviceType: string | null
@@ -70,9 +70,9 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
         })
 
         // Initial center (use first valid scan or fallback)
-        const validScans = scans.filter(s => typeof s.resolvedLat === 'number' && typeof s.resolvedLng === 'number')
+        const validScans = scans.filter(s => s.resolvedLat != null && s.resolvedLng != null && !isNaN(Number(s.resolvedLat)) && !isNaN(Number(s.resolvedLng)))
         const center: [number, number] = validScans.length > 0 
-          ? [validScans[0].resolvedLat!, validScans[0].resolvedLng!] 
+          ? [Number(validScans[0].resolvedLat), Number(validScans[0].resolvedLng)]
           : [28.6139, 77.2090] // fallback to Delhi if no scans
 
         try {
@@ -106,15 +106,15 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
       const map = leafletMap.current
       if (!L || !map) return
 
-      // Filter to scans that have valid numeric coordinates
+      // Filter to scans that have valid numeric coordinates (can be numbers or numeric strings)
       const validScans = scans.filter(s => 
-        typeof s.resolvedLat === 'number' && 
-        typeof s.resolvedLng === 'number' && 
-        !isNaN(s.resolvedLat) && 
-        !isNaN(s.resolvedLng)
+        s.resolvedLat != null && 
+        s.resolvedLng != null && 
+        !isNaN(Number(s.resolvedLat)) && 
+        !isNaN(Number(s.resolvedLng))
       )
 
-      const coords = validScans.map(s => [s.resolvedLat!, s.resolvedLng!] as [number, number])
+      const coords = validScans.map(s => [Number(s.resolvedLat), Number(s.resolvedLng)] as [number, number])
 
       // Clear existing layers (except tiles)
       map.eachLayer((layer: any) => {
@@ -140,7 +140,7 @@ export default function JourneyMap({ scans }: JourneyMapProps) {
           iconAnchor: [16, 16],
         })
         const popup = getPopupHtml(scan)
-        L.marker([scan.resolvedLat!, scan.resolvedLng!], { icon })
+        L.marker([Number(scan.resolvedLat), Number(scan.resolvedLng)], { icon })
           .addTo(map)
           .bindPopup(popup)
       })

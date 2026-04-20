@@ -549,7 +549,18 @@ async function updateSession(phone: string, state: WhatsAppState, sessionData: a
 }
 
 async function getSupplierByPhone(phone: string) {
-  return prisma.supplier.findUnique({ where: { whatsappNumber: phone } });
+  let supplier = await prisma.supplier.findUnique({ where: { whatsappNumber: phone } });
+  if (supplier) return supplier;
+
+  const numericPhone = phone.replace(/\D/g, '');
+  if (numericPhone.length >= 10) {
+    const last10 = numericPhone.slice(-10);
+    supplier = await prisma.supplier.findFirst({
+      where: { whatsappNumber: { endsWith: last10 } }
+    });
+  }
+  
+  return supplier;
 }
 
 function getHelpMenu(): string {
