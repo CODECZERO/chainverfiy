@@ -491,8 +491,10 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or have a registered wallet to vote'));
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: { 
+      id: id.length < 36 ? { startsWith: id } : id 
+    },
     include: { disputeVotes: true }
   });
 
