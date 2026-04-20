@@ -252,9 +252,9 @@ export default function BuyerDashboard() {
                 <div className="flex-1 p-4 bg-white/[0.04] border border-white/10 rounded-2xl">
                   <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Spent</div>
                   <div className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>
-                    ₹{totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    {totalSpentUsdc.toFixed(2)} USDC
                   </div>
-                  <div className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">≈ {totalSpentUsdc.toFixed(2)} USDC</div>
+                  <div className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">Global Settlement Asset</div>
                 </div>
                 <button
                   onClick={loadOrders}
@@ -322,7 +322,7 @@ export default function BuyerDashboard() {
                        { label: "Total Orders", value: orders.length, color: "text-blue-400", bg: "from-blue-500/10", icon: ShoppingCart },
                        { label: "Active Shipments", value: activeOrders.length, color: "text-purple-400", bg: "from-purple-500/10", icon: ScanLine },
                        { label: "Completed", value: orders.filter(o => o.status === "COMPLETED").length, color: "text-emerald-400", bg: "from-emerald-500/10", icon: CheckCircle2 },
-                       { label: "Total Spent", value: `₹${totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
+                       { label: "Total Spent", value: `${totalSpentUsdc.toFixed(2)} USDC`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
                      ].map((s, i) => (
                        <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
                          <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity`} />
@@ -390,7 +390,7 @@ export default function BuyerDashboard() {
                                </PieChart>
                              </ResponsiveContainer>
                              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                               <span className="text-xl font-bold text-white">₹{totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                               <span className="text-xl font-bold text-white">{totalSpentUsdc.toFixed(2)} USDC</span>
                              </div>
                            </>
                          )}

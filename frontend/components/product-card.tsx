@@ -151,9 +151,9 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
          <div className="mt-auto relative bg-[#0C0F1A] border border-white/[0.04] rounded-2xl p-4 mb-6 group-hover:border-indigo-500/20 transition-all duration-500 shadow-inner">
            <div className="relative z-10 flex items-center justify-between">
               <div className="flex flex-col">
-                 <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Local Price</span>
+                  <span className="text-slate-500 font-display font-black text-sm uppercase italic tracking-widest text-slate-600">STABLE</span>
                   <span className={`${outfit.className} text-xl font-bold text-white`}>
-                    ₹{Number(priceInr).toLocaleString()}
+                    {Number(usdcPrice).toFixed(2)} USDC
                   </span>
               </div>
               <div className="h-10 w-px bg-white/[0.08] mx-2" />

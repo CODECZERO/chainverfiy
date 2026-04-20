@@ -258,7 +258,7 @@ export default function VerifyPage() {
                             </div>
                             <div className="bg-white/[0.02] border border-white/[0.06] p-10 rounded-[2.5rem] min-w-[240px] text-right flex flex-col justify-center transition-all group-hover:bg-indigo-600/[0.02]">
                               <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-3">Product Value</div>
-                              <div className={`${outfit.className} text-5xl font-bold text-white tracking-tight tabular-nums`}>₹{p.priceInr.toLocaleString()}</div>
+                              <div className={`${outfit.className} text-5xl font-bold text-white tracking-tight tabular-nums`}>{p.priceUsdc.toFixed(2)} USDC</div>
                             </div>
                           </div>
 

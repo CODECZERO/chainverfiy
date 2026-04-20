@@ -81,8 +81,8 @@ export default function TransparencyPage() {
         {/* Dynamic Exchange Rate Highlights */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 mb-16 md:mb-24">
           <RateCard 
-            label="USDC Market Rate" 
-            value={ratesData?.USDC?.inr ? `₹${ratesData.USDC.inr}` : "₹83.33"} 
+            label="USDC / USD Rate" 
+            value={ratesData?.USDC?.usd ? `$${ratesData.USDC.usd}` : "$1.00"} 
             trend="+0.02%" 
             icon={Globe} 
             color="text-blue-500" 
@@ -225,7 +225,7 @@ export default function TransparencyPage() {
                         <div className="text-[8px] text-slate-600 font-bold mt-2 uppercase tracking-widest opacity-60 font-mono">ID: {deal.id.slice(0, 16)}</div>
                       </td>
                       <td className="py-8 text-[10px] font-mono text-slate-500 lowercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">{deal.wallet}</td>
-                      <td className={`${outfit.className} py-8 text-center font-bold text-white tracking-tighter text-xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>${deal.amount}</td>
+                      <td className={`${outfit.className} py-8 text-center font-bold text-white tracking-tighter text-xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>{deal.amount} USDC</td>
                       <td className="py-8 text-center">
                         <span className="text-[8px] font-bold text-blue-400 bg-blue-500/5 px-3 py-1.5 rounded-xl border border-blue-500/10 uppercase tracking-widest shadow-inner">
                           {deal.fee} XLM

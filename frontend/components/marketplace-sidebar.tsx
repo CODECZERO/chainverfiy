@@ -120,12 +120,12 @@ export function MarketplaceSidebar({ onFilterChange }: { onFilterChange: (filter
              <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Min Baseline</span>
-                  <span className="text-[10px] font-mono font-black text-white italic">₹{priceRange[0].toLocaleString()}</span>
+                  <span className="text-[10px] font-mono font-black text-white italic">{priceRange[0].toLocaleString()} USDC</span>
                 </div>
                 <div className="w-8 h-px bg-white/5" />
                 <div className="flex flex-col items-end">
                   <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Max Threshold</span>
-                  <span className="text-[10px] font-mono font-black text-indigo-400 italic">₹{priceRange[1].toLocaleString()}</span>
+                  <span className="text-[10px] font-mono font-black text-indigo-400 italic">{priceRange[1].toLocaleString()} USDC</span>
                 </div>
              </div>
           </SidebarGroupContent>

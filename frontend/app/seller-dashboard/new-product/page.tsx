@@ -172,9 +172,9 @@ export default function NewProductWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Price (INR)</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Price (USDC)</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-3 text-[#6B7280] font-medium">₹</span>
+                    <span className="absolute left-4 top-3 text-[#6B7280] font-medium">USDC</span>
                     <input type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="0"
                       className="w-full bg-[#0D1321] border border-[#1F2D40] rounded-xl pl-8 pr-4 py-3 text-white placeholder:text-[#6B7280] focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 outline-none transition-all font-mono" />
                   </div>

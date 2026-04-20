@@ -609,7 +609,7 @@ export default function SellerDashboard() {
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                         <div className="md:col-span-2 space-y-6">
                            <div className="text-[10px] text-slate-600 uppercase font-black italic">Total Revenue (All Orders)</div>
-                           <div className="text-5xl font-black text-white italic tracking-tighter">₹{Number(stats.totalEarningsInr).toLocaleString()}</div>
+                           <div className="text-5xl font-black text-white italic tracking-tighter">{Number(stats.totalEarningsUsdc || 0).toFixed(2)} USDC</div>
                            <div className="flex gap-4 mt-10">
                               <div className="bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-xl text-emerald-500 font-bold text-[10px] uppercase">${stats.usdcBalance.toFixed(2)} USDC</div>
                               <div className="text-slate-700 font-bold text-[9px] uppercase self-center italic">Verified Protocol Ledger</div>

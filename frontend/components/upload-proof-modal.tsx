@@ -113,7 +113,7 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
             )}
 
             <div>
-              <label className="text-sm font-medium text-foreground">Amount Used (₹)</label>
+              <label className="text-sm font-medium text-foreground">Amount Used (USDC)</label>
               <Input
                 type="number"
                 placeholder="Enter amount"
@@ -149,16 +149,10 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
 
             <Button
               onClick={handleSubmit}
-              disabled={!formData.amount || !formData.description || !formData.file || step === "uploading"}
+              disabled={!formData.amount || !formData.description || !formData.file}
               className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold h-11 transition-all active:scale-[0.98]"
             >
-              {step === "uploading" ? (
-                <div className="flex items-center gap-2 uppercase tracking-widest text-[10px]">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Processing Protocol
-                </div>
-              ) : (
-                "Upload Proof"
-              )}
+              Upload Proof
             </Button>
           </div>
         )}
@@ -178,7 +172,7 @@ export function UploadProofModal({ isOpen, onClose, task }: UploadProofModalProp
 
             <div>
               <p className="text-sm text-zinc-500 mb-1">Amount Verified</p>
-              <p className="text-2xl font-bold text-white">₹{formData.amount}</p>
+              <p className="text-2xl font-bold text-white">{formData.amount} USDC</p>
             </div>
 
             <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 text-left">

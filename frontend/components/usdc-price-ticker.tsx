@@ -5,7 +5,6 @@ import { useUSDCRates } from "@/hooks/use-api-queries"
 
 const CURRENCIES = [
   { code: "USD", symbol: "$" },
-  { code: "INR", symbol: "₹" },
   { code: "EUR", symbol: "€" },
   { code: "GBP", symbol: "£" },
   { code: "NGN", symbol: "₦" },

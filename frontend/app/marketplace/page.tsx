@@ -100,13 +100,13 @@ export default function MarketplacePage() {
               </div>
               <div className="flex gap-3">
                  <div className="flex-1 px-6 py-3 rounded-2xl bg-indigo-500/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">Currency</span>
-                    <span className="text-sm font-mono font-bold text-indigo-400 leading-none">₹{usdcInr.toFixed(2)} / $1</span>
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-none">Currency</span>
+                    <span className="text-sm font-mono font-bold text-indigo-400 leading-none">NETWORK BASE ASSET: USDC</span>
                  </div>
                  <Button variant="outline" className="rounded-2xl h-14 px-6 border-white/10 hover:bg-white/5 active:scale-95 transition-all">
-                    <Filter className="w-4 h-4 mr-2 text-slate-400" /> 
-                    <span className="text-xs font-bold text-slate-400">Filter</span>
-                 </Button>
+                     <Filter className="w-4 h-4 mr-2 text-slate-400" /> 
+                     <span className="text-xs font-bold text-slate-400">Filter</span>
+                  </Button>
               </div>
             </motion.div>
           </div>

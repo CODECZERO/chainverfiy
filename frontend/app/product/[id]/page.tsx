@@ -534,7 +534,7 @@ export default function ProductPage() {
                     </div>
                     <div className="flex flex-col">
                       <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-5xl lg:text-6xl font-display font-black text-white tracking-tighter italic drop-shadow-md">₹{Number(product.priceInr || 0).toLocaleString()}</span>
+                        <span className="text-5xl lg:text-6xl font-display font-black text-white tracking-tighter italic drop-shadow-md">{Number(product.priceUsdc || 0).toFixed(2)} USDC</span>
                         <span className="text-slate-500 font-display font-black text-sm uppercase italic tracking-widest text-slate-600">INR</span>
                       </div>
                       
