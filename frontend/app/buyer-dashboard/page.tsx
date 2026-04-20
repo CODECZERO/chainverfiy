@@ -100,7 +100,8 @@ export default function BuyerDashboard() {
   }
 
   const activeOrders = orders.filter(o => o.status === "PAID" || o.status === "SHIPPED" || o.status === "DELIVERED")
-  const totalSpent = orders.reduce((s, o) => s + Number(o.priceUsdc || 0), 0)
+  const totalSpentInr = orders.reduce((s, o) => s + Number(o.totalPriceInr || o.priceInr || 0), 0)
+  const totalSpentUsdc = orders.reduce((s, o) => s + Number(o.priceUsdc || 0), 0)
   
   const spendingData = orders
     .sort((a, b) => {
@@ -113,8 +114,8 @@ export default function BuyerDashboard() {
         ? new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
         : 'N/A'
       const last = acc[acc.length - 1]
-      const total = (last?.total || 0) + Number(order.priceUsdc || 0)
-      acc.push({ date, amount: Number(order.priceUsdc || 0), total })
+      const total = (last?.total || 0) + Number(order.totalPriceInr || order.priceInr || 0)
+      acc.push({ date, amount: Number(order.totalPriceInr || order.priceInr || 0), total })
       return acc
     }, [])
 
@@ -251,9 +252,9 @@ export default function BuyerDashboard() {
                 <div className="flex-1 p-4 bg-white/[0.04] border border-white/10 rounded-2xl">
                   <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Spent</div>
                   <div className={`${outfit.className} text-2xl font-bold text-white tracking-tight`}>
-                    ${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    ₹{totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </div>
-                  <div className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">USDC</div>
+                  <div className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">≈ {totalSpentUsdc.toFixed(2)} USDC</div>
                 </div>
                 <button
                   onClick={loadOrders}
@@ -321,7 +322,7 @@ export default function BuyerDashboard() {
                        { label: "Total Orders", value: orders.length, color: "text-blue-400", bg: "from-blue-500/10", icon: ShoppingCart },
                        { label: "Active Shipments", value: activeOrders.length, color: "text-purple-400", bg: "from-purple-500/10", icon: ScanLine },
                        { label: "Completed", value: orders.filter(o => o.status === "COMPLETED").length, color: "text-emerald-400", bg: "from-emerald-500/10", icon: CheckCircle2 },
-                       { label: "Total Spent", value: `$${totalSpent.toFixed(0)}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
+                       { label: "Total Spent", value: `₹${totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
                      ].map((s, i) => (
                        <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
                          <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity`} />
@@ -389,7 +390,7 @@ export default function BuyerDashboard() {
                                </PieChart>
                              </ResponsiveContainer>
                              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                               <span className="text-xl font-bold text-white">${totalSpent.toFixed(0)}</span>
+                               <span className="text-xl font-bold text-white">₹{totalSpentInr.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                              </div>
                            </>
                          )}

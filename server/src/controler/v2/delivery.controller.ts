@@ -54,14 +54,14 @@ export const getOrdersByWallet = async (req: any, res: Response) => {
 // Single order for delivery confirmation
 export const getOrderForDelivery = async (req: any, res: Response) => {
   const { orderId } = req.params;
-  const { wallet } = req.query;
+  const { wallet, userId } = req.query;
 
-  if (!wallet) throw new ApiError(400, 'wallet query param required');
+  if (!wallet && !userId) throw new ApiError(400, 'wallet or userId query param required');
 
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {
-      buyer: { select: { stellarWallet: true, email: true } },
+      buyer: { select: { id: true, stellarWallet: true, email: true } },
       product: {
         select: {
           id: true,
@@ -123,8 +123,11 @@ export const getOrderForDelivery = async (req: any, res: Response) => {
 
   if (!order) throw new ApiError(404, 'Order not found');
 
-  if (order.buyer.stellarWallet !== wallet) {
-    throw new ApiError(403, 'Wallet does not match the buyer on this order');
+  const isMatchByWallet = wallet && order.buyer.stellarWallet === wallet;
+  const isMatchByUserId = userId && order.buyer.id === userId;
+
+  if (!isMatchByWallet && !isMatchByUserId) {
+    throw new ApiError(403, 'Wallet or User ID does not match the buyer on this order');
   }
 
   const now = new Date();

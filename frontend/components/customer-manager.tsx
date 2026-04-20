@@ -55,7 +55,7 @@ export function CustomerManager() {
     fetchOrders()
   }, [])
 
-  const filteredOrders = orders.filter(o => {
+  const filteredOrders = (orders || []).filter(o => {
     const searchLower = search.toLowerCase()
     return (
       (o.buyer?.email || "").toLowerCase().includes(searchLower) ||

@@ -147,13 +147,22 @@ export default function DeliveryConfirmationPage() {
   }, [order])
 
   const fetchOrderData = async () => {
-    if (!effectiveWallet) return
-    const fetchKey = `${params.orderId}-${effectiveWallet}`
+    if (!effectiveWallet && !user?.id) return
+    const fetchKey = `${params.orderId}-${effectiveWallet || user?.id}`
     if (lastFetchedRef.current === fetchKey) return
     
     try {
       lastFetchedRef.current = fetchKey
-      const res = await fetch(`${api}/delivery/${params.orderId}/delivery-view?wallet=${effectiveWallet}`)
+      const token = localStorage.getItem('accessToken')
+      const walletQuery = effectiveWallet ? `wallet=${effectiveWallet}` : ''
+      const userQuery = user?.id ? `userId=${user.id}` : ''
+      const queryParams = [walletQuery, userQuery].filter(Boolean).join('&')
+
+      const res = await fetch(`${api}/delivery/${params.orderId}/delivery-view?${queryParams}`, {
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      })
       const data = await res.json()
       if (data.success) {
         setOrder(data.data.order)
@@ -221,8 +230,11 @@ export default function DeliveryConfirmationPage() {
           releaseTxId: data.data.releaseTxId,
         }))
         setConfirmed(true)
+        lastFetchedRef.current = null // Allow refetch
+        await fetchOrderData()
       } else if (res.status === 409 || data.message?.includes('already confirmed')) {
         // If already confirmed, just refresh to show the inspection phase
+        lastFetchedRef.current = null // Allow refetch
         await fetchOrderData()
         setConfirmed(true)
       } else {

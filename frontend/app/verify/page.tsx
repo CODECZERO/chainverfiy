@@ -89,22 +89,20 @@ export default function VerifyPage() {
       const identifier = user?.id || wallet.publicKey;
       if (!identifier) return
 
-      const res = await voteProduct(productId, { 
+      await voteProduct(productId, { 
         userId: user?.id, 
         stellarWallet: wallet.publicKey,
         voteType, 
         reason: "" 
       })
-      
-      if (!res) {
-        alert("Protocol rejection: Insufficient authorization or stake.");
-        return;
-      }
 
       await loadTokens(identifier);
-    } catch { }
-    setVotes(prev => ({ ...prev, [productId]: voteType }))
-    setTokensEarned(t => t + 1)
+      
+      setVotes(prev => ({ ...prev, [productId]: voteType }))
+      setTokensEarned(t => t + 1)
+    } catch (e: any) { 
+      alert(e.message || "Protocol rejection: Insufficient authorization or stake.");
+    }
   }
 
   const remaining = queue.filter(p => !votes[p.id])

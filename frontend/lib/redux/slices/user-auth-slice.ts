@@ -63,9 +63,12 @@ export const loginUser = createAsyncThunk(
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || 'Login failed')
     
-    // Trigger sync for other tabs
+    // Trigger sync for other tabs and save access token for apiFetch
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_sync', Date.now().toString())
+      if (data.data?.accessToken) {
+        localStorage.setItem('accessToken', data.data.accessToken)
+      }
     }
     
     return data.data.user as UserProfile

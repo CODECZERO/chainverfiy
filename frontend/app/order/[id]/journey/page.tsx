@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useMemo } from "react"
+import { useState, useEffect, useRef, useMemo, Suspense } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { CheckCircle2, Package, MapPin, ExternalLink, ShieldCheck, Clock, ArrowLeft, Loader2 } from "lucide-react"
@@ -25,6 +25,23 @@ const JourneyMap = dynamic(() => import('@/components/journey-map'), {
 })
 
 export default function OrderJourneyPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 text-white">
+        <Header />
+        <div className="max-w-3xl mx-auto px-4 py-20 animate-pulse text-center space-y-4">
+          <div className="w-20 h-20 bg-slate-800 rounded-full mx-auto" />
+          <div className="h-8 bg-slate-800 rounded w-1/2 mx-auto" />
+          <div className="h-4 bg-slate-800 rounded w-1/3 mx-auto" />
+        </div>
+      </div>
+    }>
+      <OrderJourneyContent />
+    </Suspense>
+  )
+}
+
+function OrderJourneyContent() {
   const { id } = useParams()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")

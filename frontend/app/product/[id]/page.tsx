@@ -217,6 +217,11 @@ export default function ProductPage() {
                 <span className="px-3 py-1 bg-white/[0.03] border border-white/[0.08] text-slate-400 rounded-lg text-[10px] font-bold uppercase tracking-widest">
                   Immutable Record
                 </span>
+                {product.category && (
+                  <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                    {product.category}
+                  </span>
+                )}
               </div>
               <h1 className={`${outfit.className} text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-8 text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 drop-shadow-sm`}>
                 {String(product.title || "")}
@@ -252,9 +257,12 @@ export default function ProductPage() {
                     priority
                   />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-700 bg-[#020305] z-0">
-                    <Package className="w-24 h-24 mb-6 stroke-[1]" />
-                    <span className="text-[10px] font-display font-black uppercase tracking-[0.3em]">Visual Evidence Unsynchronized</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-gradient-to-br from-indigo-900/20 to-[#020305] z-0 overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] mix-blend-overlay" />
+                    <div className="w-32 h-32 rounded-full bg-indigo-500/5 flex items-center justify-center mb-6 border border-indigo-500/10 shadow-[0_0_50px_rgba(99,102,241,0.1)] animate-pulse">
+                      <Package className="w-16 h-16 text-indigo-400/50 stroke-[1.5]" />
+                    </div>
+                    <span className="text-[10px] font-display font-black uppercase tracking-[0.3em] text-indigo-300/70">Visual Evidence Pending</span>
                   </div>
                 )}
                 

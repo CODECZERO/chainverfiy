@@ -20,6 +20,7 @@ async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(targetUrl, {
     credentials: 'include',
     headers,
+    cache: 'no-store',
     ...options,
   });
   const json = await res.json();
@@ -27,6 +28,10 @@ async function apiFetch(path: string, options?: RequestInit) {
   // Unwrap ApiResponse envelope: { statusCode, data, message, success }
   // Return the inner .data so callers get clean payloads
   if (json && typeof json === 'object' && 'success' in json && 'data' in json && 'statusCode' in json) {
+    if (json.success === false) {
+      throw new Error(json.message || `API Request Failed (${json.statusCode})`);
+    }
+    
     const result = json.data;
     // Attach success/message to the data even for arrays (as hidden/extra props)
     if (result && (typeof result === 'object' || Array.isArray(result))) {
