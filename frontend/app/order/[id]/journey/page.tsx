@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, Suspense } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
-import { CheckCircle2, Package, MapPin, ExternalLink, ShieldCheck, Clock, ArrowLeft, Loader2 } from "lucide-react"
+import { CheckCircle2, Package, MapPin, ExternalLink, ShieldCheck, Clock, ArrowLeft, Loader2, Wallet, AlertTriangle, Lock, Unlock, ArrowRightLeft, Banknote } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useSelector } from "react-redux"
@@ -326,6 +326,103 @@ function OrderJourneyContent() {
              </div>
           </div>
         </div>
+
+        {/* Financial Escrow Status Section */}
+        {order && (
+          <div className="mb-8 premium-card rounded-[2.5rem] p-8 relative overflow-hidden border-2 border-slate-800/50">
+             <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Banknote className="w-32 h-32 text-slate-500" />
+             </div>
+             
+             <div className="relative z-10">
+                <h3 className="text-xl font-bold flex items-center gap-3 mb-8">
+                   <Wallet className="w-6 h-6 text-emerald-400" /> Financial & Escrow Status
+                </h3>
+                
+                <div className="grid md:grid-cols-3 gap-6">
+                   {/* Amount Locked */}
+                   <div className="bg-slate-900/80 rounded-[1.5rem] p-6 border border-white/5">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Original Payment</div>
+                      <div className="text-2xl font-black text-white">
+                         {order.sourceAmount ? Number(order.sourceAmount).toFixed(2) : order.product?.priceUsdc} <span className="text-sm text-slate-400">{order.sourceCurrency || 'USDC'}</span>
+                      </div>
+                      <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-slate-400">
+                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Payment Processed
+                      </div>
+                   </div>
+
+                   {/* Current Escrow State */}
+                   <div className="bg-slate-900/80 rounded-[1.5rem] p-6 border border-white/5">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Smart Contract State</div>
+                      
+                      {order.status === 'REFUNDED' ? (
+                        <>
+                          <div className="text-xl font-black text-slate-300">Refunded to Wallet</div>
+                          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-800/50 px-3 py-2 rounded-xl">
+                             <ArrowRightLeft className="w-3.5 h-3.5" /> Funds Returned
+                          </div>
+                        </>
+                      ) : order.status === 'COMPLETED' ? (
+                        <>
+                          <div className="text-xl font-black text-emerald-400">Funds Released</div>
+                          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-500/70 bg-emerald-500/10 px-3 py-2 rounded-xl">
+                             <Unlock className="w-3.5 h-3.5" /> Settled to Supplier
+                          </div>
+                        </>
+                      ) : order.status === 'DISPUTED' ? (
+                        <>
+                          <div className="text-xl font-black text-red-400">Frozen in Escrow</div>
+                          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-red-400/80 bg-red-500/10 px-3 py-2 rounded-xl">
+                             <AlertTriangle className="w-3.5 h-3.5" /> Pending Resolution
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-xl font-black text-blue-400">Locked in Escrow</div>
+                          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-blue-400/80 bg-blue-500/10 px-3 py-2 rounded-xl">
+                             <Lock className="w-3.5 h-3.5" /> Secured until Delivery
+                          </div>
+                        </>
+                      )}
+                   </div>
+
+                   {/* Transaction Reference */}
+                   <div className="bg-slate-900/80 rounded-[1.5rem] p-6 border border-white/5 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Blockchain Proof</div>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Your funds are held securely in a Soroban smart contract. The supplier cannot access them until you confirm receipt.
+                        </p>
+                      </div>
+                      
+                      {order.escrowTxId && (
+                        <a 
+                          href={`https://stellar.expert/explorer/testnet/tx/${order.escrowTxId}`} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="mt-4 inline-flex items-center justify-between bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.04] p-3 rounded-xl transition-colors"
+                        >
+                          <span className="text-[10px] font-mono text-slate-400 truncate max-w-[120px]">{order.escrowTxId}</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-2" />
+                        </a>
+                      )}
+                   </div>
+                </div>
+                
+                {order.status === 'DISPUTED' && (
+                   <div className="mt-6 bg-red-500/10 border border-red-500/20 rounded-2xl p-5 flex items-start gap-4">
+                      <div className="p-2 bg-red-500/20 rounded-xl shrink-0"><AlertTriangle className="w-5 h-5 text-red-400" /></div>
+                      <div>
+                         <h4 className="text-sm font-bold text-red-400 mb-1">Dispute Active</h4>
+                         <p className="text-xs text-red-300/80 leading-relaxed">
+                           An issue was flagged for this order. The product has entered arbitration. The smart contract has completely frozen the escrow balance, ensuring the supplier cannot withdraw your funds. Support will review the evidence and initiate a refund if the supplier is at fault.
+                         </p>
+                      </div>
+                   </div>
+                )}
+             </div>
+          </div>
+        )}
 
         {/* Footer info */}
         <div className="mt-20 pt-10 border-t border-white/5 text-center">
