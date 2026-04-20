@@ -159,6 +159,7 @@ export default function DeliveryConfirmationPage() {
       const queryParams = [walletQuery, userQuery].filter(Boolean).join('&')
 
       const res = await fetch(`${api}/delivery/${params.orderId}/delivery-view?${queryParams}`, {
+        cache: 'no-store',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }

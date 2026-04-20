@@ -62,14 +62,16 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-      whileHover={{ y: -8 }}
-      className="group flex flex-col glass-card rounded-[2.5rem] overflow-hidden transition-all duration-500 shadow-2xl relative border border-white/[0.05]"
+      transition={{ duration: 0.5, delay: index * 0.05, ease: [0.23, 1, 0.32, 1] }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      className="group flex flex-col bg-[#080B12]/80 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgba(79,70,229,0.15)] relative border border-white/[0.04] hover:border-indigo-500/30"
     >
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.02] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      
       {/* Product Image Section */}
-      <div className="relative aspect-[4/3] rounded-[2rem] m-3 overflow-hidden bg-black/40 border border-white/[0.05]">
+      <div className="relative aspect-[4/3] rounded-[2rem] m-3 overflow-hidden bg-[#0A0D14] border border-white/[0.02]">
         {image && !imgError ? (
           <>
             <Image 
@@ -137,25 +139,27 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
         </div>
         
         <div className="flex items-center gap-2 mb-6">
-          <Globe className="w-3.5 h-3.5 text-indigo-500" />
+          <div className="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+             <Globe className="w-3 h-3 text-indigo-400" />
+          </div>
           <span className="text-xs font-medium text-slate-400 truncate">
             {task.supplier?.name || "Independent"} · {task.supplier?.location || "Global Network"}
           </span>
         </div>
 
         {/* Price/Digital Dollar Section */}
-         <div className="mt-auto relative bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 mb-6 group-hover:bg-indigo-600/[0.04] transition-all duration-300">
+         <div className="mt-auto relative bg-[#0C0F1A] border border-white/[0.04] rounded-2xl p-4 mb-6 group-hover:border-indigo-500/20 transition-all duration-500 shadow-inner">
            <div className="relative z-10 flex items-center justify-between">
               <div className="flex flex-col">
-                 <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Local Price</span>
+                 <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Local Price</span>
                   <span className={`${outfit.className} text-xl font-bold text-white`}>
                     ₹{Number(priceInr).toLocaleString()}
                   </span>
               </div>
-              <div className="h-10 w-px bg-white/5 mx-2" />
+              <div className="h-10 w-px bg-white/[0.08] mx-2" />
               <div className="flex flex-col items-end">
-                 <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Digital (USDC)</span>
-                 <span className="text-[14px] font-mono font-bold text-indigo-400">
+                 <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-1">USDC Stablecoin</span>
+                 <span className="text-[14px] font-mono font-bold text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded-lg border border-indigo-500/20">
                     ${Number(usdcPrice).toFixed(2)}
                  </span>
               </div>
@@ -178,8 +182,9 @@ export function ProductCard({ task, index = 0, usdcInr = 83.33 }: { task: any; i
          </div>
 
         <Link href={`/product/${id}`} className="block">
-          <Button className={`${outfit.className} w-full h-12 rounded-2xl bg-white text-black hover:bg-slate-200 font-bold text-xs shadow-xl transition-all active:scale-[0.98] group/btn`}>
-             View Product Details
+          <Button className={`${outfit.className} w-full h-12 rounded-xl bg-white text-black hover:bg-indigo-50 hover:text-indigo-900 font-bold text-xs shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all active:scale-[0.98] group/btn overflow-hidden relative`}>
+             <span className="relative z-10">View Product Details</span>
+             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/10 to-indigo-500/0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
           </Button>
         </Link>
       </div>
