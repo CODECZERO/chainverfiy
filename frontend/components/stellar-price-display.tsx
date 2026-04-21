@@ -66,13 +66,13 @@
     );
   }
 
-  // Show the current XLM price in INR
+  // Show the current XLM price in USDC
   return (
     <div className="flex items-center gap-3 bg-zinc-950 border border-zinc-900 px-4 py-2 rounded-md">
       <TrendingUp className="h-4 w-4 text-orange-600" />
       <div className="text-[10px] font-black uppercase italic tracking-widest">
         <span className="text-white">1 XLM</span>
-        <span className="text-orange-500 ml-2">₹{price.toFixed(2)}</span>
+        <span className="text-orange-500 ml-2">{price.toFixed(2)} USDC</span>
       </div>
     </div>
   )

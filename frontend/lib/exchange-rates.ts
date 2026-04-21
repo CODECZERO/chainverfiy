@@ -3,8 +3,8 @@ let lastFetchTime = 0
 const CACHE_DURATION = 5 * 60 * 1000 // Cache for 5 minutes
 
 // Standardized fallback rate (matching backend)
-const FALLBACK_XLM_INR = 28.6
-const FALLBACK_USDC_INR = 83.33
+const FALLBACK_XLM_USD = 0.35
+const FALLBACK_USDC_USD = 1.00
 
 export async function getExchangeRate(): Promise<number> {
   const now = Date.now()
@@ -15,20 +15,20 @@ export async function getExchangeRate(): Promise<number> {
   }
 
   try {
-    const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=stellar&vs_currencies=inr")
+    const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=stellar&vs_currencies=usd")
     if (!response.ok) throw new Error("API failure")
     const data = await response.json()
-    const rate = data.stellar?.inr
+    const rate = data.stellar?.usd
     
     if (rate) {
       cachedRate = rate
       lastFetchTime = now
       return rate
     }
-    return cachedRate || FALLBACK_XLM_INR
+    return cachedRate || FALLBACK_XLM_USD
   } catch (error) {
-    console.warn("Using fallback XLM/INR rate due to API error:", error)
-    return cachedRate || FALLBACK_XLM_INR
+    console.warn("Using fallback XLM/USD rate due to API error:", error)
+    return cachedRate || FALLBACK_XLM_USD
   }
 }
 
@@ -60,7 +60,7 @@ export async function getAllRates(): Promise<any> {
 
 export async function getUSDCRates(): Promise<Record<string, number>> {
   const all = await getAllRates()
-  return all?.USDC || { usd: 1.0, inr: FALLBACK_USDC_INR }
+  return all?.USDC || { usd: 1.0, inr: 83.33 }
 }
 
 export function convertRsToXlm(amountInRs: number, rate: number): number {
@@ -74,7 +74,7 @@ export function convertXlmToRs(amountInXlm: number, rate: number): number {
 export async function getUSDCInrRate(): Promise<number> {
   const rates = await getUSDCRates()
   const inr = rates?.inr
-  return typeof inr === "number" && Number.isFinite(inr) && inr > 0 ? inr : FALLBACK_USDC_INR
+  return typeof inr === "number" && Number.isFinite(inr) && inr > 0 ? inr : 83.33
 }
 
 export const getUsdcInrRate = getUSDCInrRate;

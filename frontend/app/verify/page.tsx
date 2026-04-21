@@ -21,6 +21,7 @@ interface PendingProduct {
   description?: string
   category: string
   priceInr: number
+  priceUsdc: number
   proofMediaUrls: string[]
   voteReal: number
   voteFake: number

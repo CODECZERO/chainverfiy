@@ -190,7 +190,7 @@ export const verifyBountyPayment = (data: { bountyId: string; transactionHash: s
 
 export const verifyDonation = verifyBountyPayment;
 
-export const submitBountyProof = (data: { bountyId: string; solverId: string; proofCid: string }) =>
+export const submitBountyProof = (data: { bountyId: string; solverId?: string; stellarWallet?: string; proofCid: string }) =>
   apiFetch('/bounties/submit-proof', { method: 'POST', body: JSON.stringify(data) });
 
 export const getBountiesByProduct = (productId: string) =>

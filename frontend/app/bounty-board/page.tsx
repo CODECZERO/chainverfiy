@@ -56,6 +56,7 @@ export default function BountyBoardPage() {
   const [q, setQ] = useState("")
   const [realBounties, setRealBounties] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'verification' | 'governance'>('verification')
 
   useEffect(() => {
     getAllBounties().then(res => {
@@ -76,11 +77,20 @@ export default function BountyBoardPage() {
 
   const filteredBounties = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    if (!needle) return realBounties
-    return realBounties.filter(b => 
+    let filtered = realBounties
+
+    // Tab filtering
+    if (activeTab === 'governance') {
+      filtered = filtered.filter(b => String(b.description).startsWith("DISPUTE AUDIT:"))
+    } else {
+      filtered = filtered.filter(b => !String(b.description).startsWith("DISPUTE AUDIT:"))
+    }
+
+    if (!needle) return filtered
+    return filtered.filter(b => 
       `${b.product?.title} ${b.description} ${b.product?.category}`.toLowerCase().includes(needle)
     )
-  }, [q, realBounties])
+  }, [q, realBounties, activeTab])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -116,9 +126,26 @@ export default function BountyBoardPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search tasks..." className={`${outfit.className} pl-12 h-14 rounded-xl bg-white/[0.02] border-white/10 focus:ring-amber-500/20 text-sm`} />
           </div>
-          <Badge variant="secondary" className="whitespace-nowrap px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-lg text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5 mr-2" /> {filteredBounties.length} active tasks
-          </Badge>
+          <div className="flex bg-white/[0.03] border border-white/5 p-1 rounded-2xl">
+            <button 
+              onClick={() => setActiveTab('verification')}
+              className={cn(
+                "px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                activeTab === 'verification' ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" : "text-slate-500 hover:text-slate-300"
+              )}
+            >
+              Verification
+            </button>
+            <button 
+              onClick={() => setActiveTab('governance')}
+              className={cn(
+                "px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                activeTab === 'governance' ? "bg-rose-500 text-black shadow-lg shadow-rose-500/20" : "text-slate-500 hover:text-slate-300"
+              )}
+            >
+              Governance
+            </button>
+          </div>
         </div>
 
         <div className="grid gap-4 mt-8">

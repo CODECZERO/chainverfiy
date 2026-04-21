@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge"
 export function MarketplaceSidebar({ onFilterChange }: { onFilterChange: (filters: any) => void }) {
   const [status, setStatus] = React.useState("ALL")
   const [category, setCategory] = React.useState("ALL")
-  const [priceRange, setPriceRange] = React.useState([0, 100000])
+  const [priceRange, setPriceRange] = React.useState([0, 5000])
 
   const handleFilterChange = (updates: any) => {
     const newFilters = { status, category, priceRange, ...updates }
@@ -107,13 +107,13 @@ export function MarketplaceSidebar({ onFilterChange }: { onFilterChange: (filter
         {/* Price Range */}
         <SidebarGroup>
           <SidebarGroupLabel className="px-0 text-[10px] font-display font-black text-slate-400 uppercase tracking-widest mb-6">
-            Valuation Range (INR)
+            Valuation Range (USDC)
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-2">
              <Slider 
-               defaultValue={[0, 100000]} 
-               max={100000} 
-               step={1000}
+               defaultValue={[0, 5000]} 
+               max={5000} 
+               step={50}
                className="mb-6"
                onValueChange={(val) => { setPriceRange(val); handleFilterChange({ priceRange: val }); }}
              />

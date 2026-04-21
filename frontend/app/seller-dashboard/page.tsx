@@ -113,11 +113,10 @@ export default function SellerDashboard() {
     totalSales: 0,
     active: 0,
     pending: 0,
-    totalEarningsInr: 0,
-    pendingEarningsInr: 0,
-    withdrawableInr: 0,
+    totalEarningsUsdc: 0,
+    pendingEarningsUsdc: 0,
+    withdrawableUsdc: 0,
     usdcBalance: 0,
-    usdcInr: 0,
     analytics: {
       revenueByMonth: [],
       currencyDistribution: []
@@ -215,11 +214,10 @@ export default function SellerDashboard() {
       totalSales: totalSalesCount,
       active: verified,
       pending,
-      totalEarningsInr: Math.round(totalUsdc * usdcInr),
-      pendingEarningsInr: Math.round(pendingUsdc * usdcInr),
-      withdrawableInr: Math.round(completedUsdc * usdcInr),
+      totalEarningsUsdc: totalUsdc,
+      pendingEarningsUsdc: pendingUsdc,
+      withdrawableUsdc: completedUsdc,
       usdcBalance: totalUsdc,
-      usdcInr: Math.round(totalUsdc * usdcInr),
       analytics: {
         revenueByMonth: analytics.revenueByMonth || [],
         currencyDistribution: analytics.currencyDistribution || []
@@ -416,7 +414,7 @@ export default function SellerDashboard() {
                       { label: "Live Products", value: stats.active, color: "text-emerald-400", bg: "from-emerald-500/10", icon: ShieldCheck },
                       { label: "Pending Review", value: stats.pending, color: "text-amber-400", bg: "from-amber-500/10", icon: Clock },
                       { label: "Completed Sales", value: stats.totalSales, color: "text-blue-400", bg: "from-blue-500/10", icon: Zap },
-                      { label: "Total Revenue", value: `\u20B9${Math.round(stats.usdcInr)}`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
+                      { label: "Total Revenue", value: `${stats.totalEarningsUsdc.toFixed(2)} USDC`, color: "text-white", bg: "from-blue-600/10", icon: Coins },
                     ].map((s, i) => (
                       <div key={i} className="glass-premium bg-[#0A0D14]/80 border border-white/[0.08] rounded-[2.5rem] p-8 relative overflow-hidden group shadow-3xl">
                         <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} to-transparent opacity-0 group-hover:opacity-40 transition-opacity`} />
@@ -519,7 +517,7 @@ export default function SellerDashboard() {
                               <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
                                  <div>
                                     <div className="text-[10px] text-slate-700 uppercase mb-1">Price</div>
-                                    <div className="text-2xl font-bold text-white">\u20B9{Number(p.priceInr).toLocaleString()}</div>
+                                    <div className="text-2xl font-bold text-white">{Number(p.priceUsdc).toFixed(2)} USDC</div>
                                  </div>
                                  <div className="flex gap-3">
                                    <button onClick={() => setSelectedQrProduct(p)} className="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-blue-600/20 text-slate-500 hover:text-white transition-all"><QrCode className="w-5 h-5" /></button>
@@ -569,7 +567,7 @@ export default function SellerDashboard() {
                         </div>
                         <div className="text-right shrink-0 border-t md:border-t-0 md:border-l border-white/5 pt-8 md:pt-0 md:pl-10 w-full md:w-auto">
                            <div className="text-[10px] text-slate-700 uppercase mb-1">Total</div>
-                           <div className="text-3xl font-bold text-white">\u20B9{Number(o.totalPriceInr).toLocaleString()}</div>
+                           <div className="text-3xl font-bold text-white">{Number(o.priceUsdc).toFixed(2)} USDC</div>
                         </div>
                       </div>
                     )
@@ -617,12 +615,12 @@ export default function SellerDashboard() {
                         </div>
                         <div className="bg-white/5 rounded-[2.5rem] p-10 border border-white/5 space-y-8">
                            <div>
-                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>In Escrow (Pending)</span> <span className="text-amber-500 font-mono italic">\u20B9{Number(stats.pendingEarningsInr).toLocaleString()}</span></div>
-                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsInr > 0 ? `${Math.round((stats.pendingEarningsInr / stats.totalEarningsInr) * 100)}%` : '0%' }} className="h-full bg-amber-500" /></div>
+                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>In Escrow (Pending)</span> <span className="text-amber-500 font-mono italic">{Number(stats.pendingEarningsUsdc).toFixed(2)} USDC</span></div>
+                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsUsdc > 0 ? `${Math.round((stats.pendingEarningsUsdc / stats.totalEarningsUsdc) * 100)}%` : '0%' }} className="h-full bg-amber-500" /></div>
                            </div>
                            <div>
-                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>Settled (Withdrawable)</span> <span className="text-blue-500 font-mono italic">\u20B9{Number(stats.withdrawableInr).toLocaleString()}</span></div>
-                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsInr > 0 ? `${Math.round((stats.withdrawableInr / stats.totalEarningsInr) * 100)}%` : '0%' }} className="h-full bg-blue-500" /></div>
+                              <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase mb-3"><span>Settled (Withdrawable)</span> <span className="text-blue-500 font-mono italic">{Number(stats.withdrawableUsdc).toFixed(2)} USDC</span></div>
+                              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: stats.totalEarningsUsdc > 0 ? `${Math.round((stats.withdrawableUsdc / stats.totalEarningsUsdc) * 100)}%` : '0%' }} className="h-full bg-blue-500" /></div>
                            </div>
                         </div>
                      </div>

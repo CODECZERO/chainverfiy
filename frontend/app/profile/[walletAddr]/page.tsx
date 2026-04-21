@@ -234,7 +234,7 @@ export default function PublicProfilePage() {
                       <div className="p-6">
                         <h4 className="text-lg font-bold text-white truncate group-hover:text-indigo-400 transition-colors">{p.title}</h4>
                         <div className="mt-4 flex items-center justify-between">
-                          <span className="text-xl font-bold text-white">₹{Number(p.priceInr).toLocaleString()}</span>
+                          <span className="text-xl font-bold text-white">{Number(p.priceUsdc).toFixed(2)} USDC</span>
                           <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
