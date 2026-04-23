@@ -517,7 +517,7 @@ export default function SellerDashboard() {
                               <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
                                  <div>
                                     <div className="text-[10px] text-slate-700 uppercase mb-1">Price</div>
-                                    <div className="text-2xl font-bold text-white">{Number(p.priceUsdc).toFixed(2)} USDC</div>
+                                    <div className="text-2xl font-bold text-white">{Number(p.priceUsdc || 0).toFixed(2)} USDC</div>
                                  </div>
                                  <div className="flex gap-3">
                                    <button onClick={() => setSelectedQrProduct(p)} className="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-blue-600/20 text-slate-500 hover:text-white transition-all"><QrCode className="w-5 h-5" /></button>
@@ -567,7 +567,7 @@ export default function SellerDashboard() {
                         </div>
                         <div className="text-right shrink-0 border-t md:border-t-0 md:border-l border-white/5 pt-8 md:pt-0 md:pl-10 w-full md:w-auto">
                            <div className="text-[10px] text-slate-700 uppercase mb-1">Total</div>
-                           <div className="text-3xl font-bold text-white">{Number(o.priceUsdc).toFixed(2)} USDC</div>
+                           <div className="text-3xl font-bold text-white">{Number(o.priceUsdc || 0).toFixed(2)} USDC</div>
                         </div>
                       </div>
                     )

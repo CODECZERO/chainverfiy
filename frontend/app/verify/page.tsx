@@ -229,7 +229,8 @@ export default function VerifyPage() {
                 remaining.map((p, idx) => {
                   const total = p.voteReal + p.voteFake + p.voteNeedsProof
                   const realPct = total > 0 ? Math.round((p.voteReal / total) * 100) : 0
-                  const required = p.priceInr >= 20000 ? 2 : p.priceInr >= 5000 ? 1 : 0
+                  const priceInr = p.priceInr || 0
+                  const required = priceInr >= 20000 ? 2 : priceInr >= 5000 ? 1 : 0
                   const disabled = tokenBalance < required
 
                   return (
@@ -259,7 +260,7 @@ export default function VerifyPage() {
                             </div>
                             <div className="bg-white/[0.02] border border-white/[0.06] p-10 rounded-[2.5rem] min-w-[240px] text-right flex flex-col justify-center transition-all group-hover:bg-indigo-600/[0.02]">
                               <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-3">Product Value</div>
-                              <div className={`${outfit.className} text-5xl font-bold text-white tracking-tight tabular-nums`}>{p.priceUsdc.toFixed(2)} USDC</div>
+                              <div className={`${outfit.className} text-5xl font-bold text-white tracking-tight tabular-nums`}>{(p.priceUsdc || 0).toFixed(2)} USDC</div>
                             </div>
                           </div>
 

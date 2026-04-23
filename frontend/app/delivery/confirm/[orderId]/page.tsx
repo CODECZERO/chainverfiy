@@ -367,7 +367,7 @@ export default function DeliveryConfirmationPage() {
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="bg-[#0C0F17] border border-white/[0.06] rounded-xl px-5 py-3 shadow-inner inline-flex items-center gap-2">
                      <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Escrow</span>
-                     <span className="font-mono text-emerald-400 font-bold text-lg">{Number(order.priceUsdc).toFixed(2)} USDC</span>
+                     <span className="font-mono text-emerald-400 font-bold text-lg">{Number(order.priceUsdc || 0).toFixed(2)} USDC</span>
                   </div>
                   <div className="bg-[#0C0F17] border border-white/[0.06] rounded-xl px-5 py-3 shadow-inner inline-flex items-center gap-2">
                      <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Qty</span>
@@ -518,7 +518,7 @@ export default function DeliveryConfirmationPage() {
                   </div>
                   <h3 className="font-extrabold text-4xl md:text-5xl text-white mb-6 tracking-tight">Contract Fulfilled</h3>
                   <p className="text-slate-300 text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-                    The item was accepted and the inspection phase cleared. The smart contract has successfully dispersed {Number(order.priceUsdc).toFixed(2)} USDC to the supplier.
+                    The item was accepted and the inspection phase cleared. The smart contract has successfully dispersed {Number(order.priceUsdc || 0).toFixed(2)} USDC to the supplier.
                   </p>
                   
                   {order.releaseTxId && (
@@ -584,7 +584,7 @@ export default function DeliveryConfirmationPage() {
                         <ShieldCheck className="w-7 h-7 text-emerald-400" />
                       </div>
                       <p className="text-emerald-400/90 font-medium leading-relaxed text-center sm:text-left">
-                        Smart contract holdings <strong className="text-emerald-400 font-extrabold text-xl mx-1 font-mono">({Number(order.priceUsdc).toFixed(2)} USDC)</strong> are securely locked on the Stellar ledger pending decentralized DAO validation.
+                        Smart contract holdings <strong className="text-emerald-400 font-extrabold text-xl mx-1 font-mono">({Number(order.priceUsdc || 0).toFixed(2)} USDC)</strong> are securely locked on the Stellar ledger pending decentralized DAO validation.
                       </p>
                     </div>
                   </div>

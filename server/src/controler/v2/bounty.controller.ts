@@ -216,8 +216,10 @@ export const rejectBountyProof = AsyncHandler(async (req: Request, res: Response
 // ── Get Bounties Created by Issuer ──
 export const getIssuerBounties = AsyncHandler(async (req: Request, res: Response) => {
   const { issuerId } = req.params;
-  if (!issuerId) throw new ApiError(400, 'issuerId is required');
+  const wallet = req.query.wallet as string;
+  
+  if (!issuerId && !wallet) throw new ApiError(400, 'issuerId or wallet is required');
 
-  const bounties = await getIssuerBountiesQuery(issuerId);
+  const bounties = await getIssuerBountiesQuery(issuerId !== 'null' ? issuerId : undefined, wallet);
   return res.json(new ApiResponse(200, bounties, 'Issuer bounties fetched'));
 });

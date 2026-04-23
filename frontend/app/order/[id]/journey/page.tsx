@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic'
 import { JourneyTimelineRow } from '@/components/journey-timeline-row'
 import { detectDeviceType, detectOS, detectBrowser } from '@/lib/qr-utils'
 import { getOrder, registerQRScan, updateQRLocation } from "@/lib/api-service"
+import { useWallet } from "@/lib/wallet-context"
 
 
 const JourneyMap = dynamic(() => import('@/components/journey-map'), {
@@ -51,6 +52,7 @@ function OrderJourneyContent() {
   const [sharingLocation, setSharingLocation] = useState(false)
   const [locationShared, setLocationShared] = useState(false)
   const { user } = useSelector((s: RootState) => s.userAuth)
+  const { publicKey } = useWallet()
   const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"
 
   const scanFired = useRef(false)
@@ -114,7 +116,7 @@ function OrderJourneyContent() {
   }, [id, api])
 
   // Verification Logic
-  const connectedWallet = user?.stellarWallet
+  const connectedWallet = user?.stellarWallet || publicKey
   const buyerWallet = order?.buyer?.stellarWallet
   const supplierWallet = order?.product?.supplier?.stellarWallet
   

@@ -111,9 +111,14 @@ export const rejectBountyProofQuery = async (id: string) => {
   });
 };
 
-export const getIssuerBountiesQuery = async (issuerId: string) => {
+export const getIssuerBountiesQuery = async (issuerId?: string, issuerWallet?: string) => {
   return await prisma.bounty.findMany({
-    where: { issuerId },
+    where: {
+      OR: [
+        { issuerId: issuerId || undefined },
+        { issuerWallet: issuerWallet || undefined }
+      ].filter(cond => cond.issuerId || cond.issuerWallet)
+    },
     include: {
       product: { select: { title: true, category: true, proofMediaUrls: true } },
       solver: { select: { id: true, email: true, stellarWallet: true } },

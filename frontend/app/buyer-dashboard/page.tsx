@@ -618,9 +618,9 @@ function IssuerBountyDashboard({ userId, walletKey }: { userId?: string; walletK
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
   const fetchBounties = async () => {
-    if (!userId) { setLoading(false); return; }
+    if (!userId && !walletKey) { setLoading(false); return; }
     try {
-      const data = await getIssuerBounties(userId)
+      const data = await getIssuerBounties(userId, walletKey)
       setBounties(Array.isArray(data) ? data : [])
     } catch (e) {
       console.error('Failed to fetch issuer bounties', e)
@@ -629,7 +629,7 @@ function IssuerBountyDashboard({ userId, walletKey }: { userId?: string; walletK
     }
   }
 
-  useEffect(() => { fetchBounties() }, [userId])
+  useEffect(() => { fetchBounties() }, [userId, walletKey])
 
   const handleApprove = async (bountyId: string) => {
     setActionLoading(bountyId)
@@ -671,11 +671,11 @@ function IssuerBountyDashboard({ userId, walletKey }: { userId?: string; walletK
     </div>
   )
 
-  if (!userId) return (
+  if (!userId && !walletKey) return (
     <div className="glass-premium bg-white/[0.01] border-2 border-dashed border-white/[0.06] rounded-[2.5rem] md:rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden shadow-inner">
       <Coins className="w-12 h-12 text-blue-500 mx-auto mb-6 opacity-30" />
-      <h3 className={`${outfit.className} text-2xl font-bold text-white tracking-tight mb-4`}>Login Required</h3>
-      <p className="text-slate-500 max-w-sm mx-auto text-sm">Sign in with your account to manage bounties you have created and review submitted proofs.</p>
+      <h3 className={`${outfit.className} text-2xl font-bold text-white tracking-tight mb-4`}>Authentication Required</h3>
+      <p className="text-slate-500 max-w-sm mx-auto text-sm">Please connect your wallet or sign in with your account to manage bounties you have created and review submitted proofs.</p>
     </div>
   )
 

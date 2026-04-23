@@ -201,8 +201,10 @@ export const getSupplierBounties = (supplierId: string) =>
 
 export const getAllBounties = () => apiFetch('/bounties');
 
-export const getIssuerBounties = (issuerId: string) =>
-  apiFetch(`/bounties/issuer/${issuerId}`);
+export const getIssuerBounties = (issuerId?: string, wallet?: string) => {
+  const q = wallet ? `?wallet=${wallet}` : '';
+  return apiFetch(`/bounties/issuer/${issuerId || 'null'}${q}`);
+};
 
 export const approveBountyProof = (bountyId: string, data: { issuerId?: string; stellarWallet?: string }) =>
   apiFetch(`/bounties/${bountyId}/approve-proof`, { method: 'POST', body: JSON.stringify(data) });
