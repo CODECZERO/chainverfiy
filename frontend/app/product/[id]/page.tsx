@@ -438,12 +438,31 @@ export default function ProductPage() {
                           <div className="text-[10px] font-bold text-slate-600 uppercase mb-2 tracking-widest">Reward Pool</div>
                           <div className={`${outfit.className} text-3xl font-bold text-amber-500 tracking-tighter`}>{b.amount} USDC</div>
                         </div>
-                        <Button 
-                          onClick={() => { setSelectedBounty(b); setShowProofModal(true); }}
-                          className="h-14 px-8 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all active:scale-95 shadow-xl shadow-amber-900/10 flex-1 md:flex-none"
-                        >
-                          Fulfill Proof
-                        </Button>
+                        {(() => {
+                          const isDispute = String(b.description).startsWith("DISPUTE AUDIT: Order ");
+                          const orderIdMatch = String(b.description).match(/Order #?([a-f0-9\-]+)/);
+                          
+                          if (isDispute && orderIdMatch) {
+                            return (
+                              <Link href={`/audit/${orderIdMatch[1]}`} className="flex-1 md:flex-none">
+                                <Button 
+                                  className="w-full h-14 px-8 rounded-2xl bg-rose-500 hover:bg-rose-400 text-white font-bold transition-all active:scale-95 shadow-xl shadow-rose-900/10"
+                                >
+                                  Audit Case
+                                </Button>
+                              </Link>
+                            )
+                          }
+                          
+                          return (
+                            <Button 
+                              onClick={() => { setSelectedBounty(b); setShowProofModal(true); }}
+                              className="h-14 px-8 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all active:scale-95 shadow-xl shadow-amber-900/10 flex-1 md:flex-none"
+                            >
+                              Fulfill Proof
+                            </Button>
+                          )
+                        })()}
                       </div>
                     </motion.div>
                   ))}
