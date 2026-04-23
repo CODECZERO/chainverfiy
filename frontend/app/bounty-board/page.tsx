@@ -227,7 +227,7 @@ export default function BountyBoardPage() {
                         </div>
                         {(() => {
                           const orderIdMatch = String(b.description).match(/Order #?([a-f0-9\-]+)/);
-                          const href = isDispute && orderIdMatch ? `/dispute/${orderIdMatch[1]}` : `/product/${b.productId}`;
+                          const href = isDispute && orderIdMatch ? `/audit/${orderIdMatch[1]}` : `/product/${b.productId}`;
                           
                           return (
                             <Link href={href}>
