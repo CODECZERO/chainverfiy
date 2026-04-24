@@ -248,7 +248,7 @@ export const disputeOrder = async (req: any, res: Response) => {
       await prisma.bounty.create({
         data: {
           productId: order.productId,
-          amount: 50.0, // Fixed 50 TRT reward for dispute audits
+          amount: 5.0, // Fixed 5 USDC reward for dispute audits
           description: `DISPUTE AUDIT: Order #${order.id.slice(0, 8)} needs verification. Buyer claims: "${reason || 'No description'}". Verify product authenticity via provided IPFS proof.`,
           status: 'ACTIVE',
           issuerId: order.buyerId,

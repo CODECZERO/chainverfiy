@@ -640,7 +640,7 @@ export default function SellerDashboard() {
                            </div>
                            <div className="shrink-0 text-center border-t md:border-t-0 md:border-l border-white/5 pt-8 md:pt-0 md:pl-12 w-full md:w-auto">
                               <div className="text-[10px] text-slate-600 font-black uppercase mb-2">Reward Pool</div>
-                              <div className="text-4xl font-black text-amber-500 italic mb-8">\u20B9{b.amount}</div>
+                              <div className="text-4xl font-black text-amber-500 italic mb-8">{b.amount} <span className="text-sm">USDC</span></div>
                               <Link href={`/product/${b.productId}`}><Button className="bg-blue-600 hover:bg-blue-500 text-white w-full rounded-2xl h-14 font-black uppercase text-[10px] italic">Submit Proof</Button></Link>
                            </div>
                         </div>

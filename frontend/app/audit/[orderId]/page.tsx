@@ -103,9 +103,9 @@ export default function DisputeAuditPage() {
     </div>
   )
 
-  const isResolved = data.votes.total >= 3
-  const isRefunded = isResolved && data.votes.refund > data.votes.release
-  const isReleased = isResolved && data.votes.release >= data.votes.refund
+  const isResolved = (data?.votes?.total || 0) >= 3
+  const isRefunded = isResolved && (data?.votes?.refund || 0) > (data?.votes?.release || 0)
+  const isReleased = isResolved && (data?.votes?.release || 0) >= (data?.votes?.refund || 0)
 
   return (
     <div className={cn("min-h-screen bg-[#02040A] text-slate-200 selection:bg-amber-500/30 overflow-x-hidden", inter.className)}>
@@ -130,7 +130,7 @@ export default function DisputeAuditPage() {
               <Badge className={cn("border border-white/10 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-md", isResolved ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]")}>
                 {isResolved ? "Case Closed" : "Active Audit"}
               </Badge>
-              <span className={cn("text-[11px] text-slate-500 font-bold tracking-widest", firaCode.className)}>CASE-ID: {data.orderId.split('-')[0]}</span>
+              <span className={cn("text-[11px] text-slate-500 font-bold tracking-widest", firaCode.className)}>CASE-ID: {data?.orderId?.split('-')?.[0]}</span>
             </div>
             <h1 className={`${outfit.className} text-5xl md:text-7xl font-bold text-white tracking-tighter uppercase leading-[0.9]`}>
               Forensic <span className={cn("text-transparent bg-clip-text bg-gradient-to-r", isResolved ? "from-emerald-400 to-emerald-600" : "from-amber-400 to-orange-500")}>Review</span>
@@ -143,16 +143,16 @@ export default function DisputeAuditPage() {
           <div className="bg-[#050812]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 min-w-[280px] shadow-2xl shrink-0">
             <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center justify-between">
               <span>Auditor Consensus</span>
-              <span className={cn("text-amber-500 font-mono", firaCode.className)}>{data.votes.total}/3 Required</span>
+              <span className={cn("text-amber-500 font-mono", firaCode.className)}>{data?.votes?.total || 0}/3 Required</span>
             </div>
             <div className="flex gap-2 h-4 mb-4">
                {[0, 1, 2].map((i) => (
-                 <div key={i} className={cn("flex-1 rounded-sm border border-white/5", i < data.votes.total ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-white/[0.02]")} />
+                 <div key={i} className={cn("flex-1 rounded-sm border border-white/5", i < (data?.votes?.total || 0) ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-white/[0.02]")} />
                ))}
             </div>
             <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
-               <span className="flex items-center gap-1.5"><Gavel className="w-3.5 h-3.5 text-rose-400" /> {data.votes.refund} Refund</span>
-               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" /> {data.votes.release} Release</span>
+               <span className="flex items-center gap-1.5"><Gavel className="w-3.5 h-3.5 text-rose-400" /> {data?.votes?.refund || 0} Refund</span>
+               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" /> {data?.votes?.release || 0} Release</span>
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@ export default function DisputeAuditPage() {
                     <div>
                         <h3 className="text-xl font-bold text-white tracking-tight">Buyer's Dispute Claim</h3>
                         <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2 mt-1">
-                            <Clock className="w-3 h-3" /> FILED: {new Date(data.disputeCreatedAt).toLocaleString()}
+                            <Clock className="w-3 h-3" /> FILED: {data?.disputeCreatedAt ? new Date(data.disputeCreatedAt).toLocaleString() : 'Unknown'}
                         </div>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ export default function DisputeAuditPage() {
                 <div className="bg-[#050812] border border-white/[0.04] rounded-2xl p-6 relative">
                     <div className="absolute top-4 left-4 text-white/5 font-serif text-6xl leading-none">"</div>
                     <p className="text-slate-300 text-lg leading-relaxed relative z-10 pl-6 pr-4 italic">
-                        {data.buyerDisputeReason}
+                        {data?.buyerDisputeReason || "No reason provided."}
                     </p>
                 </div>
             </div>
@@ -188,15 +188,15 @@ export default function DisputeAuditPage() {
                 <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                     <Search className="w-3.5 h-3.5" /> Attached Evidence Logs
                 </h4>
-                {data.buyerProofCid ? (
-                    <a href={`https://gateway.pinata.cloud/ipfs/${data.buyerProofCid}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-amber-500/30 rounded-xl transition-all group/link">
+                {data?.buyerProofCid ? (
+                    <a href={`https://gateway.pinata.cloud/ipfs/${data?.buyerProofCid}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-amber-500/30 rounded-xl transition-all group/link">
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-lg bg-[#050812] flex items-center justify-center">
                                 <ShieldCheck className="w-4 h-4 text-amber-500" />
                             </div>
                             <div>
                                 <div className="text-sm font-bold text-white mb-0.5">Cryptographic Proof (IPFS)</div>
-                                <div className={cn("text-[9px] text-slate-500 truncate max-w-[200px] sm:max-w-[300px]", firaCode.className)}>{data.buyerProofCid}</div>
+                                <div className={cn("text-[9px] text-slate-500 truncate max-w-[200px] sm:max-w-[300px]", firaCode.className)}>{data?.buyerProofCid}</div>
                             </div>
                         </div>
                         <ExternalLink className="w-4 h-4 text-slate-600 group-hover/link:text-amber-500 transition-colors mr-2" />
@@ -217,7 +217,7 @@ export default function DisputeAuditPage() {
                   </div>
                   
                   <div className="mb-8">
-                      <h3 className={`${outfit.className} text-2xl font-bold text-white leading-tight mb-2`}>{data.product.title}</h3>
+                      <h3 className={`${outfit.className} text-2xl font-bold text-white leading-tight mb-2`}>{data?.product?.title || "Unknown Product"}</h3>
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.03] border border-white/[0.05] rounded-md text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                           Product Under Review
                       </div>
@@ -231,11 +231,11 @@ export default function DisputeAuditPage() {
                         </div>
                         <div>
                           <div className="text-sm font-bold text-white flex items-center gap-2 mb-1">
-                            {data.product.supplier.name}
-                            {data.product.supplier.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+                            {data?.product?.supplier?.name || "Unknown Supplier"}
+                            {data?.product?.supplier?.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
                           </div>
                           <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1.5">
-                              Trust Score: {data.product.supplier.trustScore}%
+                              Trust Score: {data?.product?.supplier?.trustScore || 0}%
                           </div>
                         </div>
                       </div>
