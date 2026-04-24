@@ -14,6 +14,12 @@ import { ShieldAlert, Gavel, ArrowLeft, Loader2, CheckCircle2, User as UserIcon,
 import Link from "next/link"
 import { Inter, Outfit, Fira_Code } from "next/font/google"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
+import { getIPFSUrl } from "@/lib/image-utils"
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog"
 
 const inter = Inter({ subsets: ["latin"] })
 const outfit = Outfit({ subsets: ["latin"] })
@@ -30,6 +36,7 @@ export default function DisputeAuditPage() {
   const [voting, setVoting] = useState(false)
   const [data, setData] = useState<any>(null)
   const [error, setError] = useState("")
+  const [selectedImg, setSelectedImg] = useState<string | null>(null)
 
   const loadData = async () => {
     try {
@@ -192,18 +199,33 @@ export default function DisputeAuditPage() {
                     <Search className="w-3.5 h-3.5" /> Attached Evidence Logs
                 </h4>
                 {data?.buyerProofCid ? (
-                    <a href={`https://gateway.pinata.cloud/ipfs/${data?.buyerProofCid}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-amber-500/30 rounded-xl transition-all group/link">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-lg bg-[#050812] flex items-center justify-center">
-                                <ShieldCheck className="w-4 h-4 text-amber-500" />
+                    <div className="space-y-4">
+                        <a href={getIPFSUrl(data?.buyerProofCid)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-amber-500/30 rounded-xl transition-all group/link">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-lg bg-[#050812] flex items-center justify-center">
+                                    <ShieldCheck className="w-4 h-4 text-amber-500" />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-bold text-white mb-0.5">Cryptographic Proof (IPFS)</div>
+                                    <div className={cn("text-[9px] text-slate-500 truncate max-w-[200px] sm:max-w-[300px]", firaCode.className)}>{data?.buyerProofCid}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-sm font-bold text-white mb-0.5">Cryptographic Proof (IPFS)</div>
-                                <div className={cn("text-[9px] text-slate-500 truncate max-w-[200px] sm:max-w-[300px]", firaCode.className)}>{data?.buyerProofCid}</div>
-                            </div>
+                            <ExternalLink className="w-4 h-4 text-slate-600 group-hover/link:text-amber-500 transition-colors mr-2" />
+                        </a>
+                        
+                        {/* Evidence Preview */}
+                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-[#050812] border border-white/5 group/img">
+                            <Image 
+                                src={getIPFSUrl(data?.buyerProofCid)} 
+                                alt="Buyer Evidence" 
+                                fill 
+                                className="object-contain cursor-zoom-in group-hover:scale-105 transition-transform duration-500"
+                                onClick={() => setSelectedImg(getIPFSUrl(data?.buyerProofCid))}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                            <div className="absolute bottom-3 left-4 text-[9px] font-bold text-white/40 uppercase tracking-widest">Buyer Provided Evidence</div>
                         </div>
-                        <ExternalLink className="w-4 h-4 text-slate-600 group-hover/link:text-amber-500 transition-colors mr-2" />
-                    </a>
+                    </div>
                 ) : (
                     <div className="p-6 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
                         <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">No additional file evidence provided.</p>
@@ -225,6 +247,21 @@ export default function DisputeAuditPage() {
                           Product Under Review
                       </div>
                   </div>
+
+                  {/* Product Media Gallery */}
+                  {data?.product?.proofMediaUrls?.length > 0 && (
+                      <div className="mb-8">
+                          <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-3">Origin Evidence (Supplier)</div>
+                          <div className="grid grid-cols-2 gap-3">
+                              {data.product.proofMediaUrls.slice(0, 4).map((url: string, i: number) => (
+                                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-black/40 border border-white/5 cursor-zoom-in group/orig" onClick={() => setSelectedImg(getIPFSUrl(url))}>
+                                      <Image src={getIPFSUrl(url)} alt={`Origin Proof ${i}`} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                                      <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/10 transition-colors" />
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  )}
                   
                   <div className="pt-6 border-t border-white/[0.05]">
                       <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Supplier Profile</div>
@@ -294,6 +331,15 @@ export default function DisputeAuditPage() {
           </div>
         )}
       </div>
+
+      {/* Image Modal */}
+      <Dialog open={!!selectedImg} onOpenChange={(open) => !open && setSelectedImg(null)}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black/95 backdrop-blur-3xl border-none rounded-3xl shadow-2xl">
+          <div className="relative aspect-video w-full">
+            {selectedImg && <Image src={selectedImg} alt="Evidence Detail" fill className="object-contain p-4" unoptimized />}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

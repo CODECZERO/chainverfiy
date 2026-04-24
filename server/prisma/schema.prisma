@@ -10,7 +10,7 @@ generator seed {
 
 datasource db {
   provider   = "postgresql"
-  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions"), vector]
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
 model User {
@@ -28,39 +28,38 @@ model User {
   solvedBounties  Bounty[]           @relation("SolverBounties")
   buyerProfile    BuyerProfile?
   comments        Comment[]
+  communities     CommunityMember[]
   discussions     Discussion[]
   notifications   Notification[]
   buyerOrders     Order[]            @relation("BuyerOrders")
   supplierProfile Supplier?
   trustTokens     TrustTokenLedger[]
   votes           Vote[]
-  communities     CommunityMember[]
-  disputeVotes    DisputeVote[]
 
   @@map("users")
 }
 
 model Supplier {
-  id              String           @id @default(uuid())
-  userId          String           @unique
+  id              String            @id @default(uuid())
+  userId          String            @unique
   name            String
   description     String?
   location        String?
   category        String?
   stellarWallet   String?
   managedSecret   String?
-  whatsappNumber  String           @unique
-  trustScore      Float            @default(0)
-  totalSales      Int              @default(0)
-  flagCount       Int              @default(0)
-  isVerified      Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  whatsappNumber  String            @unique
+  trustScore      Float             @default(0)
+  totalSales      Int               @default(0)
+  flagCount       Int               @default(0)
+  isVerified      Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  members         CommunityMember[]
   machineScanners MachineScanner[]
   products        Product[]
   badges          SellerBadge[]
-  user            User             @relation(fields: [userId], references: [id])
-  members         CommunityMember[]
+  user            User              @relation(fields: [userId], references: [id])
 
   @@index([trustScore])
   @@index([location])
@@ -78,7 +77,6 @@ model Product {
   quantity       String?
   status         ProductStatus @default(PENDING_VERIFICATION)
   proofMediaUrls String[]
-  embedding      Unsupported("vector")?
   qrCodeUrl      String?
   stellarTxId    String?
   voteReal       Int           @default(0)
@@ -185,7 +183,6 @@ model Order {
   buyer                User          @relation("BuyerOrders", fields: [buyerId], references: [id])
   product              Product       @relation(fields: [productId], references: [id])
   qrCode               QRCode?
-  disputeVotes         DisputeVote[]
 
   @@index([buyerId])
   @@index([productId])
@@ -204,21 +201,6 @@ model TrustTokenLedger {
 
   @@index([userId])
   @@map("trust_token_ledger")
-}
-
-model DisputeVote {
-  id        String   @id @default(uuid())
-  orderId   String
-  userId    String
-  decision  String   // "REFUND_BUYER" | "RELEASE_FUNDS"
-  createdAt DateTime @default(now())
-  order     Order    @relation(fields: [orderId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@unique([orderId, userId])
-  @@index([orderId])
-  @@index([userId])
-  @@map("dispute_votes")
 }
 
 model SellerBadge {
@@ -429,37 +411,45 @@ model Bounty {
 }
 
 model Discussion {
-  id           String    @id @default(uuid())
-  title        String
-  content      String
-  authorId     String?
-  authorWallet String?
-  tags         String[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  comments     Comment[]
-  author       User?     @relation(fields: [authorId], references: [id])
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  authorId  String
+  tags      String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+  author    User      @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
-  @@index([authorWallet])
   @@map("discussions")
 }
 
 model Comment {
   id           String     @id @default(uuid())
   content      String
-  authorId     String?
-  authorWallet String?
+  authorId     String
   discussionId String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  author       User?      @relation(fields: [authorId], references: [id])
+  author       User       @relation(fields: [authorId], references: [id])
   discussion   Discussion @relation(fields: [discussionId], references: [id])
 
   @@index([authorId])
-  @@index([authorWallet])
   @@index([discussionId])
   @@map("comments")
+}
+
+model CommunityMember {
+  id         String   @id @default(uuid())
+  userId     String
+  supplierId String
+  createdAt  DateTime @default(now())
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, supplierId])
+  @@map("community_members")
 }
 
 enum UserRole {
@@ -500,7 +490,6 @@ enum PaymentMethod {
 enum BountyStatus {
   PENDING
   ACTIVE
-  IN_REVIEW
   COMPLETED
   EXPIRED
 }
@@ -555,15 +544,4 @@ enum ScanSource {
   BROWSER
   MACHINE
   API
-}
-model CommunityMember {
-  id         String   @id @default(uuid())
-  userId     String
-  supplierId String
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
-  supplier   Supplier @relation(fields: [supplierId], references: [id])
-
-  @@unique([userId, supplierId])
-  @@map("community_members")
 }
