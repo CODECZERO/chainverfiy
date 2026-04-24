@@ -170,8 +170,11 @@ export default function DisputeAuditPage() {
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-white tracking-tight">Buyer's Dispute Claim</h3>
-                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2 mt-1">
-                            <Clock className="w-3 h-3" /> FILED: {data?.disputeCreatedAt ? new Date(data.disputeCreatedAt).toLocaleString() : 'Unknown'}
+                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-4 mt-2 flex-wrap">
+                            <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> FILED: {data?.disputeCreatedAt ? new Date(data.disputeCreatedAt).toLocaleString() : 'Unknown'}</span>
+                            {data?.buyer && (
+                                <span className="flex items-center gap-1.5"><UserIcon className="w-3 h-3 text-amber-500/70" /> BY: {data.buyer.email?.split('@')[0] || (data.buyer.stellarWallet ? `${data.buyer.stellarWallet.slice(0, 8)}...` : 'Anonymous')}</span>
+                            )}
                         </div>
                     </div>
                 </div>

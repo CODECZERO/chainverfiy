@@ -438,10 +438,11 @@ export const getPublicDispute = async (req: Request, res: Response) => {
     include: {
       product: {
         include: {
-          supplier: {
-            select: { name: true, isVerified: true, trustScore: true }
-          }
+          supplier: true
         }
+      },
+      buyer: {
+        select: { email: true, stellarWallet: true }
       },
       disputeVotes: true
     }
@@ -462,9 +463,10 @@ export const getPublicDispute = async (req: Request, res: Response) => {
   return res.json(new ApiResponse(200, {
     orderId: order.id,
     product: order.product,
+    buyer: order.buyer,
     buyerDisputeReason: order.buyerDisputeReason,
     buyerProofCid: order.buyerProofCid,
-    disputeCreatedAt: order.updatedAt,
+    disputeCreatedAt: order.updatedAt || order.createdAt,
     votes: {
       refund: refundVotes,
       release: releaseVotes,
