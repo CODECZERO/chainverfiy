@@ -564,6 +564,11 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     if (e.code === 'P2002') {
       return res.status(400).json(new ApiResponse(400, null, 'You have already voted on this dispute'));
     }
+    // Catch FK violation (should never happen, but safety net)
+    if (e.code === 'P2003') {
+      console.error(`[AUDIT] FK violation — orderId=${order.id} does not exist in orders table`);
+      return res.status(400).json(new ApiResponse(400, null, 'Dispute case reference is invalid. Please refresh and try again.'));
+    }
     throw e;
   }
   console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} (User: ${finalUserId}, Wallet: ${finalWallet})`);
