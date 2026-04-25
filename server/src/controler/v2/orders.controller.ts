@@ -489,8 +489,8 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     if (user) finalUserId = user.id;
   }
 
-  if (!finalUserId) {
-    return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or have a registered wallet to vote'));
+  if (!finalUserId && !stellarWallet) {
+    return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or have a wallet to vote'));
   }
 
   const order = await prisma.order.findFirst({
@@ -506,8 +506,11 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     return res.status(404).json(new ApiResponse(404, null, 'Active dispute not found'));
   }
 
-  // Check if already voted
-  const existingVote = order.disputeVotes.find(v => v.userId === finalUserId);
+  // Check if already voted (by ID or Wallet)
+  const existingVote = order.disputeVotes.find(v => 
+    (finalUserId && v.userId === finalUserId) || 
+    (stellarWallet && v.voterWallet === stellarWallet)
+  );
   if (existingVote) {
     return res.status(400).json(new ApiResponse(400, null, 'You have already voted on this dispute'));
   }
@@ -516,11 +519,12 @@ export const voteOnDispute = async (req: Request, res: Response) => {
   const newVote = await prisma.disputeVote.create({
     data: {
       orderId: order.id,
-      userId: finalUserId,
+      userId: finalUserId || null,
+      voterWallet: stellarWallet || null,
       decision
     }
   });
-  console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} by User ${finalUserId}`);
+  console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} (User: ${finalUserId}, Wallet: ${stellarWallet})`);
 
   // Re-fetch votes to check threshold
   const updatedVotes = await prisma.disputeVote.findMany({ where: { orderId: order.id } });

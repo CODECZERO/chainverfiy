@@ -456,17 +456,20 @@ model CommunityMember {
 }
 
 model DisputeVote {
-  id        String   @id @default(uuid())
-  orderId   String
-  userId    String
-  decision  String   // "REFUND_BUYER" | "RELEASE_FUNDS"
-  createdAt DateTime @default(now())
-  order     Order    @relation(fields: [orderId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
+  orderId     String
+  userId      String?
+  voterWallet String?
+  decision    String   // "REFUND_BUYER" | "RELEASE_FUNDS"
+  createdAt   DateTime @default(now())
+  order       Order    @relation(fields: [orderId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
 
   @@unique([orderId, userId])
+  @@unique([orderId, voterWallet])
   @@index([orderId])
   @@index([userId])
+  @@index([voterWallet])
   @@map("dispute_votes")
 }
 
