@@ -35,6 +35,7 @@ model User {
   supplierProfile Supplier?
   trustTokens     TrustTokenLedger[]
   votes           Vote[]
+  disputeVotes    DisputeVote[]
 
   @@map("users")
 }
@@ -183,6 +184,7 @@ model Order {
   buyer                User          @relation("BuyerOrders", fields: [buyerId], references: [id])
   product              Product       @relation(fields: [productId], references: [id])
   qrCode               QRCode?
+  disputeVotes         DisputeVote[]
 
   @@index([buyerId])
   @@index([productId])
@@ -414,8 +416,9 @@ model Discussion {
   id        String    @id @default(uuid())
   title     String
   content   String
-  authorId  String
-  tags      String[]
+  authorId     String
+  authorWallet String?
+  tags         String[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   comments  Comment[]
@@ -450,6 +453,21 @@ model CommunityMember {
 
   @@unique([userId, supplierId])
   @@map("community_members")
+}
+
+model DisputeVote {
+  id        String   @id @default(uuid())
+  orderId   String
+  userId    String
+  decision  String   // "REFUND_BUYER" | "RELEASE_FUNDS"
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([orderId, userId])
+  @@index([orderId])
+  @@index([userId])
+  @@map("dispute_votes")
 }
 
 enum UserRole {
@@ -490,6 +508,7 @@ enum PaymentMethod {
 enum BountyStatus {
   PENDING
   ACTIVE
+  IN_REVIEW
   COMPLETED
   EXPIRED
 }

@@ -11,7 +11,7 @@ export const createDiscussion = async (data: {
     data: {
       title: data.title,
       content: data.content,
-      authorId: data.authorId,
+      authorId: data.authorId as string,
       authorWallet: data.authorWallet,
       tags: data.tags || [],
     },
@@ -97,8 +97,7 @@ export const addComment = async (data: {
   return prisma.comment.create({
     data: {
       discussionId: data.discussionId,
-      authorId: data.authorId,
-      authorWallet: data.authorWallet,
+      authorId: data.authorId as string,
       content: data.content,
     },
     include: {
