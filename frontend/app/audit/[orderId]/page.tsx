@@ -37,12 +37,15 @@ export default function DisputeAuditPage() {
   const [data, setData] = useState<any>(null)
   const [error, setError] = useState("")
   const [selectedImg, setSelectedImg] = useState<string | null>(null)
+  const [hasVoted, setHasVoted] = useState(false)
 
   const loadData = async () => {
     try {
-      const res = await getPublicDispute(orderId as string)
+      const currentWallet = wallet.publicKey || undefined
+      const res = await getPublicDispute(orderId as string, currentWallet)
       if (res) {
         setData(res)
+        if (res.hasVoted) setHasVoted(true)
       }
     } catch (e: any) {
       setError(e.message || "Failed to load audit case details")
@@ -61,6 +64,11 @@ export default function DisputeAuditPage() {
       return
     }
 
+    if (hasVoted) {
+      toast({ title: "Already Voted", description: "You have already submitted your forensic decision for this case.", variant: "destructive" })
+      return
+    }
+
     setVoting(true)
     try {
       const res = await voteOnDispute(orderId as string, {
@@ -69,10 +77,15 @@ export default function DisputeAuditPage() {
         stellarWallet: wallet.publicKey || undefined
       })
       if (res) {
+        setHasVoted(true) // Immediately lock out further votes
         toast({ title: "Audit Vote Cast", description: "Your forensic decision has been securely recorded on the DAO ledger." })
         loadData() // Refresh counts
       }
     } catch (e: any) {
+      // If the backend says already voted, lock the UI
+      if (e.message?.includes('already voted')) {
+        setHasVoted(true)
+      }
       toast({ title: "Voting Error", description: e.message || "Failed to submit vote", variant: "destructive" })
     } finally {
       setVoting(false)
@@ -296,26 +309,41 @@ export default function DisputeAuditPage() {
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)] pointer-events-none" />
             
             <h3 className={`${outfit.className} text-3xl font-bold text-white mb-3 relative z-10`}>Final Decision Terminal</h3>
-            <p className="text-slate-400 text-sm max-w-xl mx-auto mb-10 relative z-10 leading-relaxed">
-                Determine the outcome of this case. Your cryptographic signature will be added to the DAO ledger to trigger the smart contract execution.
-            </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
-              <Button 
-                disabled={voting}
-                onClick={() => handleVote('REFUND_BUYER')}
-                className="h-16 px-10 rounded-2xl bg-rose-500/5 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 hover:border-rose-500/50 font-bold text-sm uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(244,63,94,0.05)]"
-              >
-                {voting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Authorize Refund (Buyer)"}
-              </Button>
-              <Button 
-                disabled={voting}
-                onClick={() => handleVote('RELEASE_FUNDS')}
-                className="h-16 px-10 rounded-2xl bg-indigo-500/5 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 hover:border-indigo-500/50 font-bold text-sm uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(99,102,241,0.05)]"
-              >
-                {voting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Release Escrow (Supplier)"}
-              </Button>
-            </div>
+            {hasVoted ? (
+              <div className="relative z-10 py-6">
+                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-emerald-500/20">
+                  <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                </div>
+                <p className="text-emerald-400 font-bold text-sm uppercase tracking-widest mb-2">Vote Recorded</p>
+                <p className="text-slate-500 text-xs max-w-md mx-auto leading-relaxed">
+                  Your forensic decision has been cryptographically sealed on the DAO ledger. Awaiting remaining auditor consensus ({data?.votes?.total || 0}/3).
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="text-slate-400 text-sm max-w-xl mx-auto mb-10 relative z-10 leading-relaxed">
+                  Determine the outcome of this case. Your cryptographic signature will be added to the DAO ledger to trigger the smart contract execution.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
+                  <Button 
+                    disabled={voting}
+                    onClick={() => handleVote('REFUND_BUYER')}
+                    className="h-16 px-10 rounded-2xl bg-rose-500/5 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 hover:border-rose-500/50 font-bold text-sm uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(244,63,94,0.05)]"
+                  >
+                    {voting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Authorize Refund (Buyer)"}
+                  </Button>
+                  <Button 
+                    disabled={voting}
+                    onClick={() => handleVote('RELEASE_FUNDS')}
+                    className="h-16 px-10 rounded-2xl bg-indigo-500/5 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 hover:border-indigo-500/50 font-bold text-sm uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(99,102,241,0.05)]"
+                  >
+                    {voting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Release Escrow (Supplier)"}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div className="bg-emerald-500/[0.03] backdrop-blur-3xl border border-emerald-500/20 rounded-[3rem] p-10 md:p-16 text-center shadow-[0_0_50px_rgba(16,185,129,0.05)] relative overflow-hidden">

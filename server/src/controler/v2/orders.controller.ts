@@ -460,6 +460,18 @@ export const getPublicDispute = async (req: Request, res: Response) => {
   const refundVotes = order.disputeVotes.filter(v => v.decision === 'REFUND_BUYER').length;
   const releaseVotes = order.disputeVotes.filter(v => v.decision === 'RELEASE_FUNDS').length;
 
+  // Check if current user has already voted
+  const reqUser = (req as any).user;
+  const queryWallet = req.query.wallet as string | undefined;
+  let hasVoted = false;
+
+  if (reqUser?.id) {
+    hasVoted = order.disputeVotes.some(v => v.userId === reqUser.id);
+  }
+  if (!hasVoted && queryWallet) {
+    hasVoted = order.disputeVotes.some(v => v.voterWallet === queryWallet);
+  }
+
   return res.json(new ApiResponse(200, {
     orderId: order.id,
     product: order.product,
@@ -467,6 +479,7 @@ export const getPublicDispute = async (req: Request, res: Response) => {
     buyerDisputeReason: order.buyerDisputeReason,
     buyerProofCid: order.buyerProofCid,
     disputeCreatedAt: order.updatedAt || order.createdAt,
+    hasVoted,
     votes: {
       refund: refundVotes,
       release: releaseVotes,
@@ -477,59 +490,88 @@ export const getPublicDispute = async (req: Request, res: Response) => {
 
 export const voteOnDispute = async (req: Request, res: Response) => {
   const id = req.params.id as string;
-  const { userId, stellarWallet, decision } = req.body;
+  const { stellarWallet, decision } = req.body;
 
   if (!decision || (decision !== 'REFUND_BUYER' && decision !== 'RELEASE_FUNDS')) {
     return res.status(400).json(new ApiResponse(400, null, 'Invalid decision. Must be REFUND_BUYER or RELEASE_FUNDS'));
   }
 
-  let finalUserId = userId;
-  if (!finalUserId && stellarWallet) {
-    const user = await prisma.user.findUnique({ where: { stellarWallet } });
-    if (user) finalUserId = user.id;
+  // ── 1. Derive identity from VERIFIED sources only ──
+  // Priority: JWT-authenticated user > wallet lookup > body wallet
+  const reqUser = (req as any).user;
+  let finalUserId: string | null = reqUser?.id || null;
+  let finalWallet: string | null = stellarWallet || null;
+
+  // If we have a JWT user but no wallet, look up their wallet
+  if (finalUserId && !finalWallet) {
+    const dbUser = await prisma.user.findUnique({ where: { id: finalUserId }, select: { stellarWallet: true } });
+    if (dbUser?.stellarWallet) finalWallet = dbUser.stellarWallet;
   }
 
-  if (!finalUserId && !stellarWallet) {
-    return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or have a wallet to vote'));
+  // If we have a wallet but no JWT user, resolve the userId from DB
+  if (!finalUserId && finalWallet) {
+    const dbUser = await prisma.user.findUnique({ where: { stellarWallet: finalWallet }, select: { id: true } });
+    if (dbUser) finalUserId = dbUser.id;
   }
 
+  // Must have at least one verified identity
+  if (!finalUserId && !finalWallet) {
+    return res.status(401).json(new ApiResponse(401, null, 'Must be logged in or connect a wallet to vote'));
+  }
+
+  // ── 2. Find the disputed order ──
   const order = await prisma.order.findFirst({
     where: { 
       id: id.length < 36 ? { startsWith: id } : id 
     },
-    include: { disputeVotes: true }
+    select: { id: true, status: true, productId: true }
   });
 
-  console.log(`[AUDIT] Vote attempt for order prefix: ${id}. Found Order ID: ${order?.id || 'NOT_FOUND'}`);
+  console.log(`[AUDIT] Vote attempt: prefix=${id}, resolvedOrder=${order?.id || 'NOT_FOUND'}, user=${finalUserId}, wallet=${finalWallet}`);
 
   if (!order || order.status !== 'DISPUTED') {
     return res.status(404).json(new ApiResponse(404, null, 'Active dispute not found'));
   }
 
-  // Check if already voted (by ID or Wallet)
-  const existingVote = order.disputeVotes.find(v => 
-    (finalUserId && v.userId === finalUserId) || 
-    (stellarWallet && v.voterWallet === stellarWallet)
-  );
+  // ── 3. Database-level duplicate check ──
+  // Build OR conditions for all identity dimensions
+  const duplicateConditions: any[] = [];
+  if (finalUserId) duplicateConditions.push({ orderId: order.id, userId: finalUserId });
+  if (finalWallet) duplicateConditions.push({ orderId: order.id, voterWallet: finalWallet });
+
+  const existingVote = await prisma.disputeVote.findFirst({
+    where: { OR: duplicateConditions }
+  });
+
   if (existingVote) {
+    console.log(`[AUDIT] Duplicate vote blocked: existing=${existingVote.id}, user=${finalUserId}, wallet=${finalWallet}`);
     return res.status(400).json(new ApiResponse(400, null, 'You have already voted on this dispute'));
   }
 
-  // Record vote
-  const newVote = await prisma.disputeVote.create({
-    data: {
-      orderId: order.id,
-      userId: finalUserId || null,
-      voterWallet: stellarWallet || null,
-      decision
+  // ── 4. Record vote with DB-level unique constraint as safety net ──
+  let newVote;
+  try {
+    newVote = await prisma.disputeVote.create({
+      data: {
+        orderId: order.id,
+        userId: finalUserId,
+        voterWallet: finalWallet,
+        decision
+      }
+    });
+  } catch (e: any) {
+    // Catch unique constraint violation (race condition between check and insert)
+    if (e.code === 'P2002') {
+      return res.status(400).json(new ApiResponse(400, null, 'You have already voted on this dispute'));
     }
-  });
-  console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} (User: ${finalUserId}, Wallet: ${stellarWallet})`);
+    throw e;
+  }
+  console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} (User: ${finalUserId}, Wallet: ${finalWallet})`);
 
-  // Re-fetch votes to check threshold
+  // ── 5. Check consensus threshold ──
   const updatedVotes = await prisma.disputeVote.findMany({ where: { orderId: order.id } });
-  const refundVotes = updatedVotes.filter(v => v.decision === 'REFUND_BUYER').length;
-  const releaseVotes = updatedVotes.filter(v => v.decision === 'RELEASE_FUNDS').length;
+  const refundVotes = updatedVotes.filter((v: any) => v.decision === 'REFUND_BUYER').length;
+  const releaseVotes = updatedVotes.filter((v: any) => v.decision === 'RELEASE_FUNDS').length;
   const totalVotes = refundVotes + releaseVotes;
 
   let resolutionMsg = 'Vote recorded successfully';
@@ -549,7 +591,6 @@ export const voteOnDispute = async (req: Request, res: Response) => {
         resolutionMsg = 'Vote recorded. Consensus reached for refund but execution failed.';
       }
     } else {
-      // Release to supplier
       try {
         await escrowService.releaseEscrow(order.id);
         await prisma.order.update({ where: { id: order.id }, data: { status: 'COMPLETED' } });
@@ -560,7 +601,6 @@ export const voteOnDispute = async (req: Request, res: Response) => {
       }
     }
 
-    // Resolve the bounty as well
     const bounty = await prisma.bounty.findFirst({
       where: { productId: order.productId, status: 'ACTIVE', description: { startsWith: 'DISPUTE AUDIT:' } }
     });
