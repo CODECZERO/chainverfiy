@@ -500,6 +500,8 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     include: { disputeVotes: true }
   });
 
+  console.log(`[AUDIT] Vote attempt for order prefix: ${id}. Found Order ID: ${order?.id || 'NOT_FOUND'}`);
+
   if (!order || order.status !== 'DISPUTED') {
     return res.status(404).json(new ApiResponse(404, null, 'Active dispute not found'));
   }
@@ -511,16 +513,17 @@ export const voteOnDispute = async (req: Request, res: Response) => {
   }
 
   // Record vote
-  await prisma.disputeVote.create({
+  const newVote = await prisma.disputeVote.create({
     data: {
-      orderId: id,
+      orderId: order.id,
       userId: finalUserId,
       decision
     }
   });
+  console.log(`[AUDIT] Vote recorded: ${newVote.id} for Order ${order.id} by User ${finalUserId}`);
 
   // Re-fetch votes to check threshold
-  const updatedVotes = await prisma.disputeVote.findMany({ where: { orderId: id } });
+  const updatedVotes = await prisma.disputeVote.findMany({ where: { orderId: order.id } });
   const refundVotes = updatedVotes.filter(v => v.decision === 'REFUND_BUYER').length;
   const releaseVotes = updatedVotes.filter(v => v.decision === 'RELEASE_FUNDS').length;
   const totalVotes = refundVotes + releaseVotes;
@@ -529,12 +532,13 @@ export const voteOnDispute = async (req: Request, res: Response) => {
   const THRESHOLD = 3;
 
   if (totalVotes >= THRESHOLD) {
+    console.log(`[AUDIT] Threshold reached (${totalVotes}/${THRESHOLD}) for Order ${order.id}. Resolving...`);
     const escrowService = new EscrowService();
     
     if (refundVotes > releaseVotes) {
       try {
-        await escrowService.refundEscrow(id);
-        await prisma.order.update({ where: { id }, data: { status: 'REFUNDED' } });
+        await escrowService.refundEscrow(order.id);
+        await prisma.order.update({ where: { id: order.id }, data: { status: 'REFUNDED' } });
         resolutionMsg = 'Consensus reached. Escrow has been refunded to the buyer.';
       } catch (e: any) {
         logger.error(`DAO Refund failed: ${e.message}`);
@@ -543,9 +547,8 @@ export const voteOnDispute = async (req: Request, res: Response) => {
     } else {
       // Release to supplier
       try {
-        // EscrowService release expects order id? Let's check if releaseEscrow accepts taskId (which is order.id usually)
-        await escrowService.releaseEscrow(id);
-        await prisma.order.update({ where: { id }, data: { status: 'COMPLETED' } });
+        await escrowService.releaseEscrow(order.id);
+        await prisma.order.update({ where: { id: order.id }, data: { status: 'COMPLETED' } });
         resolutionMsg = 'Consensus reached. Escrow has been released to the supplier.';
       } catch (e: any) {
         logger.error(`DAO Release failed: ${e.message}`);
