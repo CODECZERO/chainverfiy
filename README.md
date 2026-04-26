@@ -35,6 +35,6 @@ To ensure this next phase isn't just an idealistic vision, I am actively broaden
    - Product Feedback (Rate your product experience)
 2. **Data Export & Analysis:** All responses are exported into an Excel sheet for thorough analysis and record-keeping.
 3. **Feedback Accessibility:** 
-   - [Link to Exported Excel Sheet] *(To be added later)*
+   - **View Feedback Data:** [Exported Excel Sheet](https://docs.google.com/spreadsheets/d/1A0jJRoTPuheph89BppumQRONkDMNaLW_N7X2Wuhny7Q/edit?usp=sharing)
 4. **Continuous Improvement:** I plan to iterate on the product based strictly on the user feedback collected in the Excel sheet. My immediate improvements and pivots (like the Amazon-style QR verification) directly stem from these insights. 
    - **Improvement Tracking:** [Git Commit Link for Feedback-Driven Improvements] *(To be added as I implement changes)*
