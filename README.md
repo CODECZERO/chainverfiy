@@ -15,8 +15,8 @@ Have you ever ordered a parcel from Amazon and noticed that little QR-coded, tam
 *(Here are the images of the Amazon parcel verification that inspired me:)*  
 
 <p align="center">
-  <img src="./assets/amazon-qr-1.jpg" alt="Amazon QR Code Verification 1" width="45%" />
-  <img src="./assets/amazon-qr-2.jpg" alt="Amazon QR Code Verification 2" width="45%" />
+  <img src="./assets/WhatsApp%20Image%202026-04-26%20at%201.06.32%20AM.jpeg" alt="Amazon QR Code Verification 1" width="45%" />
+  <img src="./assets/WhatsApp%20Image%202026-04-26%20at%201.06.33%20AM.jpeg" alt="Amazon QR Code Verification 2" width="45%" />
 </p>
 
 I realized I could build something just like that, but far more accessible, completely decentralized, and undeniably secure using the **Stellar blockchain**.
