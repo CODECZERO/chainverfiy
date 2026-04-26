@@ -13,8 +13,11 @@ But as I listened to early users and tackled real-time issues, my perspective fu
 Have you ever ordered a parcel from Amazon and noticed that little QR-coded, tamper-evident sticker they use to verify the product's authenticity? The moment I saw that sticker on my own package, something clicked. 
 
 *(Here are the images of the Amazon parcel verification that inspired me:)*  
-![Amazon QR Code Verification 1](./assets/amazon-qr-1.jpg)  
-![Amazon QR Code Verification 2](./assets/amazon-qr-2.jpg)
+
+<p align="center">
+  <img src="./assets/amazon-qr-1.jpg" alt="Amazon QR Code Verification 1" width="45%" />
+  <img src="./assets/amazon-qr-2.jpg" alt="Amazon QR Code Verification 2" width="45%" />
+</p>
 
 I realized I could build something just like that, but far more accessible, completely decentralized, and undeniably secure using the **Stellar blockchain**.
 
@@ -22,7 +25,13 @@ My vision has evolved from a niche policy-compliance tool into a global movement
 
 My ultimate goal is deeply personal: I want to scale this idea so that anyone—whether you're a local artisan halfway across the world or a large distributor—can quickly sell and verify products across time and regions without friction. I want to put the power of absolute, unbreakable trust into the hands of everyone.
 
-**Watch the new user flow:** [Video Demonstration](https://drive.google.com/file/d/1tgvSGPPIoRMU5KCBOuEDOaKqzGEzXdhG/view?usp=sharing)
+**Watch the new user flow:** 
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1tgvSGPPIoRMU5KCBOuEDOaKqzGEzXdhG/view?usp=sharing">
+    <img src="https://img.shields.io/badge/Watch-Video_Demonstration-blue?style=for-the-badge&logo=googledrive" alt="Video Demonstration" />
+  </a>
+</p>
 
 ## Scaling Through Targeted Feedback
 
