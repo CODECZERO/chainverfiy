@@ -2,6 +2,8 @@
 
 **Live App:** [https://chainverfiy1.vercel.app](https://chainverfiy1.vercel.app)
 
+> **💡 Driven by the Community:** The recent "Financial Oracle" UI/UX redesign, alongside the secure escrow payment integration, was directly implemented based on extensive user feedback to ensure a premium, trust-first experience.
+
 ChainVerify is constantly evolving. I'm writing this not just to showcase a product, but to share my thought process and the journey behind this project with anyone reading.
 
 ## The Story Behind My Vision
