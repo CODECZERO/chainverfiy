@@ -4,28 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #030408;
-  --foreground: #F8FAFC;
-  --card: rgba(10, 12, 18, 0.4);
-  --card-foreground: #F8FAFC;
-  --popover: #0A0C12;
-  --popover-foreground: #F8FAFC;
-  --primary: #4F46E5;
+  --background: #050608;
+  --foreground: #E2E8F0;
+  --card: rgba(10, 13, 20, 0.5);
+  --card-foreground: #E2E8F0;
+  --popover: #0A0D14;
+  --popover-foreground: #E2E8F0;
+  --primary: #6366F1;
   --primary-foreground: #FFFFFF;
   --secondary: #10B981;
-  --secondary-foreground: #F8FAFC;
+  --secondary-foreground: #E2E8F0;
   --muted: #0F172A;
   --muted-foreground: #64748B;
   --accent: #0284C7;
-  --accent-foreground: #F8FAFC;
+  --accent-foreground: #E2E8F0;
   --destructive: #EF4444;
-  --destructive-foreground: #F8FAFC;
-  --border: rgba(255, 255, 255, 0.08);
+  --destructive-foreground: #E2E8F0;
+  --border: rgba(255, 255, 255, 0.06);
   --input: rgba(255, 255, 255, 0.04);
   --ring: #6366F1;
-  --radius: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 }
 
 @theme inline {
@@ -59,38 +59,50 @@
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    line-height: 1.15;
   }
 }
 
 @layer utilities {
   .glass-premium {
-    background: rgba(10, 12, 20, 0.4);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-  }
-
-  .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    background: rgba(10, 13, 20, 0.5);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .glass-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(99, 102, 241, 0.4);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-clean {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+    transition: all 0.25s ease;
+  }
+
+  .card-clean:hover {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(99, 102, 241, 0.2);
   }
 
   .text-gradient {
-    background: linear-gradient(to right, #F8FAFC, #94A3B8);
+    background: linear-gradient(to right, #E2E8F0, #94A3B8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -106,43 +118,43 @@
 
 /* ── Keyframe Animations ── */
 @keyframes float {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-20px) scale(1.05); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
 }
 
 .animate-float-slow {
-  animation: float 12s ease-in-out infinite;
+  animation: float 14s ease-in-out infinite;
 }
 
 .animate-float-fast {
-  animation: float 8s ease-in-out infinite;
+  animation: float 9s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; filter: blur(80px); }
-  50% { opacity: 0.6; filter: blur(100px); }
+  0%, 100% { opacity: 0.3; filter: blur(80px); }
+  50% { opacity: 0.45; filter: blur(100px); }
 }
 
 .glow-orb {
   position: absolute;
   border-radius: 50%;
-  animation: pulse-glow 10s ease-in-out infinite;
+  animation: pulse-glow 12s ease-in-out infinite;
   z-index: 0;
   pointer-events: none;
 }
 
 /* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.14);
 }

@@ -50,81 +50,79 @@ export default function MarketplacePage() {
   })
 
   return (
-    <div className={`min-h-screen bg-[#05060A] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30 ${inter.className}`}>
+    <div className={`min-h-screen bg-[#050608] text-slate-200 overflow-x-hidden selection:bg-indigo-500/30 ${inter.className}`}>
       
       {/* ── Background Elements ── */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] -left-[10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
-        <div className="absolute top-[20%] -right-[15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-emerald-600/5 rounded-full blur-[150px]" />
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute top-[-15%] -left-[10%] w-[400px] h-[400px] bg-indigo-600/[0.06] rounded-full blur-[120px]" />
+        <div className="absolute top-[30%] -right-[15%] w-[450px] h-[450px] bg-blue-600/[0.05] rounded-full blur-[140px]" />
       </div>
 
       <Header />
 
-      <main className="relative z-10 pt-32 pb-24">
+      <main className="relative z-10 pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           
           {/* ── Section Header ── */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="max-w-2xl"
+              className="max-w-xl"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px w-10 bg-indigo-500/40" />
-                <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest">Premium Selection</span>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="h-px w-8 bg-indigo-500/30" />
+                <span className="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider">Premium Selection</span>
               </div>
-              <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold tracking-tight text-white mb-6`}>
-                Ethical <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400">Storefront</span>
+              <h1 className={`${outfit.className} text-3xl md:text-5xl font-semibold tracking-tight text-white mb-4`}>
+                Ethical <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Storefront</span>
               </h1>
-              <p className="text-lg text-slate-400 leading-relaxed font-light">
-                Discover authentic products verified by local communities and anchored on the Stellar blockchain for absolute transparency.
+              <p className="text-base text-slate-400 leading-relaxed">
+                Discover authentic products verified by local communities and anchored on the Stellar blockchain.
               </p>
             </motion.div>
             
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex flex-col gap-4 min-w-[320px]"
+              className="flex flex-col gap-3 w-full md:w-auto md:min-w-[300px]"
             >
               <div className="relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                 <Input 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search products or makers..." 
-                  className="pl-14 h-16 bg-white/[0.04] border-white/10 rounded-2xl focus:ring-indigo-500/20 text-sm shadow-inner"
+                  className="pl-11 h-12 bg-white/[0.03] border-white/[0.06] rounded-xl focus:ring-indigo-500/20 text-sm"
                 />
               </div>
-              <div className="flex gap-3">
-                 <div className="flex-1 px-6 py-3 rounded-2xl bg-indigo-500/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-none">Currency</span>
-                    <span className="text-sm font-mono font-bold text-indigo-400 leading-none">NETWORK BASE ASSET: USDC</span>
+              <div className="flex gap-2.5">
+                 <div className="flex-1 px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Currency</span>
+                    <span className="text-xs font-mono font-semibold text-indigo-400">USDC</span>
                  </div>
-                 <Button variant="outline" className="rounded-2xl h-14 px-6 border-white/10 hover:bg-white/5 active:scale-95 transition-all">
-                     <Filter className="w-4 h-4 mr-2 text-slate-400" /> 
-                     <span className="text-xs font-bold text-slate-400">Filter</span>
+                 <Button variant="outline" className="rounded-xl h-10 px-4 border-white/[0.06] hover:bg-white/[0.04] active:scale-95 transition-all">
+                     <Filter className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> 
+                     <span className="text-xs text-slate-400">Filter</span>
                   </Button>
               </div>
             </motion.div>
           </div>
 
           {/* ── Category Pipeline ── */}
-          <div className="flex flex-wrap items-center gap-3 mb-16">
+          <div className="flex flex-wrap items-center gap-2 mb-10">
             {CATEGORIES.map((cat, idx) => (
               <motion.button
                 key={cat}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
+                transition={{ delay: idx * 0.04 }}
                 onClick={() => setActiveFilters(prev => ({ ...prev, category: cat }))}
                 className={cn(
-                  "px-7 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all border",
+                  "px-4 py-2 rounded-lg text-xs font-medium transition-all border",
                   activeFilters.category === cat 
-                    ? "bg-indigo-600 border-indigo-500 text-white shadow-xl" 
-                    : "bg-white/[0.03] border-white/5 text-slate-500 hover:text-slate-200 hover:bg-white/[0.08]"
+                    ? "bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20" 
+                    : "bg-white/[0.02] border-white/[0.05] text-slate-400 hover:text-slate-200 hover:bg-white/[0.05]"
                 )}
               >
                 {cat}
@@ -135,21 +133,21 @@ export default function MarketplacePage() {
           {/* ── Asset Grid ── */}
           <div className="relative">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {[1,2,3,4,5,6,7,8].map(i => (
-                  <div key={i} className="aspect-[4/5] rounded-[2.5rem] bg-white/[0.02] animate-pulse border border-white/[0.05]" />
+                  <div key={i} className="aspect-[4/5] rounded-2xl bg-white/[0.02] animate-pulse border border-white/[0.04]" />
                 ))}
               </div>
             ) : filteredTasks.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <AnimatePresence mode="popLayout">
                   {filteredTasks.map((task, idx) => (
                     <motion.div
                       key={task.id || task._id || idx}
-                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      initial={{ opacity: 0, scale: 0.97, y: 12 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      transition={{ duration: 0.5, delay: Math.min(idx * 0.05, 0.4) }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4, delay: Math.min(idx * 0.04, 0.3) }}
                     >
                       <ProductCard task={task} index={idx} usdcInr={usdcInr} />
                     </motion.div>
@@ -160,17 +158,17 @@ export default function MarketplacePage() {
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="py-40 flex flex-col items-center justify-center text-center bg-white/[0.01] rounded-[4rem] border border-dashed border-white/10"
+                className="py-24 flex flex-col items-center justify-center text-center bg-white/[0.01] rounded-2xl border border-dashed border-white/[0.08]"
               >
-                <div className="w-24 h-24 rounded-[2rem] bg-white/[0.02] flex items-center justify-center mb-8 border border-white/5 shadow-inner">
-                  <Sparkles className="w-12 h-12 text-slate-800" />
+                <div className="w-16 h-16 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-6 border border-white/[0.05]">
+                  <Sparkles className="w-8 h-8 text-slate-700" />
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-4">No Products Found</h3>
-                <p className="text-slate-500 max-w-sm mx-auto font-light text-lg">We couldn't find any verified products matching your current filters.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">No Products Found</h3>
+                <p className="text-slate-500 max-w-sm mx-auto text-sm">We couldn't find any verified products matching your current filters.</p>
                 <Button 
                   variant="outline" 
                   onClick={() => setActiveFilters({ status: "ALL", category: "ALL" })}
-                  className="mt-10 rounded-xl border-white/10 hover:bg-white/5"
+                  className="mt-8 rounded-xl border-white/[0.08] hover:bg-white/[0.04]"
                 >
                   Clear all filters
                 </Button>
