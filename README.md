@@ -47,3 +47,39 @@ To ensure this next phase isn't just an idealistic vision, I am actively broaden
    - **View Feedback Data:** [Exported Excel Sheet](https://docs.google.com/spreadsheets/d/1A0jJRoTPuheph89BppumQRONkDMNaLW_N7X2Wuhny7Q/edit?usp=sharing)
 4. **Continuous Improvement:** I plan to iterate on the product based strictly on the user feedback collected in the Excel sheet. My immediate improvements and pivots (like the Amazon-style QR verification) directly stem from these insights. 
    - **Improvement Tracking:** [Git Commit Link for Feedback-Driven Improvements] *(To be added as I implement changes)*
+
+## Platform Features & UI Redesign
+
+Our platform recently underwent a comprehensive "Financial Oracle" UI/UX redesign. The goal was to unify the visual design language across all key pages (Marketplace, Transparency, Verify, Leaderboard, Community, and Journey tracking). We standardized typography, spacing, and a minimalist `#050608` dark theme to reduce visual noise and present a premium, clean aesthetic while ensuring complete functional parity.
+
+### Old vs. New Design Comparison
+
+<details>
+<summary><b>Click to view: Old UI Design Screenshots</b></summary>
+<br/>
+<p align="center">
+  <img src="./assets/ss-2026-04-27-145430.png" width="48%" alt="Old Design 1" />
+  <img src="./assets/ss-2026-04-27-145441.png" width="48%" alt="Old Design 2" />
+  <img src="./assets/ss-2026-04-27-145447.png" width="48%" alt="Old Design 3" />
+  <img src="./assets/ss-2026-04-27-145453.png" width="48%" alt="Old Design 4" />
+  <img src="./assets/ss-2026-04-27-145534.png" width="48%" alt="Old Design 5" />
+  <img src="./assets/ss-2026-04-27-145540.png" width="48%" alt="Old Design 6" />
+  <img src="./assets/ss-2026-04-27-145549.png" width="48%" alt="Old Design 7" />
+  <img src="./assets/ss-2026-04-27-145616.png" width="48%" alt="Old Design 8" />
+  <img src="./assets/ss-2026-04-27-145627.png" width="48%" alt="Old Design 9" />
+</p>
+</details>
+
+<details open>
+<summary><b>Click to view: New Minimalist Redesign (Current)</b></summary>
+<br/>
+<p align="center">
+  <img src="./assets/ss-2026-04-27-151744.png" width="48%" alt="New Design 1" />
+  <img src="./assets/ss-2026-04-27-151750.png" width="48%" alt="New Design 2" />
+  <img src="./assets/ss-2026-04-27-151802.png" width="48%" alt="New Design 3" />
+  <img src="./assets/ss-2026-04-27-151818.png" width="48%" alt="New Design 4" />
+  <img src="./assets/ss-2026-04-27-151829.png" width="48%" alt="New Design 5" />
+  <img src="./assets/ss-2026-04-27-151914.png" width="48%" alt="New Design 6" />
+  <img src="./assets/ss-2026-04-27-152038.png" width="48%" alt="New Design 7" />
+</p>
+</details>
