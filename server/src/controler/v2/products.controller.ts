@@ -6,6 +6,7 @@ import { notifySupplier } from '../../services/whatsapp/whatsapp.service.js';
 import { cacheGet, cacheSet, cacheInvalidate, cacheDel, buildCacheKey } from '../../lib/redis.js';
 import { getUSDCtoINRRate } from '../../util/exchangeRate.util.js';
 import { ImgFormater } from '../../util/ipfs.uitl.js';
+import { withFallback, withFallbackOrNull } from '../../lib/stale-cache.js';
 
 export const getProducts = async (req: Request, res: Response) => {
   const { category, status, minPrice, maxPrice, search, page = '1', limit = '20' } = req.query;
@@ -34,11 +35,12 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 
   const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
-  let products: any[] = [];
-  let total = 0;
-  try {
-    const result = (await Promise.race([
-      Promise.all([
+  const staleCacheKey = `stale:products:${cacheKey}`;
+
+  const { data: queryResult } = await withFallback(
+    staleCacheKey,
+    async () => {
+      const [products, total] = await Promise.all([
         prisma.product.findMany({
           where,
           include: { supplier: { select: { name: true, location: true, trustScore: true, isVerified: true, stellarWallet: true } } },
@@ -47,25 +49,20 @@ export const getProducts = async (req: Request, res: Response) => {
           take: parseInt(limit as string),
         }),
         prisma.product.count({ where }),
-      ]),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('DB query timeout')), 5000)),
-    ])) as [any[], number];
-    products = result[0] as any[];
-    total = result[1] as number;
-  } catch {
-    products = [];
-    total = 0;
-  }
+      ]);
 
-  const formattedProducts = await Promise.all(products.map(async (p: any) => ({
-    ...p,
-    proofMediaUrls: await Promise.all((p.proofMediaUrls || []).map((cid: string) => ImgFormater(cid)))
-  })));
+      const formattedProducts = await Promise.all(products.map(async (p: any) => ({
+        ...p,
+        proofMediaUrls: await Promise.all((p.proofMediaUrls || []).map((cid: string) => ImgFormater(cid)))
+      })));
 
-  const data = { products: formattedProducts, total, page: parseInt(page as string) };
-  await cacheSet(cacheKey, data, 60);
+      return { products: formattedProducts, total, page: parseInt(page as string) };
+    },
+    { products: [], total: 0, page: parseInt(page as string) }
+  );
 
-  return res.json(new ApiResponse(200, data, products.length ? 'Products fetched' : 'Products fetched (fallback)'));
+  await cacheSet(cacheKey, queryResult, 60);
+  return res.json(new ApiResponse(200, queryResult, queryResult.products.length ? 'Products fetched' : 'Products fetched (fallback)'));
 };
 
 export const getProduct = async (req: Request, res: Response) => {
@@ -76,14 +73,20 @@ export const getProduct = async (req: Request, res: Response) => {
     return res.json(new ApiResponse(200, cached, 'Product fetched (cached)'));
   }
 
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: {
-      supplier: { select: { id: true, name: true, location: true, trustScore: true, isVerified: true, whatsappNumber: true, stellarWallet: true } },
-      stageUpdates: { orderBy: { stageNumber: 'asc' } },
-      votes: { select: { voteType: true, createdAt: true }, take: 10, orderBy: { createdAt: 'desc' } },
-    },
-  });
+  const staleCacheKey = `stale:product:${id}`;
+  const { data: product } = await withFallbackOrNull(
+    staleCacheKey,
+    async () => {
+      return prisma.product.findUnique({
+        where: { id },
+        include: {
+          supplier: { select: { id: true, name: true, location: true, trustScore: true, isVerified: true, whatsappNumber: true, stellarWallet: true } },
+          stageUpdates: { orderBy: { stageNumber: 'asc' } },
+          votes: { select: { voteType: true, createdAt: true }, take: 10, orderBy: { createdAt: 'desc' } },
+        },
+      });
+    }
+  );
 
   if (!product) return res.status(404).json(new ApiResponse(404, null, 'Product not found'));
 
@@ -92,19 +95,24 @@ export const getProduct = async (req: Request, res: Response) => {
   const authUser = (req as any).user;
   const walletFromQuery = req.query.wallet as string;
 
-  if (authUser) {
-    const v = await prisma.vote.findUnique({
-      where: { productId_userId: { productId: id, userId: authUser.id } }
-    });
-    userHasVoted = !!v;
-  } else if (walletFromQuery) {
-    const userWithWallet = await prisma.user.findUnique({ where: { stellarWallet: walletFromQuery } });
-    if (userWithWallet) {
+  try {
+    if (authUser) {
       const v = await prisma.vote.findUnique({
-        where: { productId_userId: { productId: id, userId: userWithWallet.id } }
+        where: { productId_userId: { productId: id, userId: authUser.id } }
       });
       userHasVoted = !!v;
+    } else if (walletFromQuery) {
+      const userWithWallet = await prisma.user.findUnique({ where: { stellarWallet: walletFromQuery } });
+      if (userWithWallet) {
+        const v = await prisma.vote.findUnique({
+          where: { productId_userId: { productId: id, userId: userWithWallet.id } }
+        });
+        userHasVoted = !!v;
+      }
     }
+  } catch {
+    // If DB is down for vote check, default to false — not critical
+    userHasVoted = false;
   }
 
   const formattedProduct = {
@@ -113,7 +121,7 @@ export const getProduct = async (req: Request, res: Response) => {
     proofMediaUrls: await Promise.all((product.proofMediaUrls || []).map((cid: string) => ImgFormater(cid)))
   };
 
-  await cacheSet(productCacheKey, formattedProduct, 60); // Lower cache time since user-specific
+  await cacheSet(productCacheKey, formattedProduct, 60);
   return res.json(new ApiResponse(200, formattedProduct, 'Product fetched'));
 };
 

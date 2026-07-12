@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import { connectDB } from './util/appStartup.util.js';
 import routes from './routes/index.routes.js';
 import logger, { httpLogger } from './util/logger.js';
+import { getDbHealth, isDbUnreachableError, markDbDown } from './lib/db-health.js';
+import { getCacheStats } from './lib/stale-cache.js';
 
 // Load environment variables
 dotenv.config();
@@ -63,12 +65,16 @@ app.get('/', (req, res) => {
 
 app.use('/api', routes);
 
-// Health check endpoint
+// Health check endpoint — includes DB health and cache stats for internal monitoring
 app.get('/health', (req, res) => {
+  const dbHealth = getDbHealth();
+  const cacheStats = getCacheStats();
   res.json({
     success: true,
-    message: 'Server is running',
+    message: dbHealth.healthy ? 'Server is running' : 'Server running in DEGRADED mode (DB unreachable)',
     timestamp: new Date().toISOString(),
+    database: dbHealth,
+    cache: cacheStats,
   });
 });
 
@@ -82,6 +88,18 @@ if (process.env.NODE_ENV === 'test') {
 
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // ─── Database Unreachable — clean 503, frontend never sees "DB down" ───
+  if (isDbUnreachableError(err)) {
+    markDbDown();
+    logger.warn(`[Resilience] DB unreachable during ${req.method} ${req.originalUrl}`);
+    return res.status(503).json({
+      success: false,
+      statusCode: 503,
+      data: null,
+      message: 'Service temporarily unavailable. Please try again in a moment.',
+    });
+  }
+
   logger.error('Unhandled error', { message: err.message, stack: err.stack, url: req.originalUrl, method: req.method });
 
   // Handle JSON parsing errors specifically

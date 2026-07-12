@@ -2,35 +2,50 @@ import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma.js';
 import { ApiResponse } from '../../util/apiResponse.util.js';
 import { ImgFormater } from '../../util/ipfs.uitl.js';
+import { withFallback, withFallbackOrNull } from '../../lib/stale-cache.js';
 
 export const getSupplier = async (req: Request, res: Response) => {
   const id = String((req as any).params?.id ?? req.params.id);
-  const supplier = await prisma.supplier.findUnique({
-    where: { id },
-    include: {
-      badges: true,
-      products: {
-        where: { status: 'VERIFIED' },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-      },
-    },
-  });
+
+  const { data: supplier } = await withFallbackOrNull(
+    `stale:supplier:${id}`,
+    async () => {
+      return prisma.supplier.findUnique({
+        where: { id },
+        include: {
+          badges: true,
+          products: {
+            where: { status: 'VERIFIED' },
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+          },
+        },
+      });
+    }
+  );
+
   if (!supplier) return res.status(404).json(new ApiResponse(404, null, 'Supplier not found'));
   return res.json(new ApiResponse(200, supplier, 'Supplier fetched'));
 };
 
 export const getSupplierProducts = async (req: Request, res: Response) => {
   const id = String((req as any).params?.id ?? req.params.id);
-  const products = await prisma.product.findMany({
-    where: { supplierId: id },
-    orderBy: { createdAt: 'desc' },
-  });
 
-  const formattedProducts = await Promise.all(products.map(async (p: any) => ({
-    ...p,
-    proofMediaUrls: await Promise.all((p.proofMediaUrls || []).map((cid: string) => ImgFormater(cid)))
-  })));
+  const { data: formattedProducts } = await withFallback(
+    `stale:supplier-products:${id}`,
+    async () => {
+      const products = await prisma.product.findMany({
+        where: { supplierId: id },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return Promise.all(products.map(async (p: any) => ({
+        ...p,
+        proofMediaUrls: await Promise.all((p.proofMediaUrls || []).map((cid: string) => ImgFormater(cid)))
+      })));
+    },
+    []
+  );
 
   return res.json(new ApiResponse(200, formattedProducts, 'Products fetched'));
 };

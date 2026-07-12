@@ -6,11 +6,13 @@ import { horizonServer, STACK_ADMIN_SECRET, adminSequenceManager } from '../serv
 
 const ANCHOR_INTERVAL_MS = 60_000; // Run every 60 seconds
 const BATCH_SIZE = 10; // Anchor up to 10 scans per cycle
+const MAX_BACKOFF_MS = 5 * 60_000; // Max 5 minutes between retries on persistent failure
+let consecutiveFailures = 0;
 
 async function anchorPendingScans() {
   try {
     // 1. Fetch pending scans with valid qrCode connections
-    // cast to any to bypass strict Prisma type mismatch on 'isNot: null' in some environments
+    // cast as any to bypass strict Prisma type mismatch on 'isNot: null' in some environments
     const pendingScans = await (prisma.qRScan.findMany({
       where: {
         anchoredOnChain: false,
@@ -22,6 +24,9 @@ async function anchorPendingScans() {
       take: BATCH_SIZE,
       orderBy: { createdAt: 'asc' },
     }) as Promise<any[]>);
+
+    // Reset backoff on successful DB connection
+    consecutiveFailures = 0;
 
     // Final safety filter before processing batch
     const validPending = pendingScans.filter((p: any) => p.qrCode && p.qrCode.id);
@@ -87,12 +92,30 @@ async function anchorPendingScans() {
       await new Promise((r) => setTimeout(r, 1000));
     }
   } catch (err: any) {
-    logger.error(`[Anchor] Job cycle error: ${err.message}`);
+    consecutiveFailures++;
+    // Only log on first failure and every 10th consecutive failure to prevent log spam
+    if (consecutiveFailures === 1 || consecutiveFailures % 10 === 0) {
+      logger.error(`[Anchor] Job cycle error (failure #${consecutiveFailures}): ${err.message}`);
+    }
   }
+}
+
+function scheduleNextRun() {
+  // Exponential backoff: interval * 2^failures, capped at MAX_BACKOFF_MS
+  const delay = consecutiveFailures > 0
+    ? Math.min(ANCHOR_INTERVAL_MS * Math.pow(2, consecutiveFailures), MAX_BACKOFF_MS)
+    : ANCHOR_INTERVAL_MS;
+
+  setTimeout(async () => {
+    await anchorPendingScans();
+    scheduleNextRun();
+  }, delay);
 }
 
 export const startAnchorJob = () => {
   logger.info(`[Anchor] Starting blockchain anchor job (interval: ${ANCHOR_INTERVAL_MS / 1000}s)`);
-  setTimeout(anchorPendingScans, 5000);
-  setInterval(anchorPendingScans, ANCHOR_INTERVAL_MS);
+  setTimeout(async () => {
+    await anchorPendingScans();
+    scheduleNextRun();
+  }, 5000);
 };

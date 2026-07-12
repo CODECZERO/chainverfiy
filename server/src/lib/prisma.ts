@@ -20,10 +20,20 @@ console.log('[PRISMA] Initializing client adapter...');
 console.log('[PRISMA] DATABASE_URL present:', !!process.env.DATABASE_URL);
 
 if (!globalForPrisma.prisma) {
-  const connectionString = process.env.DATABASE_URL;
+  let connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error('DATABASE_URL is not defined in environment variables');
   }
+
+  // Ensure connect_timeout is set so connections fail fast instead of hanging
+  const url = new URL(connectionString);
+  if (!url.searchParams.has('connect_timeout')) {
+    url.searchParams.set('connect_timeout', '10');
+  }
+  if (!url.searchParams.has('sslmode') && !connectionString.includes('localhost')) {
+    url.searchParams.set('sslmode', 'require');
+  }
+  connectionString = url.toString();
 
   // PgBouncer (Supabase Connection Pooler on port 6543) handles server-side connection recycling.
   // Our local pool just manages sockets to PgBouncer — these are fast, reliable, and don't get
