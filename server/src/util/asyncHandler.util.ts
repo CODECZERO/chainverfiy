@@ -1,12 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from './apiError.util.js';
 import logger from './logger.js';
+import { isDbUnreachableError } from '../lib/db-health.js';
 
 const AsyncHandler = (
-  requestHandler: (req: Request, res: Response, next: NextFunction) => Promise<any>
+  requestHandler: (req: Request, res: Response, next: NextFunction) => Promise<any> | void
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(requestHandler(req, res, next)).catch((error: any) => {
+      // CRITICAL: Let DB connectivity errors pass through UNTOUCHED to the global handler.
+      // The global handler will return a clean 503 or serve cached data.
+      // Do NOT wrap these in ApiError — that destroys the original error info.
+      if (isDbUnreachableError(error)) {
+        return next(error);
+      }
+
       if (error instanceof ApiError) {
         if (error.statusCode >= 500) {
           logger.error('AsyncHandler', { message: error.message, stack: error.stack, url: req.originalUrl });

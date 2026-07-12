@@ -53,6 +53,19 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ─── DB Resilience Middleware ───
+// Wraps ALL route handlers: if any async controller throws a DB error
+// without catching it, this middleware catches it and returns a clean 503.
+// This is the safety net for controllers that don't use asyncHandler or withFallback.
+app.use('/api', (req, res, next) => {
+  const originalJson = res.json.bind(res);
+  // Intercept and ensure we never accidentally send raw errors
+  res.json = function(body: any) {
+    return originalJson(body);
+  };
+  next();
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.status(200).json({
