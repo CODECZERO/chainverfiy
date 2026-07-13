@@ -54,17 +54,18 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ─── DB Resilience Layer 1: Pre-flight Cache ───
-// If the DB is KNOWN to be down, serve cached GET responses immediately.
-// Skips the 5-10s Prisma timeout entirely — instant response.
+// ─── DB Resilience Middleware (runs BEFORE routes, not a route itself) ───
+// These are Express middleware, not route handlers. They call next() to pass
+// through to the actual route handlers below. No route conflicts.
+//
+// Layer 1 (Pre-flight): If DB is already known-down, serve cached GET response
+// instantly — skips the Prisma timeout entirely. Calls next() if DB is up.
+// Layer 2 (Response Cache): Hooks res.json() to capture every successful GET
+// response. When DB goes down later, these cached responses are served.
 app.use('/api', preflightCacheMiddleware);
-
-// ─── DB Resilience Layer 2: Response Cache ───
-// Captures every successful GET response into the in-memory stale cache.
-// When the DB goes down later, these cached responses will be served.
 app.use('/api', responseCacheMiddleware);
 
-// Routes
+// ─── Actual API Routes ───
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
