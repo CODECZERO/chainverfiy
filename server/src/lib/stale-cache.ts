@@ -14,9 +14,9 @@ interface CacheEntry {
 const store = new Map<string, CacheEntry>();
 
 // Cache configuration
-const DEFAULT_STALE_TTL_MS = 10 * 60 * 1000;  // 10 minutes — serve stale data up to this age
-const MAX_STALE_TTL_MS = 30 * 60 * 1000;       // 30 minutes — absolute max before refusing stale
-const MAX_CACHE_ENTRIES = 500;                   // Prevent unbounded memory growth
+const DEFAULT_STALE_TTL_MS = 15 * 60 * 1000;  // 15 minutes — serve stale data up to this age
+const MAX_STALE_TTL_MS = 60 * 60 * 1000;       // 60 minutes — absolute max before refusing stale
+const MAX_CACHE_ENTRIES = 2000;                  // Handles full response-level caching for all GET endpoints
 
 /**
  * Evict oldest entries when cache exceeds MAX_CACHE_ENTRIES.

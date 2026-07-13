@@ -8,6 +8,7 @@ import routes from './routes/index.routes.js';
 import logger, { httpLogger } from './util/logger.js';
 import { getDbHealth, isDbUnreachableError, markDbDown } from './lib/db-health.js';
 import { getCacheStats } from './lib/stale-cache.js';
+import { tryCachedResponse, preflightCacheMiddleware, responseCacheMiddleware } from './midelware/dbResilience.midelware.js';
 
 // Load environment variables
 dotenv.config();
@@ -53,18 +54,15 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ─── DB Resilience Middleware ───
-// Wraps ALL route handlers: if any async controller throws a DB error
-// without catching it, this middleware catches it and returns a clean 503.
-// This is the safety net for controllers that don't use asyncHandler or withFallback.
-app.use('/api', (req, res, next) => {
-  const originalJson = res.json.bind(res);
-  // Intercept and ensure we never accidentally send raw errors
-  res.json = function(body: any) {
-    return originalJson(body);
-  };
-  next();
-});
+// ─── DB Resilience Layer 1: Pre-flight Cache ───
+// If the DB is KNOWN to be down, serve cached GET responses immediately.
+// Skips the 5-10s Prisma timeout entirely — instant response.
+app.use('/api', preflightCacheMiddleware);
+
+// ─── DB Resilience Layer 2: Response Cache ───
+// Captures every successful GET response into the in-memory stale cache.
+// When the DB goes down later, these cached responses will be served.
+app.use('/api', responseCacheMiddleware);
 
 // Routes
 app.get('/', (req, res) => {
@@ -101,15 +99,22 @@ if (process.env.NODE_ENV === 'test') {
 
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  // ─── Database Unreachable — clean 503, frontend never sees "DB down" ───
+  // ─── Database Unreachable — try serving cached data, frontend never sees "DB down" ───
   if (isDbUnreachableError(err)) {
     markDbDown();
     logger.warn(`[Resilience] DB unreachable during ${req.method} ${req.originalUrl}`);
-    return res.status(503).json({
-      success: false,
-      statusCode: 503,
-      data: null,
-      message: 'Service temporarily unavailable. Please try again in a moment.',
+
+    // For GET requests: try to serve cached response transparently
+    if (tryCachedResponse(req, res)) {
+      return; // Cached response served — frontend sees no difference
+    }
+
+    // No cache available — return clean retry message (no "database" language)
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: req.method === 'GET' ? [] : null,
+      message: 'No data available at the moment. Please try again shortly.',
     });
   }
 
